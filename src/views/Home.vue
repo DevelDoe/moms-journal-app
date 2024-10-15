@@ -2,7 +2,7 @@
 <template>
     <div>
       <h1>Mom's Journal</h1>
-      <p>Welcome to momentum journal!</p>
+      <p>Sometimes, doing nothing is the best move</p>
     </div>
   </template>
   
