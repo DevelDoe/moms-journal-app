@@ -1,0 +1,21 @@
+1. Wider Stop Losses:
+Dynamic Stop-Loss: Instead of setting a fixed, tight stop-loss, you could use ATR (Average True Range) to determine your stop distance. This would allow you to adjust your stop-loss based on the volatility of the stock. A more volatile stock would have a wider stop, while a less volatile stock could have a tighter stop.
+
+Trailing Stop-Loss: Consider using a trailing stop-loss when a stock like DRUG is in a strong trend. This helps lock in gains while still allowing the stock room to move. It can be particularly effective for catching those big moves you mentioned.
+
+2. Be Patient for Big Moves:
+Focus on High Volatility Stocks: Just like you mentioned, it's important to identify stocks that are likely to make significant moves. You could use pre-market volume or other indicators like the Relative Strength Index (RSI) or Moving Average Crossovers to help identify stocks poised for big price swings.
+
+Reduce Overtrading: If a stock isn’t moving much, sitting on the sidelines and waiting for stronger opportunities is often more profitable. Sometimes, doing nothing is the best move when the conditions aren’t favorable.
+
+3. Mental Discipline:
+Mindset: Trading less and keeping your emotions in check is a crucial step toward consistency. Sometimes it’s not the technical strategy but the emotional discipline that makes the difference between a profitable and a losing day. Recognize that not every day is a trading day—wait for setups where your edge is strong.
+
+Daily Limits: Consider setting a maximum number of trades or a daily risk limit. If you exceed this limit, it could be a sign to stop trading for the day, which will help you avoid impulsive trades.
+
+4. Journaling:
+Start documenting the trades where you got “stomped out” and analyze the conditions—was it due to market noise or a real reversal? Over time, this can help you fine-tune your stop placement.
+
+Journaling the trades where you kept your cool and held out for bigger moves will also reinforce the behavior that leads to success.
+
+By focusing on better setups and avoiding unnecessary trades, you’ll likely find that your performance improves. Let me know if you’d like to explore techniques for finding volatile stocks or more advice on trade management!

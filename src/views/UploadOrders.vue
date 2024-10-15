@@ -34,7 +34,7 @@
 					}"
 				>
 					<td>{{ order.symbol }}</td>
-					<td>{{ order.time }}</td>
+					<td>{{ new Date(order.date).toLocaleTimeString() }}</td>
 					<td>{{ order.side }}</td>
 					<td>{{ order.quantity }}</td>
 					<td>${{ order.price.toFixed(4) }}</td>
