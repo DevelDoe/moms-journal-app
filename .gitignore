@@ -73,3 +73,5 @@ out/
 
 # Nuxt.js build output
 .nuxt/
+
+dump*
