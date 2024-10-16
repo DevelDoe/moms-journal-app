@@ -54,26 +54,149 @@ export default {
 
 <style scoped>
 
-/* Global styles here */
+/* Dark Theme - Global Styles */
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+  background-color: #1e1e1e; /* Dark background */
+  color: #e0e0e0; /* Light text color */
+  font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff; /* Brighter headings */
+  margin: 0 0 20px 0;
+}
+
 a {
-  color: blue;
+  color: #1f91ff; /* Bright blue for links */
   text-decoration: none;
 }
 
-h1 {
-  font-size: 24px;
+a:hover {
+  text-decoration: underline;
 }
-nav {
-	display: flex;
-	gap: 15px;
-	margin-bottom: 20px;
+
+/* Buttons */
+button {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+button:hover {
+  background-color: #5a5a5a;
+}
+
+/* Inputs */
+input, select, textarea {
+  background-color: #2e2e2e;
+  border: 1px solid #444444;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+input::placeholder {
+  color: #888888;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #444444;
+}
+
+th {
+  background-color: #3b3b3b;
+  color: #ffffff;
+}
+
+td {
+  background-color: #2c2c2c;
+  color: #dddddd;
+}
+
+tfoot .total-label {
+  text-align: right;
+  font-weight: bold;
+  color: #f5f5f5;
+}
+
+tfoot .total-value {
+  font-weight: bold;
+  color: #1f91ff;
+}
+
+/* Forms */
+form {
+  background-color: #292929;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #cccccc;
+}
+
+/* Date Picker */
+input[type="date"] {
+  background-color: #333333;
+  color: #ffffff;
+  border: 1px solid #555555;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* Code */
+pre {
+  background-color: #2d2d2d;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+code {
+  color: #ffb86c;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+
+/* Footer */
+footer {
+  background-color: #2e2e2e;
+  padding: 10px;
+  color: #a1a1a1;
+  text-align: center;
+  border-top: 1px solid #444444;
+}
+
 
 </style>
