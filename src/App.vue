@@ -25,6 +25,9 @@
 			<router-link to="/trades" v-if="isAuthenticated"
 				>Trades</router-link
 			>
+			<router-link to="/WebSocketClient" v-if="isAuthenticated"
+				>WebSocketClient</router-link
+			>
 			<a @click="logout" v-if="isAuthenticated" style="cursor: pointer"
 				>Logout</a
 			>
