@@ -150,36 +150,34 @@ export default {
     
     // WebSocket integration to analyze trades
     analizeTrades() {
+      // Check if the socket is already connected
       if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-        // Create a WebSocket connection
         this.socket = new WebSocket('wss://localhost:4000');
         
-        // Handle WebSocket events
         this.socket.onopen = () => {
           console.log('Connected to WebSocket server.');
-          
-          // Send the filtered trades data to the backend
-          this.socket.send(JSON.stringify(this.filteredTrades));
+
+          // Send a subset of the trades (e.g., most recent 100 trades)
+          const tradeSubset = this.filteredTrades.slice(-100); // Last 100 trades
+          this.socket.send(JSON.stringify(tradeSubset));
         };
         
-        // Handle receiving data (the AI analysis response)
         this.socket.onmessage = (event) => {
           console.log('Received analysis from server:', event.data);
-          this.gptResponse = event.data; // Set the AI response to be displayed
+          this.gptResponse = event.data; // Display the AI response
         };
-        
-        // Handle WebSocket error
+
         this.socket.onerror = (error) => {
           console.error("WebSocket Error:", error);
         };
 
-        // Handle WebSocket close event
         this.socket.onclose = () => {
           console.log("WebSocket connection closed.");
         };
       } else {
-        // WebSocket already open, send trades data
-        this.socket.send(JSON.stringify(this.filteredTrades));
+        // Send a subset of trades if socket is already open
+        const tradeSubset = this.filteredTrades.slice(-100); // Last 100 trades
+        this.socket.send(JSON.stringify(tradeSubset));
       }
     },
   },
