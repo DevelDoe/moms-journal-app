@@ -128,8 +128,6 @@ export default createStore({
 			}
 		},
 
-		test
-
 		async createOrder({ commit, state }, orderData) {
 			try {
 				const response = await axios.post(
