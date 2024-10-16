@@ -52,12 +52,12 @@ export default {
 };
 </script>
 
-<style >
+<style scoped>
 
 /* Global styles here */
 body {
   font-family: Arial, sans-serif;
-  background-color: #292F36 !important;
+  background-color: #f0f0f0;
   margin: 0;
   padding: 0;
 }
