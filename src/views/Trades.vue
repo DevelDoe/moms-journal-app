@@ -89,6 +89,7 @@ export default {
       tradesLoaded: false, // Ensure trades are loaded before filtering,
       analizeData:'',
       socket: null,
+      gptResponse: ""
     };
   },
   async created() {
