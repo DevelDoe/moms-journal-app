@@ -175,7 +175,7 @@ export default {
     analizeTrades() {
       // Sreate a WebSocket connection
 			this.socket = new WebSocket('wss://localhost:4000');
-      this.socket.send(this.message);
+      
 
     }
   },
