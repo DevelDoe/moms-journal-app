@@ -50,5 +50,15 @@ export default {
 			}
 		},
 	},
+	mounted() {
+		// Connect to the WebSocket server when the component is mounted
+		this.connectWebSocket();
+	},
+	beforeDestroy() {
+		// Close the WebSocket connection when the component is destroyed
+		if (this.socket) {
+			this.socket.close();
+		}
+	},
 };
 </script>
