@@ -140,8 +140,12 @@ export default {
 		},
 
 		totalProfitLoss() {
-			return this.totalProfit - this.totalLoss;
-		},
+  return this.filteredTrades.reduce(
+    (total, trade) => total + trade.profitLoss,
+    0
+  );
+}
+,
 
 		accuracy() {
 			const totalTrades = this.filteredTrades.length;
