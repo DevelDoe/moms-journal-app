@@ -84,7 +84,8 @@ export default {
 			isLoading: true, // Loading state
 			tradesLoaded: false, // Ensure trades are loaded before filtering
 			socket: null, // WebSocket instance
-			gptResponse: "", // Stores the GPT response
+			gptResponse: "",
+			totalTrades: 0, // Stores the GPT response
 		};
 	},
 	async created() {
@@ -129,6 +130,9 @@ export default {
 		losses() {
 			return this.filteredTrades.filter((trade) => trade.profitLoss < 0)
 				.length;
+		},
+		totalTrades() {
+			this.filteredTrades.length;
 		},
 		accuracy() {
 			const totalTrades = this.filteredTrades.length;
