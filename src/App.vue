@@ -57,7 +57,7 @@ export default {
 /* Global styles here */
 body {
   font-family: Arial, sans-serif;
-  background-color: #292F36;
+  background-color: #292F36 !important;
   margin: 0;
   padding: 0;
 }
