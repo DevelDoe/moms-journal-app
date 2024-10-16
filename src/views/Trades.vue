@@ -95,6 +95,8 @@ export default {
 		};
 	},
 	async mounted() {
+    // Fetch orders when the component is mounted (on page load or refresh)
+    await this.fetchOrders(); // Fetch orders first
 		// Fetch trades when the component is created
 		await this.fetchTrades();
 		this.isLoading = false;
