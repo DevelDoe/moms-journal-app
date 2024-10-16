@@ -3,6 +3,10 @@
 		<h1>Trades Overview</h1>
 		<button @click="fetchTrades">Fetch Trades</button>
 
+    <button @click="analizeTrades">Analize</button>
+		<p>{{ gptResponse }}</p>
+	  </div>
+
 		<!-- Date Picker for Filtering -->
 		<div class="date-filter">
 			<label for="filter-date">Filter by Date:</label>
@@ -68,123 +72,168 @@
 						<td>{{ new Date(trade.date).toLocaleTimeString() }}</td>
 					</tr>
 				</tbody>
-				
 			</table>
-			
 		</div>
 	</div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      filterDate: "", // Stores the selected date for filtering
-      isLoading: true, // Loading state
-      tradesLoaded: false, // Ensure trades are loaded before filtering
-    };
-  },
-  async created() {
-    // Fetch trades when the component is created
-    await this.fetchTrades();
-    this.isLoading = false;
-  },
-  computed: {
-	trades() {
-  const tradesData = this.$store.getters.getTrades;
-  // console.log("Trades from getter:", tradesData);
-  // Assuming tradesData is an object containing trades array
-  return tradesData && Array.isArray(tradesData.trades) ? tradesData.trades : [];
-},
-    filteredTrades() {
-      if (!this.tradesLoaded) {
-        // console.log("Trades not loaded yet, returning empty array.");
-        return [];
-      }
+	data() {
+		return {
+			filterDate: "", // Stores the selected date for filtering
+			isLoading: true, // Loading state
+			tradesLoaded: false, // Ensure trades are loaded before filtering
+      socket: null, // WebSocket instance
+      gptResponse: "", // Stores the GPT response
+		};
+	},
+	async created() {
+		// Fetch trades when the component is created
+		await this.fetchTrades();
+		this.isLoading = false;
+	},
+	computed: {
+		trades() {
+			const tradesData = this.$store.getters.getTrades;
+			return tradesData && Array.isArray(tradesData.trades)
+				? tradesData.trades
+				: [];
+		},
+		filteredTrades() {
+			if (!this.tradesLoaded) {
+				return [];
+			}
+			if (!this.filterDate) {
+				return this.trades;
+			}
+			const formattedFilterDate = new Date(this.filterDate)
+				.toISOString()
+				.split("T")[0];
+			return this.trades.filter((trade) => {
+				const formattedTradeDate = new Date(trade.date)
+					.toISOString()
+					.split("T")[0];
+				return formattedFilterDate === formattedTradeDate;
+			});
+		},
+		totalProfitLoss() {
+			return this.filteredTrades.reduce(
+				(total, trade) => total + trade.profitLoss,
+				0
+			);
+		},
+		wins() {
+			return this.filteredTrades.filter((trade) => trade.profitLoss > 0)
+				.length;
+		},
+		losses() {
+			return this.filteredTrades.filter((trade) => trade.profitLoss < 0)
+				.length;
+		},
+		accuracy() {
+			const totalTrades = this.filteredTrades.length;
+			return totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
+		},
+		profitToLossRatio() {
+			const totalProfit = this.filteredTrades
+				.filter((trade) => trade.profitLoss > 0)
+				.reduce((sum, trade) => sum + trade.profitLoss, 0);
+			const totalLoss = Math.abs(
+				this.filteredTrades
+					.filter((trade) => trade.profitLoss < 0)
+					.reduce((sum, trade) => sum + trade.profitLoss, 0)
+			);
+			if (totalLoss === 0) return "Infinity";
+			return (totalProfit / totalLoss).toFixed(2);
+		},
+	},
+	methods: {
+		async fetchTrades() {
+			try {
+				await this.$store.dispatch("fetchTrades"); // Dispatch the Vuex action to fetch trades
+			} catch (error) {
+				console.error("Error fetching trades:", error);
+			}
+		},
+		// Method to create a summary of trades for analysis
+		createTradeSummary() {
+			const totalTrades = this.filteredTrades.length;
+			const totalProfit = this.filteredTrades
+				.filter((trade) => trade.profitLoss > 0)
+				.reduce((sum, trade) => sum + trade.profitLoss, 0);
+			const totalLoss = this.filteredTrades
+				.filter((trade) => trade.profitLoss < 0)
+				.reduce((sum, trade) => sum + trade.profitLoss, 0);
+			const winRate =
+				totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
+			const profitToLossRatio =
+				totalLoss === 0
+					? "Infinity"
+					: (totalProfit / Math.abs(totalLoss)).toFixed(2);
 
-      if (!this.filterDate) {
-        // console.log("No filter date provided, returning all trades.");
-        return this.trades;
-      }
+			return {
+				totalTrades,
+				totalProfitLoss: this.totalProfitLoss.toFixed(2),
+				winRate: winRate.toFixed(2),
+				profitToLossRatio,
+				totalProfit: totalProfit.toFixed(2),
+				totalLoss: Math.abs(totalLoss).toFixed(2),
+			};
+		},
+		filterTradesByDate() {
+			//console.log("Filtering trades by date:", this.filterDate);
+			// Trigger re-computation of `filteredTrades` by updating the data binding
+			this.filterDate = this.filterDate;
+		},
+		// WebSocket integration to analyze trades
+		analizeTrades() {
+			// Check if the socket is already connected
+			if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+				this.socket = new WebSocket("wss://localhost:4000");
 
-      // console.log("Filtering trades by date:", this.filterDate);
-      // console.log("Trades length before filtering:", this.trades.length);
+				this.socket.onopen = () => {
+					console.log("Connected to WebSocket server.");
 
-      const formattedFilterDate = new Date(this.filterDate)
-        .toISOString()
-        .split("T")[0];
-      // console.log("Formatted filter date:", formattedFilterDate);
+					// Send a summary of the trades instead of full trade data
+					const tradeSummary = this.createTradeSummary();
+					this.socket.send(JSON.stringify(tradeSummary));
+				};
 
-      return this.trades.filter((trade) => {
-        const formattedTradeDate = new Date(trade.date)
-          .toISOString()
-          .split("T")[0];
-        console.log(
-          `Comparing trade date: ${formattedTradeDate} with filter date: ${formattedFilterDate}`
-        );
-        return formattedFilterDate === formattedTradeDate;
-      });
-    },
-    totalProfitLoss() {
-      return this.filteredTrades.reduce(
-        (total, trade) => total + trade.profitLoss,
-        0
-      );
-    },
-    wins() {
-      return this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
-    },
-    losses() {
-      return this.filteredTrades.filter((trade) => trade.profitLoss < 0).length;
-    },
-    accuracy() {
-      const totalTrades = this.filteredTrades.length;
-      return totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
-    },
-    profitToLossRatio() {
-      const totalProfit = this.filteredTrades
-        .filter((trade) => trade.profitLoss > 0)
-        .reduce((sum, trade) => sum + trade.profitLoss, 0);
-      const totalLoss = Math.abs(
-        this.filteredTrades
-          .filter((trade) => trade.profitLoss < 0)
-          .reduce((sum, trade) => sum + trade.profitLoss, 0)
-      );
-      if (totalLoss === 0) return "Infinity";
-      return (totalProfit / totalLoss).toFixed(2);
-    },
-  },
-  methods: {
-    async fetchTrades() {
-      try {
-        await this.$store.dispatch("fetchTrades"); // Dispatch the Vuex action to fetch trades
-      } catch (error) {
-        console.error("Error fetching trades:", error);
-      }
-    },
-    filterTradesByDate() {
-      //console.log("Filtering trades by date:", this.filterDate);
-      // Trigger re-computation of `filteredTrades` by updating the data binding
-      this.filterDate = this.filterDate;
-    },
-  },
-  watch: {
-    trades: {
-      immediate: true,
-      handler(newTrades) {
-        //console.log("Watcher triggered for trades:", newTrades);
-        if (newTrades && newTrades.length > 0) {
-          this.tradesLoaded = true; // Set to true when trades are available
-        } else {
-          this.tradesLoaded = false; // No trades available
-        }
-      },
-    },
-  },
+				this.socket.onmessage = (event) => {
+					console.log("Received analysis from server:", event.data);
+					this.gptResponse = event.data; // Display the AI response
+				};
+
+				this.socket.onerror = (error) => {
+					console.error("WebSocket Error:", error);
+				};
+
+				this.socket.onclose = () => {
+					console.log("WebSocket connection closed.");
+				};
+			} else {
+				// Send the summary of trades if socket is already open
+				const tradeSummary = this.createTradeSummary();
+				this.socket.send(JSON.stringify(tradeSummary));
+			}
+		},
+	},
+	watch: {
+		trades: {
+			immediate: true,
+			handler(newTrades) {
+				//console.log("Watcher triggered for trades:", newTrades);
+				if (newTrades && newTrades.length > 0) {
+					this.tradesLoaded = true; // Set to true when trades are available
+				} else {
+					this.tradesLoaded = false; // No trades available
+				}
+			},
+		},
+	},
 };
 </script>
-
-
 
 <style scoped>
 .trades {
