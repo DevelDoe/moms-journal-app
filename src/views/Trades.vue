@@ -170,6 +170,15 @@ export default {
 }
 ,
 	methods: {
+    async fetchOrders() {
+      try {
+        // Dispatch Vuex action to fetch orders from the API
+        await this.$store.dispatch("fetchOrders");
+        this.ordersLoaded = true; // Mark orders as loaded after successful fetch
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    },
 		// Fetch trades from Vuex store
 		async fetchTrades() {
 			try {
