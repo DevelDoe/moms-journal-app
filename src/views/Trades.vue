@@ -189,31 +189,32 @@ export default {
 			}
 		},
 
-		// Create a summary for the trades and send it to the WebSocket server
 		createTradeSummary() {
-			const totalTrades = this.filteredTrades.length;
-			const totalProfit = this.filteredTrades
-				.filter((trade) => trade.profitLoss > 0)
-				.reduce((sum, trade) => sum + trade.profitLoss, 0);
-			const totalLoss = this.filteredTrades
-				.filter((trade) => trade.profitLoss < 0)
-				.reduce((sum, trade) => sum + trade.profitLoss, 0);
-			const winRate =
-				totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
-			const profitToLossRatio =
-				totalLoss === 0
-					? "Infinity"
-					: (totalProfit / Math.abs(totalLoss)).toFixed(2);
+	const totalTrades = this.filteredTrades.length;
+	const totalProfit = this.filteredTrades
+		.filter((trade) => trade.profitLoss > 0)
+		.reduce((sum, trade) => sum + trade.profitLoss, 0);
+	const totalLoss = this.filteredTrades
+		.filter((trade) => trade.profitLoss < 0)
+		.reduce((sum, trade) => sum + trade.profitLoss, 0);
+	const winRate = totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
 
-			return {
-				totalTrades,
-				totalProfitLoss: this.totalProfitLoss.toFixed(2),
-				winRate: winRate.toFixed(2),
-				profitToLossRatio,
-				totalProfit: totalProfit.toFixed(2),
-				totalLoss: Math.abs(totalLoss).toFixed(2),
-			};
-		},
+	// Profit-to-loss ratio should use the absolute value of totalLoss
+	const profitToLossRatio =
+		totalLoss === 0 ? "Infinity" : (totalProfit / Math.abs(totalLoss)).toFixed(2);
+
+	// Calculate totalProfitLoss directly here
+	const totalProfitLoss = (totalProfit + totalLoss).toFixed(2);
+
+	return {
+		totalTrades,
+		totalProfitLoss,  // Directly from totalProfit and totalLoss
+		winRate: winRate.toFixed(2),
+		profitToLossRatio,
+		totalProfit: totalProfit.toFixed(2),
+		totalLoss: Math.abs(totalLoss).toFixed(2),  // Display the absolute value
+	};
+},
 
 		// Helper function to get a random subset of trades
 		getRandomTrades(trades, count) {
