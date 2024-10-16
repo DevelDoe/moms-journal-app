@@ -4,6 +4,14 @@
 		<button @click="fetchTrades">Fetch Trades</button></br>
     <button @click="analizeTrades">Analize</button>
 
+    <div>
+		<h1>WebSocket Client</h1>
+		<p>Status: {{ connectionStatus }}</p>
+		<input v-model="message" placeholder="Type a message" />
+		<button @click="sendMessage">Send Message</button>
+		<p>Server Response: {{ serverResponse }}</p>
+	</div>
+
 		<!-- Date Picker for Filtering -->
 		<div class="date-filter">
 			<label for="filter-date">Filter by Date:</label>
