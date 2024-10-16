@@ -132,7 +132,7 @@ export default {
 				.length;
 		},
 		totalTrades() {
-			this.filteredTrades.length;
+			return this.filteredTrades.length;
 		},
 		accuracy() {
 			const totalTrades = this.filteredTrades.length;
