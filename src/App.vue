@@ -108,9 +108,6 @@ input::placeholder {
 }
 
 
-
-
-
 /* Forms */
 form {
   background-color: #292929;
