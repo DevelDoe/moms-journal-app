@@ -58,7 +58,4 @@ nav {
 	gap: 15px;
 	margin-bottom: 20px;
 }
-p {
-	font-size: large;
-}
 </style>
