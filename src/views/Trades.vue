@@ -3,8 +3,7 @@
 		<h1>Trades Overview</h1>
 		<button @click="fetchTrades">Fetch Trades</button></br>
 
-    <div >
-		<h1>Analisis</h1>
+    <div>
     <button @click="analizeTrades">Analize</button>
 		<p>{{ gptResponse }}</p>
 	</div>
