@@ -59,4 +59,8 @@ nav {
 	margin-bottom: 20px;
 }
 
+a {
+	text-decoration: none;
+}
+
 </style>
