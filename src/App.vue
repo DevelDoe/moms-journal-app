@@ -53,10 +53,11 @@ export default {
 </script>
 
 <style scoped>
+
 /* Global styles here */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+  background-color: #292F36;
   margin: 0;
   padding: 0;
 }
