@@ -81,7 +81,8 @@ export default {
     return {
       filterDate: "", // Stores the selected date for filtering
       isLoading: true, // Loading state
-      tradesLoaded: false, // Ensure trades are loaded before filtering
+      tradesLoaded: false, // Ensure trades are loaded before filtering,
+      analizeMsg:''
     };
   },
   async created() {
@@ -165,6 +166,11 @@ export default {
       // Trigger re-computation of `filteredTrades` by updating the data binding
       this.filterDate = this.filterDate;
     },
+    analizeTrades() {
+      // Sreate a WebSocket connection
+			this.socket = new WebSocket('wss://localhost:4000');
+
+    }
   },
   watch: {
     trades: {
