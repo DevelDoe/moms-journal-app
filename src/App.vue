@@ -57,6 +57,7 @@ body {
 	background-color: #fefefe; /* Dark background */
 	color: #161616; /* Light text color */
 	font-family: "Arial", sans-serif;
+	font-size: xx-large;
 	margin: 0;
 	padding: 0;
 }
