@@ -119,9 +119,7 @@ export default {
         const formattedTradeDate = new Date(trade.date)
           .toISOString()
           .split("T")[0];
-        console.log(
-          `Comparing trade date: ${formattedTradeDate} with filter date: ${formattedFilterDate}`
-        );
+        // console.log(`Comparing trade date: ${formattedTradeDate} with filter date: ${formattedFilterDate}`);
         return formattedFilterDate === formattedTradeDate;
       });
     },
