@@ -86,7 +86,6 @@ export default {
 			tradesLoaded: false, // Ensure trades are loaded before filtering
 			socket: null, // WebSocket instance
 			gptResponse: "",
-			totalTrades: 0, // Stores the GPT response
 		};
 	},
 	async created() {
