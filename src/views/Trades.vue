@@ -140,12 +140,8 @@ export default {
 		},
 
 		totalProfitLoss() {
-  return this.filteredTrades.reduce(
-    (total, trade) => total + trade.profitLoss,
-    0
-  );
-}
-,
+			return this.totalProfit - this.totalLoss;
+		},
 
 		accuracy() {
 			const totalTrades = this.filteredTrades.length;
@@ -153,18 +149,13 @@ export default {
 		},
 
 		profitToLossRatio() {
-  const totalProfit = this.filteredTrades
-    .filter((trade) => trade.profitLoss > 0)
-    .reduce((sum, trade) => sum + trade.profitLoss, 0);
-  const totalLoss = Math.abs(
-    this.filteredTrades
-      .filter((trade) => trade.profitLoss < 0)
-      .reduce((sum, trade) => sum + trade.profitLoss, 0)
-  );
-  if (totalLoss === 0) return "Infinity";
-  return (totalProfit / totalLoss).toFixed(2);
-}
-,
+			const totalProfit = this.totalProfit;
+			const totalLoss = this.totalLoss;
+			// If there's no loss, return "Infinity", otherwise compute the ratio
+			return totalLoss === 0
+				? "Infinity"
+				: (totalProfit / totalLoss).toFixed(2);
+		},
 
 		wins() {
 			return this.filteredTrades.filter((trade) => trade.profitLoss > 0)
