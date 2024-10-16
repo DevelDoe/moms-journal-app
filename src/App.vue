@@ -1,6 +1,6 @@
 <!-- src/App.vue -->
 <template>
-	<div>
+	<div id="">
 		<nav>
 			<router-link to="/">Home</router-link>
 			<!-- Show not authenticated -->
