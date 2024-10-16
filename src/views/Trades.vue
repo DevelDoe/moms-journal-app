@@ -2,9 +2,8 @@
 	<br class="trades">
 		<h1>Trades Overview</h1>
 		<button @click="fetchTrades">Fetch Trades</button></br>
-    <button @click="analizeTrades">Analize</button>
 
-    <div>
+    <div >
 		<h1>Analisis</h1>
     <button @click="analizeTrades">Analize</button>
 		<p>Server Response: {{ serverResponse }}</p>
