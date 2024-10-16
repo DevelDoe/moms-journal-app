@@ -60,6 +60,7 @@ body {
 	font-size: xx-large;
 	margin: 0;
 	padding: 0;
+	max-width: 80%;
 }
 nav {
 	display: flex;
