@@ -62,3 +62,17 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+input {
+  padding: 8px;
+  margin-right: 10px;
+}
+button {
+  padding: 8px;
+}
+</style>
