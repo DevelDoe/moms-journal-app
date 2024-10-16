@@ -126,40 +126,46 @@ export default {
         return formattedFilterDate === formattedTradeDate;
       });
     },
-    // Computed properties for UI display
-    totalProfitLoss() {
-      return this.filteredTrades.reduce(
-        (total, trade) => total + trade.profitLoss,
-        0
-      );
-    },
-    accuracy() {
-      const totalTrades = this.filteredTrades.length;
-      return totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
-    },
-    profitToLossRatio() {
-      const totalProfit = this.filteredTrades
-        .filter((trade) => trade.profitLoss > 0)
-        .reduce((sum, trade) => sum + trade.profitLoss, 0);
-      const totalLoss = Math.abs(
-        this.filteredTrades
-          .filter((trade) => trade.profitLoss < 0)
-          .reduce((sum, trade) => sum + trade.profitLoss, 0)
-      );
-      if (totalLoss === 0) return "Infinity";
-      return (totalProfit / totalLoss).toFixed(2);
-    },
-    wins() {
-      return this.filteredTrades.filter((trade) => trade.profitLoss > 0)
-        .length;
-    },
-    losses() {
-      return this.filteredTrades.filter((trade) => trade.profitLoss < 0)
-        .length;
-    },
-    totalTrades() {
-      return this.filteredTrades.length;
-    }
+    totalProfit() {
+    return this.filteredTrades
+      .filter((trade) => trade.profitLoss > 0)
+      .reduce((sum, trade) => sum + trade.profitLoss, 0);
+  },
+
+  totalLoss() {
+    return Math.abs(
+      this.filteredTrades
+        .filter((trade) => trade.profitLoss < 0)
+        .reduce((sum, trade) => sum + trade.profitLoss, 0)
+    );
+  },
+
+  totalProfitLoss() {
+    return this.totalProfit - this.totalLoss;
+  },
+
+  accuracy() {
+    const totalTrades = this.filteredTrades.length;
+    return totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
+  },
+
+  profitToLossRatio() {
+    const totalProfit = this.totalProfit;
+    const totalLoss = this.totalLoss;
+    // If there's no loss, return "Infinity", otherwise compute the ratio
+    return totalLoss === 0 ? "Infinity" : (totalProfit / totalLoss).toFixed(2);
+  },
+
+  wins() {
+    return this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
+  },
+
+  losses() {
+    return this.filteredTrades.filter((trade) => trade.profitLoss < 0).length;
+  },
+
+  totalTrades() {
+    return this.filteredTrades.length;
   },
   methods: {
     // Fetch trades from Vuex store
