@@ -53,9 +53,26 @@ export default {
 </script>
 
 <style scoped>
+/* Global styles here */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 24px;
+}
 nav {
 	display: flex;
 	gap: 15px;
 	margin-bottom: 20px;
 }
+
 </style>
