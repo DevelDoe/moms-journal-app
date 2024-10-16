@@ -52,7 +52,14 @@ export default {
 };
 </script>
 
-<style >
+<style>
+body {
+	background-color: #fefefe; /* Dark background */
+	color: #e0e0e0; /* Light text color */
+	font-family: "Arial", sans-serif;
+	margin: 0;
+	padding: 0;
+}
 nav {
 	display: flex;
 	gap: 15px;
@@ -62,5 +69,4 @@ nav {
 a {
 	text-decoration: none;
 }
-
 </style>
