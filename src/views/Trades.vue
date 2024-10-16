@@ -179,6 +179,7 @@ export default {
         console.error("Error fetching orders:", error);
       }
     },
+    
 		// Fetch trades from Vuex store
 		async fetchTrades() {
 			try {
