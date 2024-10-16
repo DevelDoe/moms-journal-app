@@ -27,6 +27,7 @@
 	<div v-else>
 		<h2>Trades List</h2>
 		<div class="trades-summary">
+      <p>Trades: {{ totalTrades.toFixed(2) }}%</p>
 			<p>Accuracy: {{ accuracy.toFixed(2) }}%</p>
 			<p>Profit to Loss Ratio: {{ profitToLossRatio }}</p>
 		</div>
