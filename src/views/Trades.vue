@@ -1,7 +1,7 @@
 <template>
-	<div class="trades">
+	<br class="trades">
 		<h1>Trades Overview</h1>
-		<button @click="fetchTrades">Fetch Trades</button></div>
+		<button @click="fetchTrades">Fetch Trades</button></br>
     <button @click="analizeTrades">Analize</button>
 
 		<!-- Date Picker for Filtering -->
