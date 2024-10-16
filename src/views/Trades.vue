@@ -118,7 +118,14 @@ export default {
 			});
 		},
     totalProfit(){
-      return this.filteredTrades.filter((trade) => trade.profitLoss > 0)
+      return this.filteredTrades
+				.filter((trade) => trade.profitLoss > 0)
+				.reduce((sum, trade) => sum + trade.profitLoss, 0);
+    },
+    totalLoss(){
+      return this.filteredTrades
+				.filter((trade) => trade.profitLoss < 0)
+				.reduce((sum, trade) => sum + trade.profitLoss, 0);
     },
 		totalProfitLoss() {
 			return this.filteredTrades.reduce(
