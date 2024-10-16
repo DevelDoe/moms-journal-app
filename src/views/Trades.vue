@@ -247,6 +247,7 @@ export default {
 					};
 
 					// Send the data to the backend via WebSocket
+          console.log(dataToSend)
 					this.socket.send(JSON.stringify(dataToSend));
 				};
 
