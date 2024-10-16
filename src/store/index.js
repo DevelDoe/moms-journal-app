@@ -297,7 +297,7 @@ function detectTrades(orders) {
 		}
 	}
 
-	console.log("Final trades array:", trades);
+	// console.log("Final trades array:", trades);
 
 	return {
 		trades,
