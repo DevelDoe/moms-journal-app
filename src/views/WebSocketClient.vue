@@ -63,61 +63,16 @@ export default {
 };
 </script>
 
-
 <style scoped>
-.trades {
-	padding: 20px;
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
 }
-
-.no-trades {
-	font-size: 1.2em;
-	color: #666;
-	margin-top: 20px;
+input {
+  padding: 8px;
+  margin-right: 10px;
 }
-
-.date-filter {
-	margin: 20px 0;
-}
-
-.trades-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-top: 20px;
-}
-
-th,
-td {
-	padding: 10px;
-	border: 1px solid #ddd;
-	text-align: left;
-}
-
-th {
-	background-color: #f4f4f4;
-}
-
-.profit {
-	background-color: #ccffcc; /* Light green background for profitable trades */
-	color: green;
-}
-
-.loss {
-	background-color: #ffcccc; /* Light red background for losing trades */
-	color: red;
-}
-
-tfoot .total-label {
-	font-weight: bold;
-	text-align: right;
-}
-
-tfoot .total-value {
-	font-weight: bold;
-	text-align: left;
-}
-
-.trades-summary {
-	margin-top: 20px;
-	font-size: 1.1em;
+button {
+  padding: 8px;
 }
 </style>
