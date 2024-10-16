@@ -86,7 +86,7 @@ export default {
       filterDate: "", // Stores the selected date for filtering
       isLoading: true, // Loading state
       tradesLoaded: false, // Ensure trades are loaded before filtering,
-      analizeData:'Hi Chat, please analize my trading data?' + filteredData,
+      analizeData:'Hi Chat, please analize my trading data?' + this.filteredData,
       socket: null,
       gptResponse: ""
     };
