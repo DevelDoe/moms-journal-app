@@ -117,6 +117,9 @@ export default {
 				return formattedFilterDate === formattedTradeDate;
 			});
 		},
+    totalProfit(){
+      return this.filteredTrades.filter((trade) => trade.profitLoss > 0)
+    },
 		totalProfitLoss() {
 			return this.filteredTrades.reduce(
 				(total, trade) => total + trade.profitLoss,
