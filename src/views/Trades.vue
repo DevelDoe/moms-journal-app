@@ -85,10 +85,9 @@ export default {
     return {
       filterDate: "", // Stores the selected date for filtering
       isLoading: true, // Loading state
-      tradesLoaded: false, // Ensure trades are loaded before filtering,
-      analizeData:'',
-      socket: null,
-      gptResponse: ""
+      tradesLoaded: false, // Ensure trades are loaded before filtering
+      socket: null, // WebSocket instance
+      gptResponse: "", // Stores the GPT response
     };
   },
   async created() {
@@ -98,35 +97,19 @@ export default {
   },
   computed: {
 	trades() {
-  const tradesData = this.$store.getters.getTrades;
-  // console.log("Trades from getter:", tradesData);
-  // Assuming tradesData is an object containing trades array
-  return tradesData && Array.isArray(tradesData.trades) ? tradesData.trades : [];
-},
+	  const tradesData = this.$store.getters.getTrades;
+	  return tradesData && Array.isArray(tradesData.trades) ? tradesData.trades : [];
+	},
     filteredTrades() {
       if (!this.tradesLoaded) {
-        // console.log("Trades not loaded yet, returning empty array.");
         return [];
       }
-
       if (!this.filterDate) {
-        // console.log("No filter date provided, returning all trades.");
         return this.trades;
       }
-
-      // console.log("Filtering trades by date:", this.filterDate);
-      // console.log("Trades length before filtering:", this.trades.length);
-
-      const formattedFilterDate = new Date(this.filterDate)
-        .toISOString()
-        .split("T")[0];
-      // console.log("Formatted filter date:", formattedFilterDate);
-
+      const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
       return this.trades.filter((trade) => {
-        const formattedTradeDate = new Date(trade.date)
-          .toISOString()
-          .split("T")[0];
-        // console.log(`Comparing trade date: ${formattedTradeDate} with filter date: ${formattedFilterDate}`);
+        const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
         return formattedFilterDate === formattedTradeDate;
       });
     },
@@ -135,12 +118,6 @@ export default {
         (total, trade) => total + trade.profitLoss,
         0
       );
-    },
-    wins() {
-      return this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
-    },
-    losses() {
-      return this.filteredTrades.filter((trade) => trade.profitLoss < 0).length;
     },
     accuracy() {
       const totalTrades = this.filteredTrades.length;
@@ -162,37 +139,64 @@ export default {
   methods: {
     async fetchTrades() {
       try {
-        await this.$store.dispatch("fetchTrades"); // Dispatch the Vuex action to fetch trades
+        await this.$store.dispatch("fetchTrades");
       } catch (error) {
         console.error("Error fetching trades:", error);
       }
     },
     filterTradesByDate() {
-      //console.log("Filtering trades by date:", this.filterDate);
-      // Trigger re-computation of `filteredTrades` by updating the data binding
       this.filterDate = this.filterDate;
     },
+    
+    // WebSocket integration to analyze trades
     analizeTrades() {
-      // Sreate a WebSocket connection
-			this.socket = new WebSocket('wss://localhost:4000');
-      
+      if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+        // Create a WebSocket connection
+        this.socket = new WebSocket('wss://localhost:4000');
+        
+        // Handle WebSocket events
+        this.socket.onopen = () => {
+          console.log('Connected to WebSocket server.');
+          
+          // Send the filtered trades data to the backend
+          this.socket.send(JSON.stringify(this.filteredTrades));
+        };
+        
+        // Handle receiving data (the AI analysis response)
+        this.socket.onmessage = (event) => {
+          console.log('Received analysis from server:', event.data);
+          this.gptResponse = event.data; // Set the AI response to be displayed
+        };
+        
+        // Handle WebSocket error
+        this.socket.onerror = (error) => {
+          console.error("WebSocket Error:", error);
+        };
 
-    }
+        // Handle WebSocket close event
+        this.socket.onclose = () => {
+          console.log("WebSocket connection closed.");
+        };
+      } else {
+        // WebSocket already open, send trades data
+        this.socket.send(JSON.stringify(this.filteredTrades));
+      }
+    },
   },
   watch: {
     trades: {
       immediate: true,
       handler(newTrades) {
-        //console.log("Watcher triggered for trades:", newTrades);
         if (newTrades && newTrades.length > 0) {
-          this.tradesLoaded = true; // Set to true when trades are available
+          this.tradesLoaded = true; 
         } else {
-          this.tradesLoaded = false; // No trades available
+          this.tradesLoaded = false; 
         }
       },
     },
   },
 };
+
 </script>
 
 
