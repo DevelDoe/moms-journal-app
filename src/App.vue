@@ -109,16 +109,7 @@ input::placeholder {
 
 
 
-tfoot .total-label {
-  text-align: right;
-  font-weight: bold;
-  color: #f5f5f5;
-}
 
-tfoot .total-value {
-  font-weight: bold;
-  color: #1f91ff;
-}
 
 /* Forms */
 form {
