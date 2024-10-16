@@ -21,7 +21,7 @@ export default {
 	methods: {
 		connectWebSocket() {
 			// Sreate a WebSocket connection
-			this.socket = new WebSocket("ws://localhost:4000");
+			this.socket = new WebSocket("wws://localhost:4000");
 
 			// Handle WebSocket events
 			this.socket.onopen = () => {
