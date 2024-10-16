@@ -16,6 +16,7 @@ const NewOrder = () => import("../views/NewOrder.vue");
 const OrdersList = () => import("../views/OrdersList.vue");
 const UploadOrders = () => import("../views/UploadOrders.vue");
 const Trades = () => import("../views/Trades.vue");
+const WebSocketClient = () => import("../views/WebSocketClient.vue");
 
 // Defining Routes: The routes array defines the paths and components that Vue Router will handle:
 const routes = [
@@ -28,6 +29,7 @@ const routes = [
 	{ path: "/orders", component: OrdersList, meta: { requiresAuth: true } },
 	{ path: "/upload-orders", component: UploadOrders, meta: { requiresAuth: true } }, 
 	{ path: "/Trades", component: Trades, meta: { requiresAuth: true } }, 
+	{ path: "/WebSocketClient", component: WebSocketClient, meta: { requiresAuth: true } }, 
 ];
 
 // The createRouter function initializes the router with the history mode,
