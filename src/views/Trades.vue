@@ -3,7 +3,7 @@
 		<h1>Trades Overview</h1>
 		<button @click="fetchTrades">Fetch Trades</button>
 
-		<button @click="analizeTrades">Analize</button>
+		<button @click="analizeTrades">Analyze</button>
 		<p>{{ gptResponse }}</p>
 	</div>
 
@@ -18,6 +18,7 @@
 		/>
 	</div>
 
+	<!-- Loading and No Trades Messages -->
 	<div v-if="isLoading" class="loading-message">
 		<p>Loading trades...</p>
 	</div>
@@ -25,21 +26,18 @@
 		<p>No trades available for the selected date.</p>
 	</div>
 	<div v-else>
-		<h2>Trades List</h2>
+		<!-- Summary Section -->
+		<h2>Trades Summary</h2>
 		<div class="trades-summary">
-      <p>Trades: {{ totalTrades }}</p>
+			<p>Total Trades: {{ totalTrades }}</p>
 			<p>Accuracy: {{ accuracy.toFixed(2) }}%</p>
 			<p>Profit to Loss Ratio: {{ profitToLossRatio }}</p>
+			<p>Total Profit/Loss: ${{ totalProfitLoss.toFixed(2) }}</p>
 		</div>
+
+		<!-- Trades Table -->
+		<h2>Trades List</h2>
 		<table class="trades-table">
-			<tfoot>
-				<tr>
-					<td colspan="8" class="total-label">Total P/L</td>
-					<td class="total-value">
-						${{ totalProfitLoss.toFixed(2) }}
-					</td>
-				</tr>
-			</tfoot>
 			<thead>
 				<tr>
 					<th>Symbol</th>
@@ -73,9 +71,18 @@
 					<td>{{ new Date(trade.date).toLocaleTimeString() }}</td>
 				</tr>
 			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="8" class="total-label">Total P/L</td>
+					<td class="total-value">
+						${{ totalProfitLoss.toFixed(2) }}
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 </template>
+
 
 <script>
 export default {
