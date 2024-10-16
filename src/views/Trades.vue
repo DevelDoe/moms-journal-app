@@ -94,7 +94,7 @@ export default {
 			gptResponse: "", // Store the AI analysis from the WebSocket server
 		};
 	},
-	async created() {
+	async mounted() {
 		// Fetch trades when the component is created
 		await this.fetchTrades();
 		this.isLoading = false;
