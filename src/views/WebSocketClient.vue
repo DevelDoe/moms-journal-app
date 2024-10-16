@@ -41,6 +41,14 @@ export default {
 				this.connectionStatus = "Error";
 			};
 		},
+
+		sendMessage() {
+			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+				this.socket.send(this.message);
+			} else {
+				console.error("WebSocket is not connected");
+			}
+		},
 	},
 };
 </script>
