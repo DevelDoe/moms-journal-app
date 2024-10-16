@@ -107,28 +107,7 @@ input::placeholder {
   color: #888888;
 }
 
-/* Tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
 
-th, td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #444444;
-}
-
-th {
-  background-color: #3b3b3b;
-  color: #ffffff;
-}
-
-td {
-  background-color: #2c2c2c;
-  color: #dddddd;
-}
 
 tfoot .total-label {
   text-align: right;
