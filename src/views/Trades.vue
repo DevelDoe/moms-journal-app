@@ -210,7 +210,7 @@ export default {
 					// Send a random subset of 10 trades (or any desired number)
 					const randomSubset = this.getRandomTrades(
 						this.filteredTrades,
-						300
+						250
 					);
 
 					// Combine the summary and random subset into a single object
