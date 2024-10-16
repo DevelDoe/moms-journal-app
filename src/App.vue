@@ -60,6 +60,7 @@ body {
   background-color: #1e1e1e; /* Dark background */
   color: #e0e0e0; /* Light text color */
   font-family: 'Arial', sans-serif;
+  font-size: larger;
   margin: 0;
   padding: 0;
 }
