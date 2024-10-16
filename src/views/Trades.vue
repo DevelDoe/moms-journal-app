@@ -3,77 +3,77 @@
 		<h1>Trades Overview</h1>
 		<button @click="fetchTrades">Fetch Trades</button>
 
-    <button @click="analizeTrades">Analize</button>
+		<button @click="analizeTrades">Analize</button>
 		<p>{{ gptResponse }}</p>
-	  </div>
+	</div>
 
-		<!-- Date Picker for Filtering -->
-		<div class="date-filter">
-			<label for="filter-date">Filter by Date:</label>
-			<input
-				type="date"
-				id="filter-date"
-				v-model="filterDate"
-				@change="filterTradesByDate"
-			/>
-		</div>
+	<!-- Date Picker for Filtering -->
+	<div class="date-filter">
+		<label for="filter-date">Filter by Date:</label>
+		<input
+			type="date"
+			id="filter-date"
+			v-model="filterDate"
+			@change="filterTradesByDate"
+		/>
+	</div>
 
-		<div v-if="isLoading" class="loading-message">
-			<p>Loading trades...</p>
+	<div v-if="isLoading" class="loading-message">
+		<p>Loading trades...</p>
+	</div>
+	<div v-else-if="filteredTrades.length === 0" class="no-trades">
+		<p>No trades available for the selected date.</p>
+	</div>
+	<div v-else>
+		<h2>Trades List</h2>
+		<div class="trades-summary">
+			<p>Accuracy: {{ accuracy.toFixed(2) }}%</p>
+			<p>Profit to Loss Ratio: {{ profitToLossRatio }}</p>
 		</div>
-		<div v-else-if="filteredTrades.length === 0" class="no-trades">
-			<p>No trades available for the selected date.</p>
-		</div>
-		<div v-else>
-			<h2>Trades List</h2>
-			<div class="trades-summary">
-				<p>Accuracy: {{ accuracy.toFixed(2) }}%</p>
-				<p>Profit to Loss Ratio: {{ profitToLossRatio }}</p>
-			</div>
-			<table class="trades-table">
-				<tfoot>
-					<tr>
-						<td colspan="8" class="total-label">Total P/L</td>
-						<td class="total-value">
-							${{ totalProfitLoss.toFixed(2) }}
-						</td>
-					</tr>
-				</tfoot>
-				<thead>
-					<tr>
-						<th>Symbol</th>
-						<th>Account</th>
-						<th>Quantity</th>
-						<th>Buy Price</th>
-						<th>Sell Price</th>
-						<th>Side</th>
-						<th>Profit/Loss</th>
-						<th>Date</th>
-						<th>Time</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="(trade, index) in filteredTrades"
-						:key="index"
-						:class="{
-							profit: trade.profitLoss > 0,
-							loss: trade.profitLoss < 0,
-						}"
-					>
-						<td>{{ trade.symbol }}</td>
-						<td>{{ trade.account }}</td>
-						<td>{{ trade.quantity }}</td>
-						<td>{{ trade.buyPrice.toFixed(2) }}</td>
-						<td>{{ trade.sellPrice.toFixed(2) }}</td>
-						<td>{{ trade.side }}</td>
-						<td>{{ trade.profitLoss.toFixed(2) }}</td>
-						<td>{{ new Date(trade.date).toLocaleDateString() }}</td>
-						<td>{{ new Date(trade.date).toLocaleTimeString() }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		<table class="trades-table">
+			<tfoot>
+				<tr>
+					<td colspan="8" class="total-label">Total P/L</td>
+					<td class="total-value">
+						${{ totalProfitLoss.toFixed(2) }}
+					</td>
+				</tr>
+			</tfoot>
+			<thead>
+				<tr>
+					<th>Symbol</th>
+					<th>Account</th>
+					<th>Quantity</th>
+					<th>Buy Price</th>
+					<th>Sell Price</th>
+					<th>Side</th>
+					<th>Profit/Loss</th>
+					<th>Date</th>
+					<th>Time</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					v-for="(trade, index) in filteredTrades"
+					:key="index"
+					:class="{
+						profit: trade.profitLoss > 0,
+						loss: trade.profitLoss < 0,
+					}"
+				>
+					<td>{{ trade.symbol }}</td>
+					<td>{{ trade.account }}</td>
+					<td>{{ trade.quantity }}</td>
+					<td>{{ trade.buyPrice.toFixed(2) }}</td>
+					<td>{{ trade.sellPrice.toFixed(2) }}</td>
+					<td>{{ trade.side }}</td>
+					<td>{{ trade.profitLoss.toFixed(2) }}</td>
+					<td>{{ new Date(trade.date).toLocaleDateString() }}</td>
+					<td>{{ new Date(trade.date).toLocaleTimeString() }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </template>
 
 <script>
@@ -83,8 +83,8 @@ export default {
 			filterDate: "", // Stores the selected date for filtering
 			isLoading: true, // Loading state
 			tradesLoaded: false, // Ensure trades are loaded before filtering
-      socket: null, // WebSocket instance
-      gptResponse: "", // Stores the GPT response
+			socket: null, // WebSocket instance
+			gptResponse: "", // Stores the GPT response
 		};
 	},
 	async created() {
@@ -155,6 +155,7 @@ export default {
 				console.error("Error fetching trades:", error);
 			}
 		},
+
 		// Method to create a summary of trades for analysis
 		createTradeSummary() {
 			const totalTrades = this.filteredTrades.length;
@@ -180,11 +181,20 @@ export default {
 				totalLoss: Math.abs(totalLoss).toFixed(2),
 			};
 		},
+
 		filterTradesByDate() {
 			//console.log("Filtering trades by date:", this.filterDate);
 			// Trigger re-computation of `filteredTrades` by updating the data binding
 			this.filterDate = this.filterDate;
 		},
+
+		// Helper function to get a random subset of trades
+		getRandomTrades(trades, count) {
+			// Shuffle the trades array and return a subset
+			const shuffled = trades.sort(() => 0.5 - Math.random());
+			return shuffled.slice(0, count);
+		},
+
 		// WebSocket integration to analyze trades
 		analizeTrades() {
 			// Check if the socket is already connected
@@ -194,9 +204,23 @@ export default {
 				this.socket.onopen = () => {
 					console.log("Connected to WebSocket server.");
 
-					// Send a summary of the trades instead of full trade data
+					// Send a summary of the trades
 					const tradeSummary = this.createTradeSummary();
-					this.socket.send(JSON.stringify(tradeSummary));
+
+					// Send a random subset of 10 trades (or any desired number)
+					const randomSubset = this.getRandomTrades(
+						this.filteredTrades,
+						10
+					);
+
+					// Combine the summary and random subset into a single object
+					const dataToSend = {
+						tradeSummary,
+						randomSubset,
+					};
+
+					// Send the data to the backend via WebSocket
+					this.socket.send(JSON.stringify(dataToSend));
 				};
 
 				this.socket.onmessage = (event) => {
@@ -214,7 +238,16 @@ export default {
 			} else {
 				// Send the summary of trades if socket is already open
 				const tradeSummary = this.createTradeSummary();
-				this.socket.send(JSON.stringify(tradeSummary));
+				const randomSubset = this.getRandomTrades(
+					this.filteredTrades,
+					10
+				);
+
+				const dataToSend = {
+					tradeSummary,
+					randomSubset,
+				};
+				this.socket.send(JSON.stringify(dataToSend));
 			}
 		},
 	},
