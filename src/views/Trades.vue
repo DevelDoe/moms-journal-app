@@ -86,7 +86,7 @@ export default {
       filterDate: "", // Stores the selected date for filtering
       isLoading: true, // Loading state
       tradesLoaded: false, // Ensure trades are loaded before filtering,
-      analizeData:'',
+      analizeData:'Hi Chat, please analize my trading data?' + filteredData,
       socket: null,
       gptResponse: ""
     };
@@ -175,6 +175,7 @@ export default {
     analizeTrades() {
       // Sreate a WebSocket connection
 			this.socket = new WebSocket('wss://localhost:4000');
+      this.socket.send(this.message);
 
     }
   },
