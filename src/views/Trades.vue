@@ -144,8 +144,27 @@ export default {
         console.error("Error fetching trades:", error);
       }
     },
-    filterTradesByDate() {
-      this.filterDate = this.filterDate;
+    
+    // Method to create a summary of trades for analysis
+    createTradeSummary() {
+      const totalTrades = this.filteredTrades.length;
+      const totalProfit = this.filteredTrades
+        .filter((trade) => trade.profitLoss > 0)
+        .reduce((sum, trade) => sum + trade.profitLoss, 0);
+      const totalLoss = this.filteredTrades
+        .filter((trade) => trade.profitLoss < 0)
+        .reduce((sum, trade) => sum + trade.profitLoss, 0);
+      const winRate = totalTrades > 0 ? (this.wins / totalTrades) * 100 : 0;
+      const profitToLossRatio = totalLoss === 0 ? "Infinity" : (totalProfit / Math.abs(totalLoss)).toFixed(2);
+  
+      return {
+        totalTrades,
+        totalProfitLoss: this.totalProfitLoss.toFixed(2),
+        winRate: winRate.toFixed(2),
+        profitToLossRatio,
+        totalProfit: totalProfit.toFixed(2),
+        totalLoss: Math.abs(totalLoss).toFixed(2)
+      };
     },
     
     // WebSocket integration to analyze trades
@@ -157,9 +176,9 @@ export default {
         this.socket.onopen = () => {
           console.log('Connected to WebSocket server.');
 
-          // Send a subset of the trades (e.g., most recent 100 trades)
-          const tradeSubset = this.filteredTrades.slice(-100); // Last 100 trades
-          this.socket.send(JSON.stringify(tradeSubset));
+          // Send a summary of the trades instead of full trade data
+          const tradeSummary = this.createTradeSummary();
+          this.socket.send(JSON.stringify(tradeSummary));
         };
         
         this.socket.onmessage = (event) => {
@@ -175,12 +194,13 @@ export default {
           console.log("WebSocket connection closed.");
         };
       } else {
-        // Send a subset of trades if socket is already open
-        const tradeSubset = this.filteredTrades.slice(-100); // Last 100 trades
-        this.socket.send(JSON.stringify(tradeSubset));
+        // Send the summary of trades if socket is already open
+        const tradeSummary = this.createTradeSummary();
+        this.socket.send(JSON.stringify(tradeSummary));
       }
     },
-  },
+  }
+,
   watch: {
     trades: {
       immediate: true,
