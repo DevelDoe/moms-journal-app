@@ -6,7 +6,7 @@
     <div >
 		<h1>Analisis</h1>
     <button @click="analizeTrades">Analize</button>
-		<p>Server Response: {{ gptResponse }}</p>
+		<p>{{ gptResponse }}</p>
 	</div>
 
 		<!-- Date Picker for Filtering -->
