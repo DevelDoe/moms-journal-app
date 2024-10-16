@@ -5,10 +5,8 @@
     <button @click="analizeTrades">Analize</button>
 
     <div>
-		<h1>WebSocket Client</h1>
-		<p>Status: {{ connectionStatus }}</p>
-		<input v-model="message" placeholder="Type a message" />
-		<button @click="sendMessage">Send Message</button>
+		<h1>Analisis</h1>
+    <button @click="analizeTrades">Analize</button>
 		<p>Server Response: {{ serverResponse }}</p>
 	</div>
 
