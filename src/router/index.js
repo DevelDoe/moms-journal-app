@@ -4,19 +4,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { isAuthenticated } from "../utils/auth";
 
-// Importing the views
+// Importing the components
 // Lazy loading in Vue Router can be achieved by dynamically importing components.
 // This helps with performance by loading components only when they are needed, rather than loading everything upfront.
-const Home = () => import("../views/Home.vue");
-const Login = () => import("../views/Login.vue");
-const Register = () => import("../views/Register.vue");
-const Profile = () => import("../views/Profile.vue");
-const About = () => import("../views/About.vue");
-const NewOrder = () => import("../views/NewOrder.vue");
-const OrdersList = () => import("../views/OrdersList.vue");
-const UploadOrders = () => import("../views/UploadOrders.vue");
-const Trades = () => import("../views/Trades.vue");
-const WebSocketClient = () => import("../views/WebSocketClient.vue");
+const Home = () => import("../components/Home.vue");
+const Login = () => import("../components/Login.vue");
+const Register = () => import("../components/Register.vue");
+const Profile = () => import("../components/Profile.vue");
+const About = () => import("../components/About.vue");
+const NewOrder = () => import("../components/NewOrder.vue");
+const OrdersList = () => import("../components/OrdersList.vue");
+const UploadOrders = () => import("../components/UploadOrders.vue");
+const Trades = () => import("../components/Trades.vue");
+const WebSocketClient = () => import("../components/WebSocketClient.vue");
 
 // Defining Routes: The routes array defines the paths and components that Vue Router will handle:
 const routes = [

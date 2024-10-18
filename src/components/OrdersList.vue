@@ -26,10 +26,12 @@
 					}"
 				>
 					<td>{{ order.symbol }}</td>
-					<td>{{ order.time }}</td>
+					<!-- Extracting time from the date field -->
+					<td>{{ new Date(order.date).toLocaleTimeString() }}</td>
 					<td>{{ order.side }}</td>
 					<td>{{ order.quantity }}</td>
 					<td>${{ order.price.toFixed(4) }}</td>
+					<!-- Extracting date from the date field -->
 					<td>{{ new Date(order.date).toLocaleDateString() }}</td>
 					<td>{{ order.account }}</td>
 				</tr>

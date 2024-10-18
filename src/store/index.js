@@ -1,3 +1,4 @@
+// ./src/store/index.js
 import { createStore } from "vuex";
 import axios from "axios";
 import { useToast } from "vue-toastification";
@@ -20,7 +21,8 @@ export default createStore({
 		user: null,
 		token: localStorage.getItem("token") || "",
 		orders: [],
-		trades: [], // Store trades
+		trades: [],
+		brokers: [],
 	},
 	mutations: {
 		setUser(state, user) {
@@ -50,6 +52,9 @@ export default createStore({
 		},
 		setTrades(state, trades) {
 			state.trades = trades;
+		},
+		setBrokers(state, brokers) {
+			state.brokers = brokers;
 		},
 	},
 	actions: {
@@ -89,7 +94,7 @@ export default createStore({
 
 					// Use the /profile endpoint to fetch user information
 					const response = await axios.get(
-						"http://localhost:5000/api/auth/profile"
+						"http://localhost:5000/api/user/profile"
 					);
 
 					// Commit the user information to Vuex
@@ -104,6 +109,24 @@ export default createStore({
 				commit("setToken", null);
 				commit("setUser", null);
 				localStorage.removeItem("token");
+			}
+		},
+
+		async updateUser({ commit, state }, updatedUserData) {
+			try {
+				const response = await axios.put(
+					"http://localhost:5000/api/auth/update-profile",
+					updatedUserData,
+					{
+						headers: { Authorization: `Bearer ${state.token}` },
+					}
+				);
+
+				// Commit the updated user data to the store
+				commit("setUser", response.data);
+			} catch (error) {
+				console.error("Error updating user profile:", error);
+				throw error;
 			}
 		},
 
@@ -145,26 +168,23 @@ export default createStore({
 				debouncedErrorToast(message); // Debounced error toast
 			}
 		},
-		async fetchOrders({ commit, state }) {
+
+		async fetchTrades({ commit, state }) {
+			const trades = detectTrades(state.orders); // Now detectTrades returns the array directly
+			commit("setTrades", trades); // Commit the trades array directly
+		},
+
+		async fetchBrokers({ commit }) {
 			try {
 				const response = await axios.get(
-					"http://localhost:5000/api/orders",
-					{
-						headers: { Authorization: `Bearer ${state.token}` },
-					}
+					"http://localhost:5000/api/brokers"
 				);
-				commit("setOrders", response.data);
-				debouncedSuccessToast("Orders fetched successfully!");
+				commit("setBrokers", response.data);
 			} catch (error) {
-				const message =
-					error.response?.data?.error || "Error fetching orders.";
-				debouncedErrorToast(message);
+				console.error("Error fetching brokers:", error);
 			}
 		},
-		async fetchTrades({ commit, state }) {
-			const trades = detectTrades(state.orders); // Call the trade detection logic
-			commit("setTrades", trades); // Store trades in Vuex
-		},
+
 		// Logout action to clear the state
 		logout({ commit }, router) {
 			// Clear the state
@@ -183,16 +203,13 @@ export default createStore({
 		isAuthenticated: (state) => !!state.token,
 		getUser: (state) => state.user,
 		getOrders: (state) => state.orders,
-		getTrades: (state) => state.trades, // Get the trades from state
+		getTrades: (state) => state.trades,
+		getBrokers: (state) => state.brokers,
 	},
 });
 
 function detectTrades(orders) {
-	// console.log("Orders passed to detectTrades:", orders);
-
 	orders.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-	// console.log("Sorted orders by time:", orders);
 
 	const trades = [];
 	const positions = {}; // Track positions by symbol and account
@@ -208,7 +225,6 @@ function detectTrades(orders) {
 		}
 
 		const currentPosition = positions[key];
-		const prevPosition = currentPosition.position;
 
 		if (order.side === "buy" || order.side === "BOT") {
 			if (currentPosition.position < 0) {
@@ -297,9 +313,5 @@ function detectTrades(orders) {
 		}
 	}
 
-	// console.log("Final trades array:", trades);
-
-	return {
-		trades,
-	};
+	return trades; // Return the array directly
 }
