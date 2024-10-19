@@ -75,17 +75,17 @@ export default {
 				.split("\n")
 				.filter((line) => line.trim() !== ""); // Split lines and filter out empty ones
 
-			console.log("Lines after splitting and filtering:", lines); // Log all lines
+			// console.log("Lines after splitting and filtering:", lines); // Log all lines
 
 			this.orders = lines
 				.map((line, index) => {
-					console.log(`Processing line ${index + 1}:`, line); // Log each line being processed
+					// console.log(`Processing line ${index + 1}:`, line); // Log each line being processed
 
 					const trimmedLine = line.trim(); // Trim the line to remove \r or other extra characters
 					let parts = trimmedLine
 						.split(",")
 						.filter((part) => part !== ""); // Filter out any empty parts
-					console.log("Split parts:", parts); // Log the parts after splitting
+					// console.log("Split parts:", parts); // Log the parts after splitting
 
 					// Extract necessary values from the split line
 					const dateStr = parts[0]; // Date string
@@ -112,7 +112,7 @@ export default {
 						);
 					}
 
-					console.log("Parsed price:", price); // Log the parsed price
+					// console.log("Parsed price:", price); // Log the parsed price
 
 					if (isNaN(price)) {
 						console.error("Price parsing failed for line:", line);
@@ -129,17 +129,17 @@ export default {
 						.padStart(2, "0"); // Ensure two digits
 					const year = `20${dateParts[2]}`; // Assuming it's 20xx for 'yy' format
 
-					console.log(
-						`Parsed date parts - Year: ${year}, Month: ${month}, Day: ${day}, Time: ${timeStr}`
-					); // Log date parts
+					// console.log(
+					// 	`Parsed date parts - Year: ${year}, Month: ${month}, Day: ${day}, Time: ${timeStr}`
+					// ); // Log date parts
 
 					// Construct the ISO date string in the form YYYY-MM-DDTHH:MM:SS
 					const isoDateString = `${year}-${month}-${day}T${timeStr}`;
-					console.log("Constructed ISO date string:", isoDateString); // Log the ISO date string
+					// console.log("Constructed ISO date string:", isoDateString); // Log the ISO date string
 
 					// Create the Date object from the ISO string
 					const date = new Date(isoDateString);
-					console.log("Parsed Date object:", date); // Log the created Date object
+					// console.log("Parsed Date object:", date); // Log the created Date object
 
 					// Ensure the date is valid
 					if (isNaN(date.getTime())) {
