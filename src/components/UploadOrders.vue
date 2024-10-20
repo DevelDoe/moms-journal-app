@@ -2,9 +2,7 @@
 	<div>
 		<h2>Import Orders</h2>
 		<input type="file" @change="handleFileUpload" accept=".txt" />
-		<button @click="importOrders" :disabled="!orders.length">
-			Import Orders
-		</button>
+		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
 
 		<!-- <ul>
 		<li v-for="(order, index) in orders" :key="index">
@@ -71,9 +69,7 @@ export default {
 		},
 
 		parseFileContent(content) {
-			const lines = content
-				.split("\n")
-				.filter((line) => line.trim() !== ""); // Split lines and filter out empty ones
+			const lines = content.split("\n").filter((line) => line.trim() !== ""); // Split lines and filter out empty ones
 
 			// console.log("Lines after splitting and filtering:", lines); // Log all lines
 
@@ -82,9 +78,7 @@ export default {
 					// console.log(`Processing line ${index + 1}:`, line); // Log each line being processed
 
 					const trimmedLine = line.trim(); // Trim the line to remove \r or other extra characters
-					let parts = trimmedLine
-						.split(",")
-						.filter((part) => part !== ""); // Filter out any empty parts
+					let parts = trimmedLine.split(",").filter((part) => part !== ""); // Filter out any empty parts
 					// console.log("Split parts:", parts); // Log the parts after splitting
 
 					// Extract necessary values from the split line
@@ -107,9 +101,7 @@ export default {
 						const priceDecimal = parts[6].trim();
 
 						// If priceDecimal is empty or invalid, default to 0
-						price = parseFloat(
-							`${priceWhole}.${priceDecimal || "00"}`
-						);
+						price = parseFloat(`${priceWhole}.${priceDecimal || "00"}`);
 					}
 
 					// console.log("Parsed price:", price); // Log the parsed price
@@ -121,12 +113,8 @@ export default {
 
 					// Convert the date from 'dd/mm/yy' to an ISO Date string
 					const dateParts = dateStr.split("/"); // ['08', '10', '24']
-					const day = parseInt(dateParts[0], 10)
-						.toString()
-						.padStart(2, "0"); // Ensure two digits
-					const month = parseInt(dateParts[1], 10)
-						.toString()
-						.padStart(2, "0"); // Ensure two digits
+					const day = parseInt(dateParts[0], 10).toString().padStart(2, "0"); // Ensure two digits
+					const month = parseInt(dateParts[1], 10).toString().padStart(2, "0"); // Ensure two digits
 					const year = `20${dateParts[2]}`; // Assuming it's 20xx for 'yy' format
 
 					// console.log(
@@ -144,8 +132,7 @@ export default {
 					// Ensure the date is valid
 					if (isNaN(date.getTime())) {
 						console.error("Date parsing failed for line:", line);
-						this.message =
-							"Date parsing failed, please check the file format.";
+						this.message = "Date parsing failed, please check the file format.";
 						return null; // Return null to filter out invalid entries
 					}
 
@@ -166,10 +153,9 @@ export default {
 		// Send parsed orders to the backend
 		async importOrders() {
 			try {
-				for (const order of this.orders) {
-					// Send each order to the backend
-					await this.$store.dispatch("createOrder", order); // Assuming you have createOrder action in Vuex
-				}
+				// Send the entire array of orders to the backend
+				await this.$store.dispatch("createMultipleOrders", this.orders); // Assuming 'createMultipleOrders' handles batch uploads
+
 				this.message = "Orders successfully imported!";
 			} catch (error) {
 				this.message = "Failed to import orders.";

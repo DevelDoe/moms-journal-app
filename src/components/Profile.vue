@@ -1,6 +1,5 @@
 <template>
 	<div id="profile">
-		<UpdateProfileForm />
 
 		<!-- Display updated information -->
 		<div v-if="user" class="profile-info">
@@ -8,6 +7,9 @@
 			<p><strong>Tax Rate:</strong> {{ user.tax }}%</p>
 			<p><strong>Commission Rate:</strong> {{ user.commission }}%</p>
 		</div>
+
+		<!-- Account Display Partial -->
+		<AccountDisplay />
 
 		<div class="financial-summary">
 			<h1>Trade Summary</h1>
@@ -58,7 +60,8 @@
 </template>
 
 <script>
-import UpdateProfileForm from "./partials/UpdateProfileForm.vue";
+import AccountDisplay from "./partials/AccountDisplay.vue"; // Import the new component
+
 export default {
 	name: "ProfilePage",
 	data() {
@@ -67,7 +70,7 @@ export default {
 		};
 	},
 	components: {
-		UpdateProfileForm,
+		AccountDisplay,
 	},
 };
 </script>
@@ -77,7 +80,7 @@ export default {
 	width: 100%;
 }
 .financial-summary {
-	font-family: Arial, sans-serif;
+
 	margin: 0 auto;
 	width: 60%;
 	float: right;

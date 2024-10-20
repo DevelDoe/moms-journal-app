@@ -1,3 +1,4 @@
+// utils/auth.js
 // Check if the user is authenticated (valid token exists in localStorage)
 export function isAuthenticated() {
 	const token = localStorage.getItem("token");

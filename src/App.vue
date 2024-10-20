@@ -1,38 +1,33 @@
-<!-- src/App.vue -->
 <template>
-	<div id="">
-		<nav>
-			<router-link to="/">Home</router-link>
-			<!-- Show not authenticated -->
-			<router-link to="/login" v-if="!isAuthenticated">Login</router-link>
-			<router-link to="/register" v-if="!isAuthenticated"
-				>Register</router-link
-			>
+	<div style="width: 100%">
+		<nav id="sidebar">
+			<ul>
+				<!-- General links -->
+				<li><router-link to="/">Home</router-link></li>
 
-			<!-- Show  authenticated -->
-			<router-link to="/profile" v-if="isAuthenticated"
-				>Profile</router-link
-			>
-			<router-link to="/new-order" v-if="isAuthenticated"
-				>New Order</router-link
-			>
-			<router-link to="/upload-orders" v-if="isAuthenticated"
-				>Upload Orders</router-link
-			>
-			<router-link to="/orders" v-if="isAuthenticated"
-				>Orders List</router-link
-			>
-			<router-link to="/trades" v-if="isAuthenticated"
-				>Trades</router-link
-			>
-			<router-link to="/WebSocketClient" v-if="isAuthenticated"
-				>WebSocketClient</router-link
-			>
-			<a @click="logout" v-if="isAuthenticated" style="cursor: pointer"
-				>Logout</a
-			>
+				<!-- Not authenticated -->
+				<li v-if="!isAuthenticated"><router-link to="/login">Login</router-link></li>
+				<li v-if="!isAuthenticated"><router-link to="/register">Register</router-link></li>
+
+				<!-- Authenticated users -->
+				<li v-if="isAuthenticated"><router-link to="/profile">Profile</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/new-order">New Order</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/trades">Trades</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/WebSocketClient">WebSocketClient</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/update-profile">Update Profile</router-link></li>
+
+				<!-- Admin only: Create Broker -->
+				<li v-if="isAuthenticated && isAdmin"><router-link to="/create-broker">Create Broker</router-link></li>
+
+				<!-- Logout -->
+				<li v-if="isAuthenticated"><a @click="logout" style="cursor: pointer">Logout</a></li>
+			</ul>
 		</nav>
-		<router-view></router-view>
+		<div id="view">
+			<router-view></router-view>
+		</div>
 	</div>
 </template>
 
@@ -41,7 +36,11 @@ import { mapGetters } from "vuex";
 
 export default {
 	computed: {
-		...mapGetters(["isAuthenticated"]), // Check if user is authenticated
+		...mapGetters(["isAuthenticated", "getUser"]), // Check if user is authenticated and get user details
+		isAdmin() {
+			// Only admins should see the create broker link
+			return this.getUser && this.getUser.role === "admin";
+		},
 	},
 	methods: {
 		logout() {
@@ -53,21 +52,75 @@ export default {
 </script>
 
 <style>
-body {
-	background-color: #fefefe; /* Dark background */
-	color: #161616; /* Light text color */
-	font-family: "Arial", sans-serif;
-	font-size: larger;
-	margin: 0;
-	padding: 0;
-}
-nav {
-	display: flex;
-	gap: 15px;
-	margin-bottom: 20px;
+
+* {
+	box-sizing: border-box; /* Apply border-box globally */
 }
 
-a {
+
+
+#app {
+	display: flex;
+	min-height: 100vh;
+}
+
+#sidebar {
+	width: 20%; /* Sidebar takes 20% of the total width */
+	background-color: #f4f4f4;
+	padding: 20px;
+	border-right: 1px solid #ddd;
+	height: 100%; /* Full height sidebar */
+	float: left;
+}
+
+#view {
+	width: 80%;
+	padding: 20px;
+	float: right;
+}
+
+nav ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+nav ul li {
+	margin-bottom: 10px;
+}
+
+nav ul li a {
+	color: #333;
 	text-decoration: none;
+	padding: 10px;
+	display: block;
+	border-radius: 4px;
+	transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+	background-color: #ddd;
+}
+
+nav ul li a.router-link-exact-active {
+	background-color: #bbb;
+	color: #fff;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+	#app {
+		flex-direction: column; /* Stack sidebar and main content vertically on smaller screens */
+	}
+
+	#sidebar {
+		width: 100%; /* Sidebar takes full width on smaller screens */
+		border-right: none;
+		border-bottom: 1px solid #ddd;
+	}
+
+	#view {
+		width: 100%; /* Content area takes full width on smaller screens */
+	}
 }
 </style>

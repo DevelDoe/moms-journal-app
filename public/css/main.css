@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-ExtraBold.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+
+body {
+	font-family: "Montserrat", sans-serif !important;
+	background-color: #fefefe;
+	color: #161616;
+	font-family: "Arial", sans-serif;
+	font-size: 20px;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
