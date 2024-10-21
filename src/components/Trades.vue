@@ -1,3 +1,4 @@
+<!-- ./src/components/Trades.vue -->
 <template>
 	<div class="trades">
 		<h1>Trades Overview</h1>
@@ -11,11 +12,11 @@
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading trades...</p>
 		</div>
-		
+
 		<div v-else-if="filteredTrades.length === 0" class="no-trades">
 			<p>No trades available for the selected date.</p>
 		</div>
-		
+
 		<!-- Corrupt Data Warning -->
 		<div v-else-if="hasCorruptData" class="corrupt-data-warning">
 			<p>Some trades data is corrupted and could not be displayed. Please contact an administrator.</p>
@@ -23,62 +24,67 @@
 
 		<div v-else>
 			<!-- Summary Section -->
-			<h2>Trades Summary</h2>
-			<div class="trades-summary">
-				<p>Total Trades: {{ totalTrades }}</p>
-				<p>Accuracy: {{ accuracy.toFixed(2) }}%</p>
-				<p>Profit to Loss Ratio: {{ profitToLossRatio }}</p>
-				<p>Total Profit/Loss: ${{ totalProfitLoss.toFixed(2) }}</p>
-			</div>
+			<TradesSummary :totalTrades="totalTrades" :accuracy="accuracy" :profitToLossRatio="profitToLossRatio" :totalProfitLoss="totalProfitLoss" />
 
 			<!-- WebSocket Analyze Component -->
 			<AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" />
 
-			<!-- Bar Chart for Trades by Hour -->
-			<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
+			<!-- Trades.vue -->
+			<TradesProfitChart
+				v-if="tradeProfitLabels.length > 0 && tradeProfitValues.length > 0 && tradeTradeCountValues.length > 0"
+				:labels="tradeProfitLabels"
+				:profitData="tradeProfitValues"
+				:tradeCountData="tradeTradeCountValues"
+			/>
 
-			<!-- Trades Table -->
-			<h2>Trades List</h2>
-			<table class="trades-table">
-				<thead>
-					<tr>
-						<th>Symbol</th>
-						<th>Account</th>
-						<th>Quantity</th>
-						<th>Buy Price</th>
-						<th>Sell Price</th>
-						<th>Side</th>
-						<th>Profit/Loss</th>
-						<th>Date</th>
-						<th>Time</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(trade, index) in filteredTrades" :key="index">
-						<td>{{ trade.symbol || "N/A" }}</td>
-						<td>{{ trade.account || "N/A" }}</td>
-						<td>{{ trade.quantity !== undefined ? trade.quantity : "N/A" }}</td>
-						<td>{{ trade.buyPrice !== undefined ? trade.buyPrice.toFixed(2) : "N/A" }}</td>
-						<td>{{ trade.sellPrice !== undefined ? trade.sellPrice.toFixed(2) : "N/A" }}</td>
-						<td>{{ trade.side || "N/A" }}</td>
-						<td>{{ trade.profitLoss !== undefined ? trade.profitLoss.toFixed(2) : "N/A" }}</td>
-						<td>{{ trade.date ? new Date(trade.date).toLocaleDateString() : "Invalid Date" }}</td>
-						<td>{{ trade.date ? new Date(trade.date).toLocaleTimeString() : "Invalid Time" }}</td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="8" class="total-label">Total P/L</td>
-						<td class="total-value">${{ totalProfitLoss.toFixed(2) }}</td>
-					</tr>
-				</tfoot>
-			</table>
+			<!-- Cumulative Profit Over Time Chart -->
+			<cumulative-profit-chart :labels="cumulativeProfitLabels" :profitData="cumulativeProfitValues" :tradeCountData="cumulativeTradeCountValues" />
+
+			<!-- Profit/Loss Distribution Histogram -->
+			<ProfitLossHistogram
+				v-if="profitLossDistributionChartData.labels.length > 0 && profitLossDistributionChartData.data.length > 0"
+				:labels="profitLossDistributionChartData.labels"
+				:data="profitLossDistributionChartData.data"
+			/>
+
+			<!-- Trades by Hour Chart Partial -->
+			<TradesByHourChart
+				v-if="tradesByHourChartData.labels.length > 0 && tradesByHourChartData.data.length > 0"
+				:labels="tradesByHourChartData.labels"
+				:data="tradesByHourChartData.data"
+			/>
+
+			<!-- Trades by Minute Chart Partial -->
+			<TradesByMinuteChart
+				v-if="tradesByMinuteChartData.labels.length > 0 && tradesByMinuteChartData.data.length > 0"
+				:labels="tradesByMinuteChartData.labels"
+				:data="tradesByMinuteChartData.data"
+			/>
+
+			<!-- Profit by Whole Dollar Range Chart -->
+			<ProfitByPriceRangeChart
+				v-if="profitByWholeDollarRangeChartData.labels.length > 0 && profitByWholeDollarRangeChartData.data.length > 0"
+				:labels="profitByWholeDollarRangeChartData.labels"
+				:data="profitByWholeDollarRangeChartData.data"
+			/>
+
+			<!-- Trades List Partial -->
+			<!-- <TradesList :trades="filteredTrades" :totalProfitLoss="totalProfitLoss" /> -->
 		</div>
 	</div>
 </template>
 
 <script>
 import AnalyzeTrades from "./partials/AnalyzeTrades.vue"; // Import the AnalyzeTrades component
+import TradesSummary from "./partials/TradesSummary.vue"; // Import the new component
+import TradesList from "./partials/TradesList.vue"; // Import the new TradesList component
+import ProfitByPriceRangeChart from "./partials/charts/ProfitByPriceRangeChart.vue"; // Import the new ProfitByPriceRangeChart component
+import TradesByHourChart from "./partials/charts/TradesByHourChart.vue"; // Import the new TradesByHourChart component
+import TradesByMinuteChart from "./partials/charts/TradesByMinuteChart.vue"; // Import the TradesByMinuteChart component
+import ProfitLossHistogram from "./partials/charts/ProfitLossHistogram.vue"; // Import the ProfitLossHistogram component
+import CumulativeProfitChart from "./partials/charts/CumulativeProfitChart.vue";
+import TradesProfitChart from "./partials/charts/TradesProfitChart.vue";
+
 import axios from "axios"; // Make sure axios is imported
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
@@ -104,14 +110,21 @@ export default {
 	},
 	components: {
 		AnalyzeTrades,
+		TradesSummary,
 		VChart,
+		TradesList,
+		ProfitByPriceRangeChart,
+		TradesByHourChart,
+		TradesByMinuteChart,
+		ProfitLossHistogram,
+		CumulativeProfitChart,
+		TradesProfitChart,
 	},
 	async mounted() {
 		// Fetch orders and trades when the component is mounted
 		await this.fetchOrders();
 		await this.fetchTrades();
 		await this.fetchHistoricalTrades();
-		console.log(this.historicalTrades);
 		this.isLoading = false;
 	},
 	computed: {
@@ -183,45 +196,354 @@ export default {
 			return this.filteredTrades.length;
 		},
 		// Your computed properties here (e.g., filteredTrades, tradesByHour)
+		// Calculate trades by hour and determine active hours range
 		tradesByHour() {
-			const tradesByHour = Array(24).fill(0); // 24-hour slots
+			if (this.filteredTrades.length === 0) {
+				return { minHour: 0, maxHour: 23, tradesByHour: Array(24).fill(0) }; // Default if no trades
+			}
+
+			let minHour = 23;
+			let maxHour = 0;
+			const tradesByHour = Array(24).fill(0); // Initialize 24-hour slots
+
+			// Aggregate trades by hour and find min and max hours with activity
 			this.filteredTrades.forEach((trade) => {
 				if (trade && trade.date && trade.profitLoss !== undefined) {
 					const tradeHour = new Date(trade.date).getHours();
 					tradesByHour[tradeHour] += trade.profitLoss;
+
+					if (tradeHour < minHour) minHour = tradeHour;
+					if (tradeHour > maxHour) maxHour = tradeHour;
 				}
 			});
-			return tradesByHour;
+
+			return { minHour, maxHour, tradesByHour };
 		},
-		chartOptions() {
+
+		// Format trades by hour chart data for active hours only
+		tradesByHourChartData() {
+			const { minHour, maxHour, tradesByHour } = this.tradesByHour;
+
+			// Extract only active hours and their corresponding data
 			return {
-				title: {
-					text: "Trades by Hour",
-				},
-				tooltip: {
-					trigger: "axis",
-					axisPointer: {
-						type: "shadow",
-					},
-				},
-				xAxis: {
-					type: "category",
-					data: Array.from({ length: 24 }, (_, i) => `${i}:00`), // Labels for hours
-				},
-				yAxis: {
-					type: "value",
-				},
-				series: [
-					{
-						name: "Profit/Loss",
-						type: "bar",
-						data: this.tradesByHour,
-						itemStyle: {
-							color: (params) => (params.value >= 0 ? "#73c0de" : "#e57373"), // Positive: blue, Negative: red
-						},
-					},
-				],
+				labels: Array.from({ length: maxHour - minHour + 1 }, (_, i) => `${i + minHour}:00`),
+				data: tradesByHour.slice(minHour, maxHour + 1),
 			};
+		},
+		// Calculate trades by minute for a detailed view
+		tradesByMinute() {
+			if (this.filteredTrades.length === 0) {
+				return { minMinute: 0, maxMinute: 1439, tradesByMinute: Array(1440).fill(0) }; // Default to full day if no trades
+			}
+
+			let minMinute = 1439;
+			let maxMinute = 0;
+			const tradesByMinute = Array(1440).fill(0); // Initialize array for 1440 minutes
+
+			// Aggregate trades by minute and determine min and max minute with activity
+			this.filteredTrades.forEach((trade) => {
+				if (trade && trade.date && trade.profitLoss !== undefined) {
+					const date = new Date(trade.date);
+					const tradeMinute = date.getHours() * 60 + date.getMinutes(); // Convert to minutes from start of day
+					tradesByMinute[tradeMinute] += trade.profitLoss;
+
+					if (tradeMinute < minMinute) minMinute = tradeMinute;
+					if (tradeMinute > maxMinute) maxMinute = tradeMinute;
+				}
+			});
+
+			return { minMinute, maxMinute, tradesByMinute };
+		},
+
+		// Format the data to be used in the chart, only for active minute range
+		tradesByMinuteChartData() {
+			const { minMinute, maxMinute, tradesByMinute } = this.tradesByMinute;
+
+			// Extract only active minutes and their corresponding data
+			return {
+				labels: Array.from({ length: maxMinute - minMinute + 1 }, (_, i) => {
+					const totalMinutes = i + minMinute;
+					const hours = Math.floor(totalMinutes / 60)
+						.toString()
+						.padStart(2, "0");
+					const minutes = (totalMinutes % 60).toString().padStart(2, "0");
+					return `${hours}:${minutes}`;
+				}),
+				data: tradesByMinute.slice(minMinute, maxMinute + 1),
+			};
+		},
+		profitByWholeDollarRange() {
+			if (this.filteredTrades.length === 0) {
+				return {}; // Return an empty object if there are no trades
+			}
+
+			// Determine the minimum and maximum buy prices
+			const minPrice = Math.floor(Math.min(...this.filteredTrades.map((trade) => trade.buyPrice)));
+			const maxPrice = Math.ceil(Math.max(...this.filteredTrades.map((trade) => trade.buyPrice)));
+
+			// Initialize ranges object for every whole dollar value between minPrice and maxPrice
+			const ranges = {};
+			for (let price = minPrice; price <= maxPrice; price++) {
+				ranges[price] = 0; // Initialize profit/loss at 0
+			}
+
+			// Aggregate profit/loss for each whole dollar price range
+			this.filteredTrades.forEach((trade) => {
+				if (trade && trade.buyPrice !== undefined) {
+					const roundedPrice = Math.floor(trade.buyPrice); // Round down to the nearest whole dollar
+					if (ranges.hasOwnProperty(roundedPrice)) {
+						ranges[roundedPrice] += trade.profitLoss;
+					}
+				}
+			});
+
+			return ranges;
+		},
+		profitByWholeDollarRangeChartData() {
+			const rangeData = this.profitByWholeDollarRange;
+			return {
+				labels: Object.keys(rangeData).length > 0 ? Object.keys(rangeData) : [],
+				data: Object.values(rangeData).length > 0 ? Object.values(rangeData) : [],
+			};
+		},
+		// Calculate Profit/Loss Distribution for histogram buckets
+		profitLossDistribution() {
+			if (this.filteredTrades.length === 0) {
+				return {}; // No trades, no distribution data
+			}
+
+			// Define the specific bucket ranges to cover both losses and profits using expanded Fibonacci numbers
+			const bucketRanges = [
+				{ label: "Below -$987", min: -Infinity, max: -987 },
+				{ label: "-$987 to -$610", min: -987, max: -610 },
+				{ label: "-$610 to -$377", min: -610, max: -377 },
+				{ label: "-$377 to -$233", min: -377, max: -233 },
+				{ label: "-$233 to -$144", min: -233, max: -144 },
+				{ label: "-$144 to -$89", min: -144, max: -89 },
+				{ label: "-$89 to -$55", min: -89, max: -55 },
+				{ label: "-$55 to -$34", min: -55, max: -34 },
+				{ label: "-$34 to -$21", min: -34, max: -21 },
+				{ label: "-$21 to -$13", min: -21, max: -13 },
+				{ label: "-$13 to -$8", min: -13, max: -8 },
+				{ label: "-$8 to -$5", min: -8, max: -5 },
+				{ label: "-$5 to -$3", min: -5, max: -3 },
+				{ label: "-$3 to -$2", min: -3, max: -2 },
+				{ label: "-$2 to $0", min: -2, max: 0 },
+				{ label: "$0 to $2", min: 0, max: 2 },
+				{ label: "$2 to $3", min: 2, max: 3 },
+				{ label: "$3 to $5", min: 3, max: 5 },
+				{ label: "$5 to $8", min: 5, max: 8 },
+				{ label: "$8 to $13", min: 8, max: 13 },
+				{ label: "$13 to $21", min: 13, max: 21 },
+				{ label: "$21 to $34", min: 21, max: 34 },
+				{ label: "$34 to $55", min: 34, max: 55 },
+				{ label: "$55 to $89", min: 55, max: 89 },
+				{ label: "$89 to $144", min: 89, max: 144 },
+				{ label: "$144 to $233", min: 144, max: 233 },
+				{ label: "$233 to $377", min: 233, max: 377 },
+				{ label: "$377 to $610", min: 377, max: 610 },
+				{ label: "$610 to $987", min: 610, max: 987 },
+				{ label: "Above $987", min: 987, max: Infinity },
+			];
+
+			// Initialize the buckets
+			const buckets = {};
+			bucketRanges.forEach((range) => {
+				buckets[range.label] = 0; // Start each bucket with a count of 0
+			});
+
+			// Count the trades in each bucket
+			this.filteredTrades.forEach((trade) => {
+				if (trade && trade.profitLoss !== undefined) {
+					const profitLoss = trade.profitLoss;
+					// Find the correct bucket for each trade
+					const bucket = bucketRanges.find((range) => profitLoss >= range.min && profitLoss < range.max);
+					if (bucket) {
+						buckets[bucket.label]++;
+					}
+				}
+			});
+
+			return buckets;
+		},
+
+		profitLossDistributionChartData() {
+			const distribution = this.profitLossDistribution;
+			return {
+				labels: Object.keys(distribution),
+				data: Object.values(distribution),
+			};
+		},
+		cumulativeProfitData() {
+			if (this.filteredTrades.length === 0) {
+				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
+			}
+
+			const isSingleDay = this.filterDate !== ""; // Assume filterDate means filtering to a specific day
+
+			// Sort the trades by date
+			const sortedTrades = [...this.filteredTrades].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+			// Initialize cumulative values
+			let cumulativeProfit = 0;
+			let cumulativeTradeCount = 0;
+			const labels = [];
+			const profitData = [];
+			const tradeCountData = [];
+
+			if (isSingleDay) {
+				// Group trades by minute for the filtered day
+				const tradesByMinute = sortedTrades.reduce((acc, trade) => {
+					const date = new Date(trade.date);
+					const minuteKey = `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`; // e.g., '14:05'
+					if (!acc[minuteKey]) {
+						acc[minuteKey] = [];
+					}
+					acc[minuteKey].push(trade);
+					return acc;
+				}, {});
+
+				// Calculate cumulative profit and number of trades for each minute
+				Object.keys(tradesByMinute).forEach((minute) => {
+					const trades = tradesByMinute[minute];
+					labels.push(minute);
+
+					// Update cumulative profit
+					trades.forEach((trade) => {
+						cumulativeProfit += trade.profitLoss;
+					});
+					profitData.push(cumulativeProfit);
+
+					// Update cumulative number of trades
+					cumulativeTradeCount += trades.length;
+					tradeCountData.push(cumulativeTradeCount);
+				});
+			} else {
+				// Group trades by day
+				const tradesByDay = sortedTrades.reduce((acc, trade) => {
+					const dateKey = new Date(trade.date).toLocaleDateString();
+					if (!acc[dateKey]) {
+						acc[dateKey] = [];
+					}
+					acc[dateKey].push(trade);
+					return acc;
+				}, {});
+
+				// Calculate cumulative profit and cumulative number of trades for each day
+				Object.keys(tradesByDay).forEach((date) => {
+					const trades = tradesByDay[date];
+					labels.push(date);
+
+					// Update cumulative profit
+					trades.forEach((trade) => {
+						cumulativeProfit += trade.profitLoss;
+					});
+					profitData.push(cumulativeProfit);
+
+					// Update cumulative number of trades
+					cumulativeTradeCount += trades.length;
+					tradeCountData.push(cumulativeTradeCount);
+				});
+			}
+
+			return {
+				labels,
+				profitData,
+				tradeCountData,
+			};
+		},
+
+		cumulativeProfitLabels() {
+			return this.cumulativeProfitData.labels;
+		},
+
+		cumulativeProfitValues() {
+			return this.cumulativeProfitData.profitData;
+		},
+
+		cumulativeTradeCountValues() {
+			return this.cumulativeProfitData.tradeCountData;
+		},
+		tradeProfitAndTradeCountData() {
+			if (this.filteredTrades.length === 0) {
+				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
+			}
+
+			// Sort the trades by date
+			const sortedTrades = [...this.filteredTrades].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+			const isSingleDay = this.filterDate !== ""; // Determine if filtering to a specific day
+
+			const labels = [];
+			const profitData = [];
+			const tradeCountData = [];
+
+			if (isSingleDay) {
+				// Group trades by hour for the filtered day
+				const tradesByHour = sortedTrades.reduce((acc, trade) => {
+					const date = new Date(trade.date);
+					const hourKey = `${date.getHours()}:00`; // e.g., '14:00'
+					if (!acc[hourKey]) {
+						acc[hourKey] = [];
+					}
+					acc[hourKey].push(trade);
+					return acc;
+				}, {});
+
+				// Prepare labels and data for the chart
+				Object.keys(tradesByHour).forEach((hour) => {
+					const trades = tradesByHour[hour];
+					labels.push(hour);
+
+					// Calculate total profit for the hour
+					const hourlyProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+					profitData.push(hourlyProfit);
+
+					// Number of trades in this hour
+					tradeCountData.push(trades.length);
+				});
+			} else {
+				// Group trades by day
+				const tradesByDay = sortedTrades.reduce((acc, trade) => {
+					const dateKey = new Date(trade.date).toLocaleDateString();
+					if (!acc[dateKey]) {
+						acc[dateKey] = [];
+					}
+					acc[dateKey].push(trade);
+					return acc;
+				}, {});
+
+				// Prepare labels and data for the chart
+				Object.keys(tradesByDay).forEach((date) => {
+					const trades = tradesByDay[date];
+					labels.push(date);
+
+					// Calculate total profit for the day
+					const tradeProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+					profitData.push(tradeProfit);
+
+					// Number of trades on this day
+					tradeCountData.push(trades.length);
+				});
+			}
+
+			return {
+				labels,
+				profitData,
+				tradeCountData,
+			};
+		},
+
+		tradeProfitLabels() {
+			return this.tradeProfitAndTradeCountData.labels;
+		},
+
+		tradeProfitValues() {
+			return this.tradeProfitAndTradeCountData.profitData;
+		},
+
+		tradeTradeCountValues() {
+			return this.tradeProfitAndTradeCountData.tradeCountData;
 		},
 	},
 	methods: {

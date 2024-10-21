@@ -197,7 +197,6 @@ export default createStore({
 				const response = await axios.get("http://localhost:5000/api/orders", {
 					headers: { Authorization: `Bearer ${state.token}` },
 				});
-				console.log("Orders response:", response); // Log the response on client-side
 				commit("setOrders", response.data); // Store orders in Vuex
 				debouncedSuccessToast("Orders fetched successfully!");
 
@@ -233,12 +232,12 @@ export default createStore({
 						headers: { Authorization: `Bearer ${state.token}` },
 					}
 				);
-		
+
 				// Commit the orders and show success toast
 				response.data.orders.forEach((order) => {
 					commit("addOrder", order); // Add each uploaded order to Vuex
 				});
-		
+
 				debouncedSuccessToast("All orders uploaded successfully!");
 			} catch (error) {
 				const message = error.response?.data?.error || "Error uploading orders.";
@@ -316,9 +315,13 @@ export default createStore({
 		},
 
 		// Add a new account type to an existing broker
-		async addAccountAction({ dispatch }, { brokerId, account }) {
+		async addAccountAction({ dispatch, state }, { brokerId, account }) {
 			try {
-				const response = await axios.post(`http://localhost:5000/api/brokers/${brokerId}/accounts`, account);
+				const response = await axios.post(`http://localhost:5000/api/brokers/${brokerId}/accounts`, account, {
+					headers: {
+						Authorization: `Bearer ${state.token}`, // Use state.token correctly here
+					},
+				});
 
 				// After successfully adding the account, fetch all brokers to refresh the store
 				await dispatch("fetchBrokers");
@@ -333,15 +336,23 @@ export default createStore({
 			}
 		},
 
-		// Store: Update Account Action (with database request)
-		async updateAccountAction({ dispatch }, { brokerId, account }) {
+		// Update an account type for a broker
+		async updateAccountAction({ dispatch, state }, { brokerId, account }) {
 			try {
-				await axios.put(`http://localhost:5000/api/brokers/${brokerId}/accounts/${account.type}`, account);
+				const response = await axios.put(
+					`http://localhost:5000/api/brokers/${brokerId}/accounts/${account._id}`, // Use account ID here
+					account,
+					{
+						headers: {
+							Authorization: `Bearer ${state.token}`, // Include token in the header
+						},
+					}
+				);
 
-				// After successfully updating the account, fetch all brokers to refresh the store
+				// After successfully updating the account, refresh the brokers
 				await dispatch("fetchBrokers");
 
-				debouncedSuccessToast(`Account "${account.type}" updated successfully!`);
+				debouncedSuccessToast(`Account '${account.type}' updated successfully!`);
 			} catch (error) {
 				console.error("Error updating account:", error);
 				const message = error.response?.data?.msg || "Error updating account.";
@@ -350,22 +361,21 @@ export default createStore({
 			}
 		},
 
-		async deleteAccount() {
+		async deleteAccountAction({ dispatch, state }, { brokerId, accountId }) {
 			try {
-				const payload = {
-					brokerId: this.selectedBroker,
-					accountType: this.selectedAccount.type,
-				};
-				await this.$store.dispatch("deleteAccount", payload);
-				this.selectedAccount = null; // Reset account selection
-				await this.$store.dispatch("fetchBrokers"); // Refresh broker list
+				await axios.delete(`http://localhost:5000/api/brokers/${brokerId}/accounts/${accountId}`, {
+					headers: {
+						Authorization: `Bearer ${state.token}`,
+					},
+				});
 
-				debouncedSuccessToast(`Account '${payload.accountType}' deleted successfully!`);
+				await dispatch("fetchBrokers"); // Refresh brokers after deletion
+				debouncedSuccessToast("Account deleted successfully!");
 			} catch (error) {
 				const message = error.response?.data?.msg || "Error deleting account.";
 				debouncedErrorToast(message);
 				if (process.env.NODE_ENV === "development") {
-					console.error("Error deleting account from broker:", error);
+					console.error("Error deleting account:", error);
 				}
 			}
 		},

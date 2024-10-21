@@ -15,8 +15,6 @@ import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from
 // Register necessary ECharts components
 use([CanvasRenderer, BarChart, LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
 
-console.log(VChart);
-
 // Load the auth token from localStorage before mounting the app
 const token = localStorage.getItem("token");
 if (token) {

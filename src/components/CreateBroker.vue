@@ -51,10 +51,10 @@
 		<!-- Add/Update Account section (form only visible when the 'Add New Account' button is clicked or an account is selected) -->
 		<div v-if="showAccountForm || selectedAccount">
 			<h3>{{ selectedAccount ? "Update" : "Add" }} Account for Broker</h3>
-			<form @submit.prevent="addAccount" novalidate>
+			<form @submit.prevent="selectedAccount ? updateAccount() : addAccount()" novalidate>
 				<div>
 					<label for="accountType">Account Type</label>
-					<input v-model="newAccount.type" id="accountType" required />
+					<input v-model="newAccount.type" id="accountType" placeholder="Enter account type" required />
 				</div>
 				<div>
 					<label for="ratePerShare">Rate Per Share</label>
@@ -100,7 +100,27 @@
 					<label for="minimumDeposit">Minimum Deposit</label>
 					<input v-model="newAccount.minimumDeposit" id="minimumDeposit" type="number" required />
 				</div>
+				<div>
+					<label for="leverage">Leverage</label>
+					<input v-model="newAccount.leverage" id="leverage" type="number" required />
+				</div>
+				<div>
+					<label for="regulatoryFee">Regulatory Fee</label>
+					<input v-model="newAccount.regulatory_fee" id="regulatory_fee" type="number" required />
+				</div>
+				<div>
+					<label for="overnightFee">Overnight Fee</label>
+					<input v-model="newAccount.overnight_fee" id="overnightFee" type="number" required />
+				</div>
 				<button type="submit">{{ selectedAccount ? "Update" : "Add" }} Account</button>
+				<button
+					type="button"
+					v-if="selectedAccount"
+					@click="deleteAccount(selectedAccount._id)"
+					style="margin-left: 10px; background-color: red; color: white"
+				>
+					Delete
+				</button>
 			</form>
 		</div>
 	</div>
@@ -121,12 +141,21 @@ export default {
 				description: "",
 			},
 			newAccount: {
-				type: "",
+				type: "", // User will input the account type
 				rate_per_share: 0,
 				min_amount: 0,
 				max_amount: 0,
 				percentage_rate: 0,
-				// Add more fields as needed
+				ecn_fees: 0,
+				inactivity_fee: 0,
+				market_data_fee: 0,
+				platform_fee: 0,
+				withdrawal_fee: 0,
+				extended_hours_trading_fee: 0,
+				minimumDeposit: 0,
+				leverage: 0,
+				regulatory_fee: 0,
+				overnight_fee: 0,
 			},
 		};
 	},
@@ -191,15 +220,20 @@ export default {
 				}
 			}
 		},
+		async deleteAccount(accountId) {
+			const payload = { brokerId: this.selectedBroker, accountId }; // Use accountId instead of accountType
+			await this.$store.dispatch("deleteAccountAction", payload);
+			this.selectedAccount = null; // Reset selected account after deletion
+			this.$store.dispatch("fetchBrokers"); // Refresh brokers list
+		},
 		toggleBrokerForm() {
-			this.showBrokerForm = !this.showBrokerForm;
 			this.resetBrokerForm();
-			this.showBrokerForm = true;
+			this.showBrokerForm = true; // Ensure the broker form is shown
 		},
 		toggleAccountForm() {
-			this.selectedAccount = null;
+			this.selectedAccount = null; // Reset selected account
 			this.resetAccountForm();
-			this.showAccountForm = true;
+			this.showAccountForm = true; // Ensure the account form is shown
 		},
 		cancelBrokerCreation() {
 			this.showBrokerForm = false;
@@ -215,7 +249,23 @@ export default {
 			this.newBroker = { name: "", description: "" };
 		},
 		resetAccountForm() {
-			this.newAccount = { type: "", rate_per_share: 0, min_amount: 0, max_amount: 0, percentage_rate: 0 };
+			this.newAccount = {
+				type: "",
+				rate_per_share: 0,
+				min_amount: 0,
+				max_amount: 0,
+				percentage_rate: 0,
+				ecn_fees: 0,
+				inactivity_fee: 0,
+				market_data_fee: 0,
+				platform_fee: 0,
+				withdrawal_fee: 0,
+				extended_hours_trading_fee: 0,
+				minimumDeposit: 0,
+				leverage: 0,
+				regulatory_fee: 0,
+				overnight_fee: 0,
+			};
 		},
 		brokerChanged() {
 			const broker = this.brokers.find((b) => b._id === this.selectedBroker);
@@ -228,8 +278,10 @@ export default {
 		},
 		accountChanged() {
 			if (this.selectedAccount) {
-				this.newAccount = { ...this.selectedAccount };
+				this.newAccount = { ...this.selectedAccount }; // Copy the selected account's data, including the _id
 				this.showAccountForm = true; // Show account form for editing
+			} else {
+				this.resetAccountForm(); // Reset the form if no account is selected
 			}
 		},
 	},
