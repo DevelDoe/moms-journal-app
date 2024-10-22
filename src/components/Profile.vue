@@ -1,120 +1,195 @@
 <template>
-	<div id="profile">
+	<div class="trades">
+		<h1>Trades Overview</h1>
 
-		<!-- Display updated information -->
-		<div v-if="user" class="profile-info">
-			<h2>Your Profile Information:</h2>
-			<p><strong>Tax Rate:</strong> {{ user.tax }}%</p>
-			<p><strong>Commission Rate:</strong> {{ user.commission }}%</p>
+		<!-- Account Selection -->
+		<div>
+			<label for="account">Select Account:</label>
+			<select v-model="selectedAccountId" @change="fetchTradesByAccount">
+				<option disabled value="">Please select an account</option>
+				<option v-for="account in userAccounts" :key="account.accountId" :value="account.accountId">
+					{{ account.specifications.type }} ({{ account.number }})
+				</option>
+			</select>
 		</div>
 
-		<!-- Account Display Partial -->
-		<AccountDisplay />
+		<!-- Date Picker for Filtering -->
+		<div class="date-filter">
+			<label for="filter-date">Filter by Date:</label>
+			<input type="date" id="filter-date" v-model="filterDate" @change="filterTradesByDate" />
+		</div>
 
-		<div class="financial-summary">
-			<h1>Trade Summary</h1>
-			<table>
-				<thead>
-					<tr>
-						<th>Metrics</th>
-						<th>January</th>
-						<th>February</th>
-						<th>March</th>
-						<th>April</th>
-						<!-- Add more months as needed -->
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Trade Volume (Gross)</td>
-						<td>$10,000</td>
-						<td>$12,000</td>
-						<td>$8,500</td>
-						<td>$11,300</td>
-					</tr>
-					<tr>
-						<td>Commissions & Fees</td>
-						<td>$500</td>
-						<td>$600</td>
-						<td>$450</td>
-						<td>$530</td>
-					</tr>
-					<tr>
-						<td>Taxes</td>
-						<td>$150</td>
-						<td>$180</td>
-						<td>$130</td>
-						<td>$170</td>
-					</tr>
-					<tr>
-						<td>Net Income</td>
-						<td>$9,350</td>
-						<td>$11,220</td>
-						<td>$7,920</td>
-						<td>$10,600</td>
-					</tr>
-				</tbody>
-			</table>
+		<div v-if="isLoading" class="loading-message">
+			<p>Loading trades...</p>
+		</div>
+
+		<div v-else-if="filteredTrades.length === 0" class="no-trades">
+			<p>No trades available for the selected account.</p>
+		</div>
+
+		<!-- Corrupt Data Warning -->
+		<div v-else-if="hasCorruptData" class="corrupt-data-warning">
+			<p>Some trades data is corrupted and could not be displayed. Please contact an administrator.</p>
+		</div>
+
+		<div v-else>
+			<div class="trades">
+				<!-- Other HTML and Vue code -->
+				<TradesSummary :totalTrades="totalTrades" :accuracy="accuracy" :profitToLossRatio="profitToLossRatio" :totalProfitLoss="totalProfitLoss" />
+				<!-- New Expense Summary Partial -->
+				<!-- New Expense Summary Partial -->
+				<ExpenseSummary :filterDate="filterDate" :accountId="selectedAccountId" /> <!-- Pass accountId as prop -->
+
+
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import AccountDisplay from "./partials/AccountDisplay.vue"; // Import the new component
+import TradesSummary from "./partials/TradesSummary.vue";
+import ExpenseSummary from "./partials/ExpenseSummary.vue"; // Import the ExpenseSummary component
 
 export default {
-	name: "ProfilePage",
 	data() {
 		return {
-			user: null, // Start with null and populate later
+			selectedAccountId: null,
+			filterDate: "",
+			isLoading: true,
+			hasCorruptData: false,
 		};
 	},
 	components: {
-		AccountDisplay,
+		TradesSummary,
+		ExpenseSummary
+	},
+	computed: {
+		userAccounts() {
+			return this.$store.getters.getUserAccounts;
+		},
+		trades() {
+			const tradesData = this.$store.getters.getTrades;
+			return tradesData && Array.isArray(tradesData) ? tradesData : [];
+		},
+		filteredTrades() {
+			this.hasCorruptData = false;
+
+			const validTrades = this.trades.filter((trade) => {
+				const isValid =
+					trade &&
+					trade.symbol &&
+					trade.accountId &&
+					trade.buyPrice !== undefined &&
+					trade.sellPrice !== undefined &&
+					trade.profitLoss !== undefined &&
+					trade.date;
+				if (!isValid) this.hasCorruptData = true;
+				return isValid && trade.accountId === this.selectedAccountId; // Filter by selected accountId
+			});
+
+			if (!this.filterDate) return validTrades;
+
+			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
+			return validTrades.filter((trade) => {
+				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
+				return formattedFilterDate === formattedTradeDate;
+			});
+		},
+		totalProfitLoss() {
+			return this.filteredTrades.reduce((total, trade) => total + trade.profitLoss, 0);
+		},
+		accuracy() {
+			const totalTrades = this.filteredTrades.length;
+			const wins = this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
+			return totalTrades > 0 ? (wins / totalTrades) * 100 : 0;
+		},
+		profitToLossRatio() {
+			const totalProfit = this.filteredTrades.filter((trade) => trade.profitLoss > 0).reduce((sum, trade) => sum + trade.profitLoss, 0);
+			const totalLoss = this.filteredTrades.filter((trade) => trade.profitLoss < 0).reduce((sum, trade) => sum + Math.abs(trade.profitLoss), 0);
+			if (totalLoss === 0) return "Infinity";
+			return (totalProfit / totalLoss).toFixed(2);
+		},
+		totalTrades() {
+			return this.filteredTrades.length;
+		},
+	},
+	mounted() {
+    // Set the first account as the default account if available
+    if (this.userAccounts.length > 0) {
+      this.selectedAccountId = this.userAccounts[0].accountId; // Set the first account
+      this.fetchTradesByAccount(); // Fetch trades for the default account
+    }
+  },
+	methods: {
+		async fetchTradesByAccount() {
+			this.isLoading = true; // Start loading state
+			try {
+				// Call the Vuex action to fetch trades by account ID
+				await this.$store.dispatch("fetchTradesByAccount", this.selectedAccountId);
+				this.isLoading = false; // Stop loading state
+			} catch (error) {
+				this.isLoading = false; // Stop loading state in case of error
+				console.error("Error fetching trades:", error);
+			}
+		},
 	},
 };
 </script>
 
 <style scoped>
-#profile {
-	width: 100%;
-}
-.financial-summary {
-
-	margin: 0 auto;
-	width: 60%;
-	float: right;
-	padding: 5%;
+.trades {
+	padding: 20px;
 }
 
-h1 {
-	text-align: center;
-	margin-bottom: 20px;
+.no-trades {
+	font-size: 1.2em;
+	color: #666;
+	margin-top: 20px;
 }
 
-table {
+.date-filter {
+	margin: 20px 0;
+}
+
+.trades-table {
 	width: 100%;
 	border-collapse: collapse;
-	margin: 20px auto;
+	margin-top: 20px;
 }
 
 th,
 td {
+	padding: 10px;
 	border: 1px solid #ddd;
-	padding: 8px;
-	text-align: center;
+	text-align: left;
 }
 
 th {
 	background-color: #f4f4f4;
+}
+
+.profit {
+	background-color: #ccffcc; /* Light green background for profitable trades */
+	color: green;
+}
+
+.loss {
+	background-color: #ffcccc; /* Light red background for losing trades */
+	color: red;
+}
+
+tfoot .total-label {
 	font-weight: bold;
+	text-align: right;
 }
 
-td {
-	font-size: 16px;
+tfoot .total-value {
+	font-weight: bold;
+	text-align: left;
 }
 
-tbody tr:nth-child(even) {
-	background-color: #f9f9f9;
+.trades-summary {
+	margin-top: 20px;
+	font-size: 1.1em;
 }
 </style>

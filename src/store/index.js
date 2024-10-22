@@ -21,10 +21,15 @@ export default createStore({
 		brokers: [],
 		accounts: [],
 		selectedBrokerDetails: null,
+		summaries: [],
+		ordersByAccount: [],
 	},
 	mutations: {
-		setUser(state, user) {
-			state.user = user;
+		setUser(state, userData) {
+			if (!state.user) {
+				state.user = {};
+			}
+			Object.assign(state.user, userData);
 		},
 		addUserAccount(state, account) {
 			if (!state.user || !state.user.accounts) {
@@ -84,6 +89,12 @@ export default createStore({
 			}
 			state.brokers.push(broker); // Append the newly created broker to the brokers array
 		},
+		setSummaries(state, summaries) {
+			state.summaries = summaries;
+		},
+		setOrdersByAccount(state, orders) {
+			state.ordersByAccount = orders; // Set the fetched orders in state
+		  },
 	},
 	actions: {
 		async loginAction({ commit, dispatch }, { email, password }) {
@@ -106,7 +117,6 @@ export default createStore({
 				return false;
 			}
 		},
-
 		async fetchUser({ commit, state }) {
 			try {
 				if (state.token) {
@@ -129,7 +139,6 @@ export default createStore({
 				localStorage.removeItem("token");
 			}
 		},
-
 		async updateUser({ commit, state }, updatedUserData) {
 			try {
 				const response = await axios.put("/api/auth/update-profile", updatedUserData, {
@@ -142,46 +151,47 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-
-		// Fetch the user's accounts from the backend
-		async fetchAccounts({ commit, state }) {
+		async fetchAccountSpecifications(accountId) {
 			try {
-				if (state.token) {
-					// Set the axios authorization header with the stored token
-					axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
-
-					// Make a GET request to the '/api/user/accounts' endpoint
-					const response = await axios.get("/api/user/accounts");
-
-					// Commit the fetched accounts to the state
-					commit("setAccounts", response.data);
-					debouncedSuccessToast("Accounts fetched successfully!");
-				}
+				const response = await axios.get(`http://localhost:5000/api/brokers/accounts/${accountId}`);
+				return response.data; // Return the account specifications
 			} catch (error) {
-				console.error("Failed to fetch accounts:", error);
-				const message = error.response?.data?.msg || "Error fetching accounts.";
-				debouncedErrorToast(message);
+				console.error("Error fetching account specifications:", error);
+				throw error; // Re-throw for further handling if needed
 			}
 		},
-
-		// Add a new account to the user's profile
+		// Fetch the user's accounts from the backend
 		async addUserAccount({ commit, state }, accountData) {
 			try {
-				const response = await axios.post("http://localhost:5000/api/user/add-account", accountData, {
+				const brokerResponse = await axios.get(`http://localhost:5000/api/brokers/${accountData.brokerId}`);
+				const broker = brokerResponse.data;
+
+				const accountTypeDetails = broker.accountTypes.find((accountType) => accountType._id === accountData.accountId);
+
+				const newAccount = {
+					type: accountTypeDetails.type,
+					brokerId: accountData.brokerId,
+					accountId: accountData.accountId,
+					number: accountData.number,
+					balance: accountData.balance || 0,
+					specifications: accountTypeDetails,
+				};
+
+				const response = await axios.post("http://localhost:5000/api/user/add-account", newAccount, {
 					headers: { Authorization: `Bearer ${state.token}` },
 				});
-				commit("setUser", response.data);
+
+				commit("addUserAccount", response.data); // Commit the new account only
 				debouncedSuccessToast("Account added successfully!");
 			} catch (error) {
 				const message = error.response?.data?.msg || "Error adding account.";
 				debouncedErrorToast(message);
 			}
 		},
-
 		// Remove an account from the user's profile
-		async removeUserAccount({ commit, state }, accountNumber) {
+		async removeUserAccount({ commit, state }, accountId) {
 			try {
-				const response = await axios.delete(`/api/user/remove-account/${accountNumber}`, {
+				const response = await axios.delete(`http://localhost:5000/api/user/remove-account/${accountId}`, {
 					headers: { Authorization: `Bearer ${state.token}` },
 				});
 				commit("setUser", response.data);
@@ -199,12 +209,30 @@ export default createStore({
 				});
 				commit("setOrders", response.data); // Store orders in Vuex
 				debouncedSuccessToast("Orders fetched successfully!");
-
-				// Now that orders are fetched, calculate trades
-				dispatch("fetchTrades");
 			} catch (error) {
 				const message = error.response?.data?.msg || "Error fetching orders.";
 				debouncedErrorToast(message);
+			}
+		},
+		async fetchOrdersByAccountId({ commit, state }, accountId) {
+			try {
+				// Log to check if the correct accountId and token are being sent
+				console.log("Fetching orders for accountId:", accountId, "Token:", state.token);
+
+				// Make the API request
+				const response = await axios.get(`http://localhost:5000/api/orders/${accountId}`, {
+					headers: { Authorization: `Bearer ${state.token}` }, // Ensure token is correctly set
+				});
+
+				// Commit the result to Vuex store
+				commit("setOrdersByAccount", response.data); // Pass the response data to the mutation
+
+				// Return the data to the caller
+				return response.data;
+			} catch (error) {
+				// Log the error to catch any issues
+				console.error("Error fetching orders:", error);
+				throw error;
 			}
 		},
 
@@ -220,14 +248,13 @@ export default createStore({
 				debouncedErrorToast(message); // Debounced error toast
 			}
 		},
-
 		// Function to create multiple orders
-		async createMultipleOrders({ commit, state }, ordersData) {
+		async createMultipleOrders({ commit, state }, { orders }) {
 			try {
-				// Send all orders in a single request
+				// Send orders directly, assuming accountId is already included in the parsed order
 				const response = await axios.post(
 					"http://localhost:5000/api/orders",
-					{ orders: ordersData }, // Send orders as a batch in a single request
+					{ orders }, // Just send the orders as they are
 					{
 						headers: { Authorization: `Bearer ${state.token}` },
 					}
@@ -244,12 +271,60 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-
+		// Fetch trades from the backend
 		async fetchTrades({ commit, state }) {
-			const trades = detectTrades(state.orders); // Now detectTrades returns the array directly
-			commit("setTrades", trades); // Commit the trades array directly
-		},
+			try {
+				// Make an API request to fetch trades for the user
+				const response = await axios.get("http://localhost:5000/api/trades", {
+					headers: { Authorization: `Bearer ${state.token}` },
+				});
 
+				// Commit the fetched trades to the state
+				commit("setTrades", response.data);
+				debouncedSuccessToast("Trades fetched successfully!");
+			} catch (error) {
+				const message = error.response?.data?.msg || "Error fetching trades.";
+				debouncedErrorToast(message);
+				console.error("Error fetching trades:", error);
+			}
+		},
+		async fetchTradesByAccount({ commit, state }, accountId) {
+			try {
+				// Make a request to fetch trades for the specified accountId
+				const response = await axios.get(`http://localhost:5000/api/trades/${accountId}`, {
+					headers: { Authorization: `Bearer ${state.token}` },
+				});
+
+				// Commit the fetched trades to the store
+				commit("setTrades", response.data); // Make sure you have a mutation to handle this
+			} catch (error) {
+				const message = error.response?.data?.msg || "Error fetching trades.";
+				debouncedErrorToast(message); // Show error message
+			}
+		},
+		// Action to fetch all summaries
+		async fetchAllSummaries({ commit, state }) {
+			try {
+				const response = await axios.get("http://localhost:5000/api/trades/summaries", {
+					headers: { Authorization: `Bearer ${state.token}` },
+				});
+				commit("setSummaries", response.data); // Store summaries in Vuex
+			} catch (error) {
+				console.error("Error fetching summaries:", error);
+			}
+		},
+		// Action to fetch filtered summaries
+		async fetchFilteredSummaries({ commit, state }, { minProfit, maxProfit, minTrades, maxTrades, date }) {
+			try {
+				const response = await axios.get("http://localhost:5000/api/trades/summaries/filter", {
+					headers: { Authorization: `Bearer ${state.token}` },
+					params: { minProfit, maxProfit, minTrades, maxTrades, date },
+				});
+				commit("setSummaries", response.data); // Store filtered summaries in Vuex
+			} catch (error) {
+				console.error("Error fetching filtered summaries:", error);
+			}
+		},
 		// Fetch all brokers from the backend
 		async fetchBrokers({ commit }) {
 			try {
@@ -262,21 +337,25 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-
 		// Create a new broker in the backend
-		async createBrokerAction({ commit }, brokerData) {
+		async createBrokerAction({ commit, state }, brokerData) {
 			try {
-				const response = await axios.post("http://localhost:5000/api/brokers", brokerData);
+				// Include token in the headers if the user is authenticated
+				const response = await axios.post("http://localhost:5000/api/brokers", brokerData, {
+					headers: {
+						Authorization: `Bearer ${state.token}`, // Ensure the token is in the state
+					},
+				});
+
 				commit("addBroker", response.data);
 				debouncedSuccessToast(`Broker '${response.data.name}' created successfully!`);
 			} catch (error) {
 				console.error("Error creating broker:", error);
 				const message = error.response?.data?.msg || "Error creating broker.";
 				debouncedErrorToast(message);
-				throw error;
+				throw error; // Optional: Rethrow the error for further handling
 			}
 		},
-
 		// Store: Update Broker Action (with database request)
 		async updateBrokerAction({ commit }, { brokerId, broker }) {
 			try {
@@ -293,7 +372,6 @@ export default createStore({
 				throw error;
 			}
 		},
-
 		async deleteBroker() {
 			try {
 				const broker = this.brokers.find((b) => b._id === this.selectedBroker);
@@ -313,7 +391,6 @@ export default createStore({
 				}
 			}
 		},
-
 		// Add a new account type to an existing broker
 		async addAccountAction({ dispatch, state }, { brokerId, account }) {
 			try {
@@ -335,7 +412,6 @@ export default createStore({
 				}
 			}
 		},
-
 		// Update an account type for a broker
 		async updateAccountAction({ dispatch, state }, { brokerId, account }) {
 			try {
@@ -360,7 +436,6 @@ export default createStore({
 				throw error;
 			}
 		},
-
 		async deleteAccountAction({ dispatch, state }, { brokerId, accountId }) {
 			try {
 				await axios.delete(`http://localhost:5000/api/brokers/${brokerId}/accounts/${accountId}`, {
@@ -379,7 +454,6 @@ export default createStore({
 				}
 			}
 		},
-
 		// Fetch the broker based on account type
 		async fetchBrokerByAccountType({ commit }, accountType) {
 			try {
@@ -391,7 +465,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-
 		// Logout action to clear the state
 		logout({ commit }, router) {
 			// Clear the state
@@ -415,98 +488,11 @@ export default createStore({
 		getBrokers: (state) => state.brokers,
 		getAccounts: (state) => state.accounts,
 		getBrokerByAccountType(state) {
-			return state.selectedBrokerDetails; // Getter for the broker details by account type
+			return state.selectedBrokerDetails;
 		},
+		getSummaries(state) {
+			return state.summaries;
+		},
+		getOrdersByAccount: (state) => state.ordersByAccount,
 	},
 });
-
-function detectTrades(orders) {
-	orders.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-	const trades = [];
-	const positions = {}; // Track positions by symbol and account
-
-	for (const order of orders) {
-		const key = `${order.symbol}-${order.account}`;
-
-		if (!positions[key]) {
-			positions[key] = {
-				avgPrice: 0,
-				position: 0,
-			};
-		}
-
-		const currentPosition = positions[key];
-
-		if (order.side === "buy" || order.side === "BOT") {
-			if (currentPosition.position < 0) {
-				// Covering a short position
-				let quantityToCover = Math.min(-currentPosition.position, order.quantity);
-				let remainingQuantity = order.quantity - quantityToCover;
-
-				// Calculate profit/loss for covering shorts
-				const profitLoss = (currentPosition.avgPrice - order.price) * quantityToCover;
-
-				trades.push({
-					symbol: order.symbol,
-					account: order.account,
-					quantity: quantityToCover,
-					shortPrice: currentPosition.avgPrice,
-					coverPrice: order.price,
-					side: "short_cover",
-					date: order.date, // Adding date
-					profitLoss: profitLoss,
-				});
-
-				currentPosition.position += quantityToCover; // Reduce short position
-
-				// If there is remaining quantity, it is now a new long position
-				if (remainingQuantity > 0) {
-					currentPosition.avgPrice = order.price; // Set avg price for the new long position
-					currentPosition.position += remainingQuantity; // Add to the position
-				}
-			} else {
-				// Adding to a long position or initiating a new one
-				const newTotalQuantity = currentPosition.position + order.quantity;
-				currentPosition.avgPrice = (currentPosition.avgPrice * currentPosition.position + order.price * order.quantity) / newTotalQuantity;
-				currentPosition.position = newTotalQuantity;
-			}
-		} else if (order.side === "sell" || order.side === "SLD") {
-			if (currentPosition.position > 0) {
-				// Selling from a long position
-				let quantityToSell = Math.min(currentPosition.position, order.quantity);
-				let remainingQuantity = order.quantity - quantityToSell;
-
-				// Calculate profit/loss for reducing longs
-				const profitLoss = (order.price - currentPosition.avgPrice) * quantityToSell;
-
-				trades.push({
-					symbol: order.symbol,
-					account: order.account,
-					quantity: quantityToSell,
-					buyPrice: currentPosition.avgPrice,
-					sellPrice: order.price,
-					side: "long_sell",
-					date: order.date, // Adding date
-					profitLoss: profitLoss,
-				});
-
-				currentPosition.position -= quantityToSell; // Reduce long position
-
-				// If there is remaining quantity, it is now a short position
-				if (remainingQuantity > 0) {
-					currentPosition.avgPrice = order.price; // Set avg price for the new short position
-					currentPosition.position -= remainingQuantity; // Move into a short position
-				}
-			} else {
-				// Initiating or adding to a short position
-				const newTotalQuantity = currentPosition.position - order.quantity;
-				currentPosition.avgPrice =
-					(Math.abs(currentPosition.avgPrice * currentPosition.position) + order.price * order.quantity) / Math.abs(newTotalQuantity);
-				currentPosition.position = newTotalQuantity;
-			}
-		}
-	}
-
-	return trades; // Return the array directly
-}

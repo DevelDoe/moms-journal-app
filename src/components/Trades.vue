@@ -100,11 +100,8 @@ export default {
 			filterDate: "", // Stores the selected date for filtering
 			isLoading: true, // Loading state
 			tradesLoaded: false, // Ensure trades are loaded before filtering
-			socket: null, // WebSocket instance
-			gptResponse: "", // Store the AI analysis from the WebSocket server
 			rawFilteredTrades: [], // Rename this property
 			historicalTrades: [], // Historical trades
-			username: "",
 			hasCorruptData: false,
 		};
 	},
@@ -121,10 +118,10 @@ export default {
 		TradesProfitChart,
 	},
 	async mounted() {
-		// Fetch orders and trades when the component is mounted
-		await this.fetchOrders();
+		// Fetch trades and historical trades when the component is mounted
 		await this.fetchTrades();
 		await this.fetchHistoricalTrades();
+		await this.fetchSummaries();
 		this.isLoading = false;
 	},
 	computed: {
@@ -132,7 +129,6 @@ export default {
 			const tradesData = this.$store.getters.getTrades;
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
-
 		// Filter trades by selected date
 		filteredTrades() {
 			this.hasCorruptData = false; // Reset the flag
@@ -160,19 +156,20 @@ export default {
 				return formattedFilterDate === formattedTradeDate;
 			});
 		},
-
+		// Fetch the summaries from Vuex store
+		summaries() {
+			return this.$store.getters.getSummaries || {};
+		},
 		// Total Profit/Loss (sum of all profits and losses)
 		totalProfitLoss() {
 			return this.filteredTrades.reduce((total, trade) => total + trade.profitLoss, 0);
 		},
-
 		// Accuracy: percentage of winning trades
 		accuracy() {
 			const totalTrades = this.filteredTrades.length;
 			const wins = this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
 			return totalTrades > 0 ? (wins / totalTrades) * 100 : 0;
 		},
-
 		// Profit-to-Loss Ratio: total profit divided by total loss
 		profitToLossRatio() {
 			const totalProfit = this.filteredTrades.filter((trade) => trade.profitLoss > 0).reduce((sum, trade) => sum + trade.profitLoss, 0);
@@ -180,17 +177,14 @@ export default {
 			if (totalLoss === 0) return "Infinity";
 			return (totalProfit / totalLoss).toFixed(2);
 		},
-
 		// Number of winning trades
 		wins() {
 			return this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
 		},
-
 		// Number of losing trades
 		losses() {
 			return this.filteredTrades.filter((trade) => trade.profitLoss < 0).length;
 		},
-
 		// Total number of trades
 		totalTrades() {
 			return this.filteredTrades.length;
@@ -219,7 +213,6 @@ export default {
 
 			return { minHour, maxHour, tradesByHour };
 		},
-
 		// Format trades by hour chart data for active hours only
 		tradesByHourChartData() {
 			const { minHour, maxHour, tradesByHour } = this.tradesByHour;
@@ -254,7 +247,6 @@ export default {
 
 			return { minMinute, maxMinute, tradesByMinute };
 		},
-
 		// Format the data to be used in the chart, only for active minute range
 		tradesByMinuteChartData() {
 			const { minMinute, maxMinute, tradesByMinute } = this.tradesByMinute;
@@ -366,7 +358,6 @@ export default {
 
 			return buckets;
 		},
-
 		profitLossDistributionChartData() {
 			const distribution = this.profitLossDistribution;
 			return {
@@ -452,15 +443,12 @@ export default {
 				tradeCountData,
 			};
 		},
-
 		cumulativeProfitLabels() {
 			return this.cumulativeProfitData.labels;
 		},
-
 		cumulativeProfitValues() {
 			return this.cumulativeProfitData.profitData;
 		},
-
 		cumulativeTradeCountValues() {
 			return this.cumulativeProfitData.tradeCountData;
 		},
@@ -533,29 +521,17 @@ export default {
 				tradeCountData,
 			};
 		},
-
 		tradeProfitLabels() {
 			return this.tradeProfitAndTradeCountData.labels;
 		},
-
 		tradeProfitValues() {
 			return this.tradeProfitAndTradeCountData.profitData;
 		},
-
 		tradeTradeCountValues() {
 			return this.tradeProfitAndTradeCountData.tradeCountData;
 		},
 	},
 	methods: {
-		// Fetch orders from Vuex store
-		async fetchOrders() {
-			try {
-				await this.$store.dispatch("fetchOrders"); // Fetch orders first
-			} catch (error) {
-				console.error("Error fetching orders:", error);
-			}
-		},
-
 		// Fetch trades from Vuex store
 		async fetchTrades() {
 			try {
@@ -564,7 +540,14 @@ export default {
 				console.error("Error fetching trades:", error);
 			}
 		},
-
+		// Fetch summaries from Vuex store
+		async fetchSummaries() {
+			try {
+				await this.$store.dispatch("fetchAllSummaries");
+			} catch (error) {
+				console.error("Error fetching summaries:", error);
+			}
+		},
 		async fetchHistoricalTrades() {
 			const token = localStorage.getItem("token");
 			try {
