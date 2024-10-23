@@ -14,7 +14,7 @@
 				<li v-if="isAuthenticated"><router-link to="/new-order">New Order</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/trades">Trades</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/Reports">Reports</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/WebSocketClient">WebSocketClient</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/update-profile">Update Profile</router-link></li>
 

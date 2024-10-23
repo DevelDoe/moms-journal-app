@@ -15,7 +15,7 @@ const About = () => import("../components/About.vue");
 const NewOrder = () => import("../components/NewOrder.vue");
 const OrdersList = () => import("../components/OrdersList.vue");
 const UploadOrders = () => import("../components/UploadOrders.vue");
-const Trades = () => import("../components/Trades.vue");
+const Reports = () => import("../components/Reports.vue");
 const WebSocketClient = () => import("../components/WebSocketClient.vue");
 const CreateBroker = () => import("../components/CreateBroker.vue");
 const UpdateProfile = () => import("../components/UpdateProfile.vue");
@@ -33,7 +33,7 @@ const routes = [
 	{ path: "/new-order", component: NewOrder, meta: { requiresAuth: true } },
 	{ path: "/orders", component: OrdersList, meta: { requiresAuth: true } },
 	{ path: "/upload-orders", component: UploadOrders, meta: { requiresAuth: true } },
-	{ path: "/Trades", component: Trades, meta: { requiresAuth: true } },
+	{ path: "/Reports", component: Reports, meta: { requiresAuth: true } },
 	{ path: "/WebSocketClient", component: WebSocketClient, meta: { requiresAuth: true } },
 	{ path: "/update-profile", component: UpdateProfile, meta: { requiresAuth: true } }, 
 	{ path: "/create-broker", component: CreateBroker, meta: { requiresAuth: true, requiresAdmin: true } }, 

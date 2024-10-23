@@ -1,7 +1,7 @@
-<!-- ./src/components/Trades.vue -->
+<!-- ./src/components/Reports.vue -->
 <template>
 	<div class="trades">
-		<h1>Trades Overview</h1>
+		<h1>Reports</h1>
 
 		<!-- Date Picker for Filtering -->
 		<div class="date-filter">
@@ -24,10 +24,10 @@
 
 		<div v-else>
 			<!-- Summary Section -->
-			<TradesSummary :totalTrades="totalTrades" :accuracy="accuracy" :profitToLossRatio="profitToLossRatio" :totalProfitLoss="totalProfitLoss" />
+			<!-- <TradesSummary :totalTrades="totalTrades" :accuracy="accuracy" :profitToLossRatio="profitToLossRatio" :totalProfitLoss="totalProfitLoss" /> -->
 
 			<!-- WebSocket Analyze Component -->
-			<AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" />
+			<!-- <AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" /> -->
 
 			<!-- Trades.vue -->
 			<TradesProfitChart
@@ -120,8 +120,8 @@ export default {
 	async mounted() {
 		// Fetch trades and historical trades when the component is mounted
 		await this.fetchTrades();
-		await this.fetchHistoricalTrades();
-		await this.fetchSummaries();
+		// await this.fetchHistoricalTrades();
+		// await this.fetchSummaries();
 		this.isLoading = false;
 	},
 	computed: {
@@ -131,25 +131,29 @@ export default {
 		},
 		// Filter trades by selected date
 		filteredTrades() {
-			this.hasCorruptData = false; // Reset the flag
-
-			if (!this.tradesLoaded) return [];
-
+			this.hasCorruptData = false; // Reset corrupt data flag
 			const validTrades = this.trades.filter((trade) => {
 				const isValid =
 					trade &&
 					trade.symbol &&
-					trade.account &&
+					trade.accountId && // Added this line to check for the presence of accountId
 					trade.buyPrice !== undefined &&
 					trade.sellPrice !== undefined &&
 					trade.profitLoss !== undefined &&
 					trade.date;
-				if (!isValid) this.hasCorruptData = true; // Mark if corrupted data found
+
+				if (!isValid) {
+					this.hasCorruptData = true; // Mark if there's corrupt data
+					return false;
+				}
+
 				return isValid;
 			});
-
-			if (!this.filterDate) return validTrades;
-
+			// If no date is selected, return all valid trades
+			if (!this.filterDate) {
+				return validTrades;
+			}
+			// Filter by date if filterDate is set
 			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
 			return validTrades.filter((trade) => {
 				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];

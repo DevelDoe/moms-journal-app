@@ -94,7 +94,7 @@ export default createStore({
 		},
 		setOrdersByAccount(state, orders) {
 			state.ordersByAccount = orders; // Set the fetched orders in state
-		  },
+		},
 	},
 	actions: {
 		async loginAction({ commit, dispatch }, { email, password }) {
@@ -233,9 +233,10 @@ export default createStore({
 				// Log the error to catch any issues
 				console.error("Error fetching orders:", error);
 				throw error;
+			} finally {
+				// Perform any cleanup or reset loading state if needed
 			}
 		},
-
 		async createOrder({ commit, state }, orderData) {
 			try {
 				const response = await axios.post("http://localhost:5000/api/orders", orderData, {
@@ -290,16 +291,16 @@ export default createStore({
 		},
 		async fetchTradesByAccount({ commit, state }, accountId) {
 			try {
-				// Make a request to fetch trades for the specified accountId
 				const response = await axios.get(`http://localhost:5000/api/trades/${accountId}`, {
 					headers: { Authorization: `Bearer ${state.token}` },
 				});
 
-				// Commit the fetched trades to the store
-				commit("setTrades", response.data); // Make sure you have a mutation to handle this
+				const trades = response.data; // Assuming this is where the trades are stored
+				commit("setTrades", trades); // Commit to Vuex state
+				return trades; // <-- Make sure to return the trades here
 			} catch (error) {
-				const message = error.response?.data?.msg || "Error fetching trades.";
-				debouncedErrorToast(message); // Show error message
+				console.error("Error fetching trades:", error);
+				throw error;
 			}
 		},
 		// Action to fetch all summaries
