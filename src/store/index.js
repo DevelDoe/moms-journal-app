@@ -19,7 +19,6 @@ export default createStore({
 		orders: [],
 		trades: [],
 		brokers: [],
-		accounts: [],
 		selectedBrokerDetails: null,
 		summaries: [],
 		ordersByAccount: [],
@@ -160,7 +159,6 @@ export default createStore({
 				throw error; // Re-throw for further handling if needed
 			}
 		},
-		// Fetch the user's accounts from the backend
 		async addUserAccount({ commit, state }, accountData) {
 			try {
 				const brokerResponse = await axios.get(`http://localhost:5000/api/brokers/${accountData.brokerId}`);
@@ -188,7 +186,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		// Remove an account from the user's profile
 		async removeUserAccount({ commit, state }, accountId) {
 			try {
 				const response = await axios.delete(`http://localhost:5000/api/user/remove-account/${accountId}`, {
@@ -201,7 +198,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		// Fetch user orders from the backend
 		async fetchOrders({ commit, dispatch, state }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/orders", {
@@ -249,7 +245,6 @@ export default createStore({
 				debouncedErrorToast(message); // Debounced error toast
 			}
 		},
-		// Function to create multiple orders
 		async createMultipleOrders({ commit, state }, { orders }) {
 			try {
 				// Send orders directly, assuming accountId is already included in the parsed order
@@ -272,7 +267,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		// Fetch trades from the backend
 		async fetchTrades({ commit, state }) {
 			try {
 				// Make an API request to fetch trades for the user
@@ -303,7 +297,6 @@ export default createStore({
 				throw error;
 			}
 		},
-		// Action to fetch all summaries
 		async fetchAllSummaries({ commit, state }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/trades/summaries", {
@@ -314,7 +307,6 @@ export default createStore({
 				console.error("Error fetching summaries:", error);
 			}
 		},
-		// Action to fetch filtered summaries
 		async fetchFilteredSummaries({ commit, state }, { minProfit, maxProfit, minTrades, maxTrades, date }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/trades/summaries/filter", {
@@ -326,7 +318,6 @@ export default createStore({
 				console.error("Error fetching filtered summaries:", error);
 			}
 		},
-		// Fetch all brokers from the backend
 		async fetchBrokers({ commit }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/brokers");
@@ -338,7 +329,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		// Create a new broker in the backend
 		async createBrokerAction({ commit, state }, brokerData) {
 			try {
 				// Include token in the headers if the user is authenticated
@@ -357,7 +347,6 @@ export default createStore({
 				throw error; // Optional: Rethrow the error for further handling
 			}
 		},
-		// Store: Update Broker Action (with database request)
 		async updateBrokerAction({ commit }, { brokerId, broker }) {
 			try {
 				const response = await axios.put(`http://localhost:5000/api/brokers/${brokerId}`, broker);
@@ -373,89 +362,27 @@ export default createStore({
 				throw error;
 			}
 		},
-		async deleteBroker() {
+		async deleteBrokerAction({ commit, state }, brokerId) {
 			try {
-				const broker = this.brokers.find((b) => b._id === this.selectedBroker);
-				const brokerName = broker ? broker.name : "Unknown broker";
-
-				await this.$store.dispatch("deleteBroker", this.selectedBroker);
-				this.selectedBroker = ""; // Reset selection
-				this.showAccountForm = false;
-				await this.$store.dispatch("fetchBrokers"); // Refresh broker list
-
-				debouncedSuccessToast(`Broker '${brokerName}' deleted successfully!`);
+				// Make the DELETE request to the backend
+				await axios.delete(`http://localhost:5000/api/brokers/${brokerId}`, {
+					headers: {
+						Authorization: `Bearer ${state.token}`, // Ensure the token is in the state
+					},
+				});
+	
+				// Fetch updated brokers after deletion
+				await this.dispatch("fetchBrokers"); 
+	
+				debouncedSuccessToast(`Broker deleted successfully!`);
 			} catch (error) {
 				const message = error.response?.data?.msg || "Error deleting broker.";
 				debouncedErrorToast(message);
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error deleting broker:", error);
-				}
+	
+				console.error("Error deleting broker:", error);
+				throw error; // Re-throw the error for further handling in the component
 			}
 		},
-		// Add a new account type to an existing broker
-		async addAccountAction({ dispatch, state }, { brokerId, account }) {
-			try {
-				const response = await axios.post(`http://localhost:5000/api/brokers/${brokerId}/accounts`, account, {
-					headers: {
-						Authorization: `Bearer ${state.token}`, // Use state.token correctly here
-					},
-				});
-
-				// After successfully adding the account, fetch all brokers to refresh the store
-				await dispatch("fetchBrokers");
-
-				debouncedSuccessToast(`Account '${response.data.type}' added successfully!`);
-			} catch (error) {
-				const message = error.response?.data?.msg || "Error adding account.";
-				debouncedErrorToast(message);
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error adding account to broker:", error);
-				}
-			}
-		},
-		// Update an account type for a broker
-		async updateAccountAction({ dispatch, state }, { brokerId, account }) {
-			try {
-				const response = await axios.put(
-					`http://localhost:5000/api/brokers/${brokerId}/accounts/${account._id}`, // Use account ID here
-					account,
-					{
-						headers: {
-							Authorization: `Bearer ${state.token}`, // Include token in the header
-						},
-					}
-				);
-
-				// After successfully updating the account, refresh the brokers
-				await dispatch("fetchBrokers");
-
-				debouncedSuccessToast(`Account '${account.type}' updated successfully!`);
-			} catch (error) {
-				console.error("Error updating account:", error);
-				const message = error.response?.data?.msg || "Error updating account.";
-				debouncedErrorToast(message);
-				throw error;
-			}
-		},
-		async deleteAccountAction({ dispatch, state }, { brokerId, accountId }) {
-			try {
-				await axios.delete(`http://localhost:5000/api/brokers/${brokerId}/accounts/${accountId}`, {
-					headers: {
-						Authorization: `Bearer ${state.token}`,
-					},
-				});
-
-				await dispatch("fetchBrokers"); // Refresh brokers after deletion
-				debouncedSuccessToast("Account deleted successfully!");
-			} catch (error) {
-				const message = error.response?.data?.msg || "Error deleting account.";
-				debouncedErrorToast(message);
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error deleting account:", error);
-				}
-			}
-		},
-		// Fetch the broker based on account type
 		async fetchBrokerByAccountType({ commit }, accountType) {
 			try {
 				const response = await axios.get(`/api/brokers/account/${accountType}`);
@@ -466,7 +393,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		// Logout action to clear the state
 		logout({ commit }, router) {
 			// Clear the state
 			commit("clearState");
@@ -487,13 +413,7 @@ export default createStore({
 		getOrders: (state) => state.orders,
 		getTrades: (state) => state.trades,
 		getBrokers: (state) => state.brokers,
-		getAccounts: (state) => state.accounts,
-		getBrokerByAccountType(state) {
-			return state.selectedBrokerDetails;
-		},
-		getSummaries(state) {
-			return state.summaries;
-		},
+		getSummaries: (state) => state.summaries,
 		getOrdersByAccount: (state) => state.ordersByAccount,
 	},
 });

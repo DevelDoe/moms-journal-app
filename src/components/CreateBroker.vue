@@ -11,7 +11,7 @@
 			</select>
 		</div>
 
-		<!-- Button to add a new broker (only visible when no broker is selected) -->
+		<!-- Button to add a new broker -->
 		<div v-if="!showBrokerForm">
 			<button @click="toggleBrokerForm">Add New Broker</button>
 		</div>
@@ -19,7 +19,7 @@
 		<!-- Broker creation/update form -->
 		<div v-if="showBrokerForm">
 			<h3>{{ selectedBroker ? "Update" : "Add" }} Broker</h3>
-			<form @submit.prevent="selectedBroker ? updateBroker() : createBroker()" novalidate>
+			<form @submit.prevent="saveBroker" novalidate>
 				<div>
 					<label for="brokerName">Broker Name</label>
 					<input v-model="newBroker.name" id="brokerName" required />
@@ -29,98 +29,81 @@
 					<input v-model="newBroker.description" id="brokerDescription" />
 				</div>
 
+				<!-- Account Section -->
+				<h3>Manage Accounts</h3>
+				<div v-for="(account, index) in newBroker.accountTypes" :key="index" style="margin-bottom: 15px">
+					<div>
+						<label for="accountType">Account Type</label>
+						<input v-model="account.type" :id="'accountType' + index" required />
+					</div>
+					<div>
+						<label for="ratePerShare">Rate Per Share ($)</label>
+						<input v-model="account.rate_per_share" :id="'ratePerShare' + index" type="number" step="0.0001" />
+					</div>
+
+					<!-- ECN Route Management for this account -->
+					<h4>ECN Routes</h4>
+					<div v-for="(route, routeIndex) in account.ecn_routes" :key="routeIndex" style="margin-bottom: 10px">
+						<div>
+							<label for="routeName">Route Name</label>
+							<input v-model="route.name" :id="'routeName' + routeIndex" />
+						</div>
+						<div>
+							<label for="fees">Fees</label>
+							<input v-model="route.fees" :id="'fees' + routeIndex" type="number" step="0.0001" />
+						</div>
+						<div>
+							<label for="extendedFees">Extended Hours Fees</label>
+							<input v-model="route.extended_fees" :id="'extendedFees' + routeIndex" type="number" step="0.0001" />
+						</div>
+						<button @click="removeRoute(index, routeIndex)" type="button" style="background-color: red; color: white">Remove Route</button>
+					</div>
+					<button @click="addRoute(index)" type="button">Add New Route</button>
+
+					<!-- Remove Account -->
+					<button @click="removeAccount(index)" type="button" style="background-color: red; color: white">Remove Account</button>
+				</div>
+				<button @click="addAccount" type="button">Add New Account</button>
+
+				<!-- Platform Section -->
+				<h3>Manage Platforms</h3>
+				<div v-for="(platform, platformIndex) in newBroker.platforms" :key="platformIndex" style="margin-bottom: 15px">
+					<div>
+						<label for="platformName">Platform Name</label>
+						<input v-model="platform.platform_name" :id="'platformName' + platformIndex" />
+					</div>
+
+					<!-- Market Data for the platform -->
+					<h4>Market Data</h4>
+					<div v-for="(marketData, mdIndex) in platform.market_data" :key="mdIndex" style="margin-bottom: 10px">
+						<div>
+							<label for="marketDataName">Market Data Name</label>
+							<input v-model="marketData.name" :id="'marketDataName' + mdIndex" />
+						</div>
+						<div>
+							<label for="nonProfessionalFee">Non-Professional Fee</label>
+							<input v-model="marketData.non_professional_fee" :id="'nonProfessionalFee' + mdIndex" type="number" step="0.01" />
+						</div>
+						<div>
+							<label for="professionalFee">Professional Fee</label>
+							<input v-model="marketData.professional_fee" :id="'professionalFee' + mdIndex" type="number" step="0.01" />
+						</div>
+						<button @click="removeMarketData(platformIndex, mdIndex)" type="button" style="background-color: red; color: white">
+							Remove Market Data
+						</button>
+					</div>
+					<button @click="addMarketData(platformIndex)" type="button">Add New Market Data</button>
+					<button @click="removePlatform(platformIndex)" type="button" style="background-color: red; color: white">Remove Platform</button>
+				</div>
+				<button @click="addPlatform" type="button">Add New Platform</button>
+
 				<button type="submit">{{ selectedBroker ? "Update" : "Create" }} Broker</button>
 				<button type="button" @click="cancelBrokerCreation">Cancel</button>
-			</form>
-		</div>
 
-		<!-- Dropdown to select an existing account for the selected broker -->
-		<div v-if="selectedBroker && brokerAccounts.length > 0">
-			<h3>Select Account Type</h3>
-			<select v-model="selectedAccount" id="accountSelect" @change="accountChanged">
-				<option disabled value="">Please select an account</option>
-				<option v-for="account in brokerAccounts" :key="account.type" :value="account">{{ account.type }}</option>
-			</select>
-		</div>
-
-		<!-- Button to add a new account (only visible when a broker is selected) -->
-		<div v-if="selectedBroker && !selectedAccount">
-			<button @click="toggleAccountForm">Add New Account</button>
-		</div>
-
-		<!-- Add/Update Account section (form only visible when the 'Add New Account' button is clicked or an account is selected) -->
-		<div v-if="showAccountForm || selectedAccount">
-			<h3>{{ selectedAccount ? "Update" : "Add" }} Account for Broker</h3>
-			<form @submit.prevent="selectedAccount ? updateAccount() : addAccount()" novalidate>
-				<div>
-					<label for="accountType">Account Type</label>
-					<input v-model="newAccount.type" id="accountType" placeholder="Enter account type" required />
+				<!-- Delete broker button: shown only when updating an existing broker -->
+				<div v-if="selectedBroker && showBrokerForm">
+					<button type="button" @click="deleteBroker" style="background-color: red; color: white">Delete Broker</button>
 				</div>
-				<div>
-					<label for="ratePerShare">Rate Per Share</label>
-					<input v-model="newAccount.rate_per_share" id="ratePerShare" type="number" step="0.0001" required />
-				</div>
-				<div>
-					<label for="minAmount">Minimum Commission</label>
-					<input v-model="newAccount.min_amount" id="minAmount" type="number" required />
-				</div>
-				<div>
-					<label for="maxAmount">Maximum Commission</label>
-					<input v-model="newAccount.max_amount" id="maxAmount" type="number" required />
-				</div>
-				<div>
-					<label for="percentageRate">Percentage Commission</label>
-					<input v-model="newAccount.percentage_rate" id="percentageRate" type="number" step="0.01" required />
-				</div>
-				<div>
-					<label for="ecnFees">ECN Fees</label>
-					<input v-model="newAccount.ecn_fees" id="ecnFees" type="number" step="0.0001" required />
-				</div>
-				<div>
-					<label for="inactivityFee">Inactivity Fee</label>
-					<input v-model="newAccount.inactivity_fee" id="inactivityFee" type="number" required />
-				</div>
-				<div>
-					<label for="marketDataFee">Market Data Fee</label>
-					<input v-model="newAccount.market_data_fee" id="marketDataFee" type="number" required />
-				</div>
-				<div>
-					<label for="platformFee">Platform Fee</label>
-					<input v-model="newAccount.platform_fee" id="platformFee" type="number" required />
-				</div>
-				<div>
-					<label for="withdrawalFee">Withdrawal Fee</label>
-					<input v-model="newAccount.withdrawal_fee" id="withdrawalFee" type="number" required />
-				</div>
-				<div>
-					<label for="extendedHoursTradingFee">Extended Hours Trading Fee</label>
-					<input v-model="newAccount.extended_hours_trading_fee" id="extendedHoursTradingFee" type="number" step="0.0001" required />
-				</div>
-				<div>
-					<label for="minimumDeposit">Minimum Deposit</label>
-					<input v-model="newAccount.minimumDeposit" id="minimumDeposit" type="number" required />
-				</div>
-				<div>
-					<label for="leverage">Leverage</label>
-					<input v-model="newAccount.leverage" id="leverage" type="number" required />
-				</div>
-				<div>
-					<label for="regulatoryFee">Regulatory Fee</label>
-					<input v-model="newAccount.regulatory_fee" id="regulatory_fee" type="number" required />
-				</div>
-				<div>
-					<label for="overnightFee">Overnight Fee</label>
-					<input v-model="newAccount.overnight_fee" id="overnightFee" type="number" required />
-				</div>
-				<button type="submit">{{ selectedAccount ? "Update" : "Add" }} Account</button>
-				<button
-					type="button"
-					v-if="selectedAccount"
-					@click="deleteAccount(selectedAccount._id)"
-					style="margin-left: 10px; background-color: red; color: white"
-				>
-					Delete
-				</button>
 			</form>
 		</div>
 	</div>
@@ -133,29 +116,12 @@ export default {
 	data() {
 		return {
 			selectedBroker: "", // To hold the selected broker ID
-			selectedAccount: null, // Holds the selected account object
 			showBrokerForm: false, // Toggle for showing the broker creation form
-			showAccountForm: false, // Toggle for showing the account creation form
 			newBroker: {
 				name: "",
 				description: "",
-			},
-			newAccount: {
-				type: "", // User will input the account type
-				rate_per_share: 0,
-				min_amount: 0,
-				max_amount: 0,
-				percentage_rate: 0,
-				ecn_fees: 0,
-				inactivity_fee: 0,
-				market_data_fee: 0,
-				platform_fee: 0,
-				withdrawal_fee: 0,
-				extended_hours_trading_fee: 0,
-				minimumDeposit: 0,
-				leverage: 0,
-				regulatory_fee: 0,
-				overnight_fee: 0,
+				accountTypes: [], // Array of account types (each with ECN routes)
+				platforms: [], // Array of platforms
 			},
 		};
 	},
@@ -170,139 +136,144 @@ export default {
 		},
 	},
 	methods: {
-		...mapActions(["createBrokerAction", "updateBrokerAction", "addAccountAction", "updateAccountAction", ""]),
-		async createBroker() {
-			try {
-				await this.createBrokerAction(this.newBroker);
-				this.showBrokerForm = false;
-				this.resetBrokerForm();
-			} catch (error) {
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error adding broker:", error);
-				}
-			}
+		...mapActions([
+			"createBrokerAction",
+			"updateBrokerAction",
+			"fetchBrokers",
+			"deleteBrokerAction", // Action for deleting broker
+		]),
+
+		// Method to toggle the broker form
+		toggleBrokerForm() {
+			this.resetBrokerForm();
+			this.showBrokerForm = true;
 		},
-		async updateBroker() {
+
+		// Method to save the broker (either create or update)
+		async saveBroker() {
 			try {
-				const payload = { brokerId: this.selectedBroker, broker: this.newBroker };
-				await this.updateBrokerAction(payload);
+				const payload = {
+					brokerId: this.selectedBroker,
+					broker: this.newBroker, // Send the entire broker object including accounts, routes, platforms
+				};
+
+				if (this.selectedBroker) {
+					// Update broker
+					await this.updateBrokerAction(payload);
+				} else {
+					// Create broker
+					await this.createBrokerAction(this.newBroker);
+				}
+
 				this.showBrokerForm = false;
 				this.resetBrokerForm();
 			} catch (error) {
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error updating broker:", error);
-				}
+				console.error("Error saving broker:", error);
 			}
 		},
 
-		async addAccount() {
-			try {
-				const payload = { brokerId: this.selectedBroker, account: this.newAccount };
-				await this.addAccountAction(payload);
-				this.showAccountForm = false;
-				this.resetAccountForm();
-			} catch (error) {
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error adding account:", error);
-				}
-			}
-		},
-		async updateAccount() {
-			try {
-				const payload = { brokerId: this.selectedBroker, account: this.newAccount };
-				await this.updateAccountAction(payload);
-				this.selectedAccount = null;
-				this.showAccountForm = false;
-				this.resetAccountForm();
-			} catch (error) {
-				if (process.env.NODE_ENV === "development") {
-					console.error("Error updating account:", error);
-				}
-			}
-		},
-		async deleteAccount(accountId) {
-			const payload = { brokerId: this.selectedBroker, accountId }; // Use accountId instead of accountType
-			await this.$store.dispatch("deleteAccountAction", payload);
-			this.selectedAccount = null; // Reset selected account after deletion
-			this.$store.dispatch("fetchBrokers"); // Refresh brokers list
-		},
-		toggleBrokerForm() {
-			this.resetBrokerForm();
-			this.showBrokerForm = true; // Ensure the broker form is shown
-		},
-		toggleAccountForm() {
-			this.selectedAccount = null; // Reset selected account
-			this.resetAccountForm();
-			this.showAccountForm = true; // Ensure the account form is shown
-		},
-		cancelBrokerCreation() {
-			this.showBrokerForm = false;
-			this.resetBrokerForm();
-			this.selectedBroker = "";
-		},
-		cancelAccountCreation() {
-			this.showAccountForm = false;
-			this.selectedAccount = null;
-			this.resetAccountForm();
-		},
-		resetBrokerForm() {
-			this.newBroker = { name: "", description: "" };
-		},
-		resetAccountForm() {
-			this.newAccount = {
+		// Add new account to the broker
+		addAccount() {
+			this.newBroker.accountTypes.push({
 				type: "",
 				rate_per_share: 0,
 				min_amount: 0,
 				max_amount: 0,
 				percentage_rate: 0,
-				ecn_fees: 0,
-				inactivity_fee: 0,
-				market_data_fee: 0,
-				platform_fee: 0,
-				withdrawal_fee: 0,
-				extended_hours_trading_fee: 0,
-				minimumDeposit: 0,
-				leverage: 0,
-				regulatory_fee: 0,
-				overnight_fee: 0,
+				ecn_routes: [], // Each account has its own array of ECN routes
+			});
+		},
+
+		// Remove an account from the broker
+		removeAccount(index) {
+			this.newBroker.accountTypes.splice(index, 1);
+		},
+
+		// Add new ECN route to a specific account
+		addRoute(accountIndex) {
+			this.newBroker.accountTypes[accountIndex].ecn_routes.push({
+				name: "",
+				fees: 0,
+				extended_fees: 0,
+			});
+		},
+
+		// Remove an ECN route from a specific account
+		removeRoute(accountIndex, routeIndex) {
+			this.newBroker.accountTypes[accountIndex].ecn_routes.splice(routeIndex, 1);
+		},
+
+		// Add new platform to the broker
+		addPlatform() {
+			this.newBroker.platforms.push({
+				platform_name: "",
+				market_data: [],
+			});
+		},
+
+		// Remove a platform from the broker
+		removePlatform(index) {
+			this.newBroker.platforms.splice(index, 1);
+		},
+
+		// Add new market data to a platform
+		addMarketData(platformIndex) {
+			this.newBroker.platforms[platformIndex].market_data.push({
+				name: "",
+				non_professional_fee: 0,
+				professional_fee: 0,
+			});
+		},
+
+		// Remove market data from a platform
+		removeMarketData(platformIndex, mdIndex) {
+			this.newBroker.platforms[platformIndex].market_data.splice(mdIndex, 1);
+		},
+
+		// Reset the broker form to default values
+		resetBrokerForm() {
+			this.newBroker = {
+				name: "",
+				description: "",
+				accountTypes: [],
+				platforms: [],
 			};
 		},
+
+		// Method to handle broker selection change
 		brokerChanged() {
 			const broker = this.brokers.find((b) => b._id === this.selectedBroker);
 			if (broker) {
-				this.newBroker = { name: broker.name, description: broker.description };
+				this.newBroker = { ...broker }; // Load the broker's data into the form for editing
 				this.showBrokerForm = true; // Show broker form for editing
 			}
-			this.showAccountForm = false;
-			this.selectedAccount = null;
 		},
-		accountChanged() {
-			if (this.selectedAccount) {
-				this.newAccount = { ...this.selectedAccount }; // Copy the selected account's data, including the _id
-				this.showAccountForm = true; // Show account form for editing
-			} else {
-				this.resetAccountForm(); // Reset the form if no account is selected
+
+		// Method to delete the selected broker
+		async deleteBroker() {
+			if (this.selectedBroker) {
+				try {
+					// Dispatch the Vuex action to delete the broker
+					await this.deleteBrokerAction(this.selectedBroker);
+
+					// Reset the form and clear the selection
+					this.resetBrokerForm();
+					this.showBrokerForm = false;
+					this.selectedBroker = ""; // Clear selection after deletion
+				} catch (error) {
+					console.error("Error deleting broker:", error);
+				}
 			}
+		},
+
+		// Method to cancel the broker creation or update
+		cancelBrokerCreation() {
+			this.showBrokerForm = false;
+			this.resetBrokerForm();
 		},
 	},
 	mounted() {
-		this.$store.dispatch("fetchBrokers");
+		this.fetchBrokers(); // Fetch brokers when the component is mounted
 	},
 };
 </script>
-
-<style scoped>
-form {
-	margin-bottom: 20px;
-}
-
-label {
-	display: block;
-	margin-bottom: 5px;
-}
-
-input {
-	margin-bottom: 10px;
-	padding: 5px;
-}
-</style>
