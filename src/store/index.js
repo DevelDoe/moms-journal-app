@@ -119,7 +119,9 @@ export default createStore({
 					headers: { Authorization: `Bearer ${state.token}` },
 				});
 				console.log("Orders Response:", response.data);
+
 				commit("setOrders", response.data);
+				
 				console.log("State after setOrders:", state.orders);
 			} catch (error) {
 				console.error("Error fetching orders:", error);
@@ -150,9 +152,9 @@ export default createStore({
 
 				// Fetch updated orders, trades, and summaries after successful order upload
 				await Promise.all([
-					dispatch("fetchOrders").then((res) => console.log("Fetched Orders:", res)),
-					dispatch("fetchTrades").then((res) => console.log("Fetched Trades:", res)),
-					dispatch("fetchAllSummaries").then((res) => console.log("Fetched Summaries:", res)),
+					dispatch("fetchOrders"),
+					dispatch("fetchTrades"),
+					dispatch("fetchAllSummaries"),
 				]);
 
 				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
