@@ -4,7 +4,8 @@
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
 				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
+					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you
+					periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
 				</div>
 			</span>
 		</div>
@@ -47,8 +48,8 @@ export default {
 	computed: {
 		cumulativeProfitData() {
 			if (!this.trades || this.trades.length === 0) {
-        return { labels: [], profitData: [], tradeCountData: [] };
-    }
+				return { labels: [], profitData: [], tradeCountData: [] };
+			}
 
 			let cumulativeProfit = 0;
 			let cumulativeTradeCount = 0;
