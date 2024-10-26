@@ -130,7 +130,6 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
-			console.log("Initial trades (proxy):", this.trades);
 
 			this.hasCorruptData = false; // Reset corrupt data flag
 
