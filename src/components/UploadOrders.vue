@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import ReportCumulativeProfit from "./partials/reports/FullScreenCulmReport.vue"; // Assuming this is the path
+import FullScreenCulmReport from "./partials/reports/FullScreenCulmReport.vue"; // Assuming this is the path
 
 export default {
 	components: { FullScreenCulmReport },
