@@ -155,8 +155,8 @@ export default {
 						splitLine: {
 							lineStyle: {
 								color: "#1E3E62", // Ensure the same color for consistency
-								width: 0,
-								type: "dashed",
+								width: 1,
+								type: "solid",
 							},
 						},
 					},
@@ -174,8 +174,8 @@ export default {
 						splitLine: {
 							lineStyle: {
 								color: "#1E3E62", // Ensure the same color for consistency
-								width: 0,
-								type: "dashed",
+								width: 1,
+								type: "solid",
 							},
 						},
 					},
