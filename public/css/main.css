@@ -1,18 +1,31 @@
 @font-face {
-  font-family: 'Montserrat';
-  src: url('/fonts/Montserrat-ExtraBold.woff') format('woff');
-  font-weight: 900;
-  font-style: normal;
+	font-family: "Montserrat";
+	src: url("/fonts/Montserrat-ExtraBold.woff") format("woff");
+	font-weight: 900;
+	font-style: normal;
 }
 
 body {
 	font-family: "Montserrat", sans-serif !important;
-	background-color: #fefefe;
-	color: #161616;
+	background-color: #0b192c;
+	color: #eaeaea;
 	font-family: "Arial", sans-serif;
 	font-size: 20px;
 	font-weight: 900;
 	margin: 0;
 	padding: 0;
 	width: 100%;
+}
+
+* {
+	box-sizing: border-box; /* Apply border-box globally */
+}
+
+#app {
+	display: flex;
+	min-height: 100vh;
+}
+.my-toast {
+	background-color: #ff6500; /* Background color */
+	color: #fff; /* Text color */
 }

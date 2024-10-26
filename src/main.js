@@ -27,7 +27,8 @@ const toastOptions = {
 	timeout: 4000,
 	closeOnClick: true,
 	pauseOnHover: true,
-};
+	toastClassName: "my-toast", // Add your custom class here
+  };
 
 const app = createApp(App);
 
