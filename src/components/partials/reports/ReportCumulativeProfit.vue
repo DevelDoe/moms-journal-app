@@ -181,7 +181,7 @@ export default {
 						yAxisIndex: 1,
 						itemStyle: { color: "#5470C6" },
 						smooth: true,
-						lineStyle: { width: 2 },
+						lineStyle: { width: 3 },
 					},
 				],
 				animationDuration: 5000, // Set animation duration in milliseconds
