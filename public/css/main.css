@@ -26,6 +26,6 @@ body {
 	min-height: 100vh;
 }
 .my-toast {
-	background-color: #ff6500; /* Background color */
-	color: #fff; /* Text color */
+	background-color: #ff6500 !important; /* Background color */
+	color: #0b192c !important; /* Text color */
 }
