@@ -119,7 +119,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: `Here is an report of your trades today :)`,
+					text: ``,
 				},
 				tooltip: {
 					trigger: "axis",
