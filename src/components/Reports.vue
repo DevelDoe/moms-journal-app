@@ -31,7 +31,7 @@
 
 			<ReportCumulativeProfit :trades="filteredTrades" />
 
-			<!-- <ReportTradesProfit :trades="filteredTrades" /> -->
+			<ReportTradesProfit :trades="filteredTrades" />
 
 			<!-- Profit/Loss Distribution Histogram -->
 			<!-- <ReportProfitLossHistogram
