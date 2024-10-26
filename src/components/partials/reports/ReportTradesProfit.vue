@@ -133,9 +133,7 @@ export default {
 				tooltip: {
 					trigger: "axis",
 					axisPointer: { type: "shadow" },
-					formatter: (params) => {
-						return params.map((param) => `${param.seriesName}: ${parseFloat(param.value).toFixed(2)}`).join("<br/>");
-					},
+					
 				},
 				legend: {
 					orient: "horizontal",
