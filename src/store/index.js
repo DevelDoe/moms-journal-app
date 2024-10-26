@@ -86,17 +86,18 @@ export default createStore({
 		},
 		async fetchUser({ commit, state }) {
 			try {
-				if (state.token) {
-					// Set the axios header for authorization
-					axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
-
-					// Use the /profile endpoint to fetch user information
-					const response = await axios.get("http://localhost:5000/api/user/profile");
-
-					// Commit the user information to Vuex
-					commit("setUser", response.data);
-					debouncedSuccessToast(`Welcome back, ${response.data.name}`);
+				// Decode token to check expiration (Optional, but helps to avoid extra requests)
+				const decodedToken = jwtDecode(state.token);
+				const isTokenExpired = decodedToken.exp * 1000 < Date.now();
+				if (isTokenExpired) {
+				  await dispatch("refreshToken"); // Refresh the token if expired
 				}
+
+				 // Set authorization header
+				 axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
+				 const response = await axios.get("http://localhost:5000/api/user/profile");
+				 commit("setUser", response.data);
+				
 			} catch (error) {
 				console.error("Failed to fetch user data:", error);
 				const message = error.response?.data?.msg || "Error fetching user.";
