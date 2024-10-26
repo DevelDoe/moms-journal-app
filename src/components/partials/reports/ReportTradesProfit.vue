@@ -4,9 +4,7 @@
 		<div class="chart-header">
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
 				>?
-				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart allows you to compare the number of trades you made with the profit or loss.
-				</div>
+				<div v-if="isTooltipVisible" class="tooltip-text">This chart allows you to compare the number of trades you made with the profit or loss.</div>
 			</span>
 		</div>
 		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
@@ -69,75 +67,75 @@ export default {
 	},
 	computed: {
 		tradeProfitAndTradeCountData() {
-		// Check if trades prop is defined and not empty
-		if (!this.trades || this.trades.length === 0) {
-			return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
-		}
+			// Check if trades prop is defined and not empty
+			if (!this.trades || this.trades.length === 0) {
+				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
+			}
 
-		// Sort the trades by date
-		const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
+			// Sort the trades by date
+			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-		const isSingleDay = this.filterDate !== ""; // Determine if filtering to a specific day
+			const isSingleDay = this.filterDate !== ""; // Determine if filtering to a specific day
 
-		const labels = [];
-		const profitData = [];
-		const tradeCountData = [];
+			const labels = [];
+			const profitData = [];
+			const tradeCountData = [];
 
-		if (isSingleDay) {
-			// Group trades by hour for the filtered day
-			const tradesByHour = sortedTrades.reduce((acc, trade) => {
-				const date = new Date(trade.date);
-				const hourKey = `${date.getHours()}:00`; // e.g., '14:00'
-				if (!acc[hourKey]) {
-					acc[hourKey] = [];
-				}
-				acc[hourKey].push(trade);
-				return acc;
-			}, {});
+			if (isSingleDay) {
+				// Group trades by hour for the filtered day
+				const tradesByHour = sortedTrades.reduce((acc, trade) => {
+					const date = new Date(trade.date);
+					const hourKey = `${date.getHours()}:00`; // e.g., '14:00'
+					if (!acc[hourKey]) {
+						acc[hourKey] = [];
+					}
+					acc[hourKey].push(trade);
+					return acc;
+				}, {});
 
-			// Prepare labels and data for the chart
-			Object.keys(tradesByHour).forEach((hour) => {
-				const trades = tradesByHour[hour];
-				labels.push(hour);
+				// Prepare labels and data for the chart
+				Object.keys(tradesByHour).forEach((hour) => {
+					const trades = tradesByHour[hour];
+					labels.push(hour);
 
-				// Calculate total profit for the hour
-				const hourlyProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
-				profitData.push(hourlyProfit);
+					// Calculate total profit for the hour
+					const hourlyProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+					profitData.push(hourlyProfit);
 
-				// Number of trades in this hour
-				tradeCountData.push(trades.length);
-			});
-		} else {
-			// Group trades by day
-			const tradesByDay = sortedTrades.reduce((acc, trade) => {
-				const dateKey = new Date(trade.date).toLocaleDateString();
-				if (!acc[dateKey]) {
-					acc[dateKey] = [];
-				}
-				acc[dateKey].push(trade);
-				return acc;
-			}, {});
+					// Number of trades in this hour
+					tradeCountData.push(trades.length);
+				});
+			} else {
+				// Group trades by day
+				const tradesByDay = sortedTrades.reduce((acc, trade) => {
+					const dateKey = new Date(trade.date).toLocaleDateString();
+					if (!acc[dateKey]) {
+						acc[dateKey] = [];
+					}
+					acc[dateKey].push(trade);
+					return acc;
+				}, {});
 
-			// Prepare labels and data for the chart
-			Object.keys(tradesByDay).forEach((date) => {
-				const trades = tradesByDay[date];
-				labels.push(date);
+				// Prepare labels and data for the chart
+				Object.keys(tradesByDay).forEach((date) => {
+					const trades = tradesByDay[date];
+					labels.push(date);
 
-				// Calculate total profit for the day
-				const tradeProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
-				profitData.push(tradeProfit);
+					// Calculate total profit for the day
+					const tradeProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+					profitData.push(tradeProfit);
 
-				// Number of trades on this day
-				tradeCountData.push(trades.length);
-			});
-		}
+					// Number of trades on this day
+					tradeCountData.push(trades.length);
+				});
+			}
 
-		return {
-			labels,
-			profitData,
-			tradeCountData,
-		};
-	},
+			return {
+				labels,
+				profitData,
+				tradeCountData,
+			};
+		},
 		chartOptions() {
 			return {
 				title: {
@@ -149,9 +147,11 @@ export default {
 						type: "shadow",
 					},
 					formatter: (params) => {
-						return params.map(param => {
-							return `${param.seriesName}: ${parseFloat(param.value).toFixed(2)}`;
-						}).join('<br/>');
+						return params
+							.map((param) => {
+								return `${param.seriesName}: ${parseFloat(param.value).toFixed(2)}`;
+							})
+							.join("<br/>");
 					},
 				},
 				legend: {
