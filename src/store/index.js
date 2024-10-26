@@ -144,9 +144,7 @@ export default createStore({
 			  const response = await axios.get("http://localhost:5000/api/orders", {
 				headers: { Authorization: `Bearer ${state.token}` },
 			  });
-			  console.log("Orders Response:", response.data);
 			  commit("setOrders", response.data);
-			  console.log("Orders set in state:", state.orders);
 			} catch (error) {
 			  console.error("Error fetching orders:", error);
 			}
@@ -158,9 +156,7 @@ export default createStore({
 			  const response = await axios.get("http://localhost:5000/api/trades", {
 				headers: { Authorization: `Bearer ${state.token}` },
 			  });
-			  console.log("Trades Response:", response.data);
 			  commit("setTrades", response.data);
-			  console.log("Trades set in state:", state.trades);
 			} catch (error) {
 			  console.error("Error fetching trades:", error);
 			}
@@ -172,9 +168,7 @@ export default createStore({
 			  const response = await axios.get("http://localhost:5000/api/trades/summaries", {
 				headers: { Authorization: `Bearer ${state.token}` },
 			  });
-			  console.log("Summaries Response:", response.data);
 			  commit("setSummaries", response.data);
-			  console.log("Summaries set in state:", state.summaries);
 			} catch (error) {
 			  console.error("Error fetching summaries:", error);
 			}
