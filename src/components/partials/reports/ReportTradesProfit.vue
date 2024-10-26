@@ -114,12 +114,12 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: "Trades & Profits",
-					left: "left", // Position the title in the center
+					text: `Trades & Profits (${this.granularity})`, // Include granularity dynamically
+					left: "left", // Position the title to the left
 					textStyle: {
 						color: "#ffffff", // Title text color
 						fontSize: 18, // Font size
-						fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
+						fontWeight: "bold", // Font weight
 					},
 					subtext: "", // Add a subtitle if needed
 					subtextStyle: {
