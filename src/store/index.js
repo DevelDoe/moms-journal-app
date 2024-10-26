@@ -102,9 +102,8 @@ export default createStore({
 				console.error("Failed to fetch user data:", error);
 				const message = error.response?.data?.msg || "Error fetching user.";
 				debouncedErrorToast(message);
-				commit("setToken", null);
-				commit("setUser", null);
-				localStorage.removeItem("token");
+				console.error("Error fetching user:", error);
+       			commit("clearToken");
 			}
 		},
 		async updateUser({ commit, state }, updatedUserData) {
