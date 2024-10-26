@@ -6,7 +6,7 @@
 		<button @click="importOrders" :disabled="!orders.length ">Import Orders</button>
 
 		<!-- Cumulative Profit Over Time Chart -->
-		<ReportCumulativeProfit :trades="filteredTrades" />
+		<ReportCumulativeProfit  :trades="filteredTrades" />
 
 		<table v-if="orders.length > 0" class="orders-table">
 			<thead>
@@ -47,7 +47,6 @@ export default {
 		return {
 			orders: [], // Store parsed orders
 			message: "", // Store success or error messages
-			uploadedTrades: false,
 		};
 	},
 	computed: {
