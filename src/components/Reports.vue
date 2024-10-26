@@ -148,7 +148,6 @@ export default {
 					this.hasCorruptData = true; // Mark if there's corrupt data
 					return false;
 				}
-
 				return isValid;
 			});
 
