@@ -224,7 +224,8 @@ export default {
 						lineStyle: { width: 3 },
 					},
 				],
-				animationDuration: 5000, // Set animation duration in milliseconds
+				animationDuration: 5000,
+				animationEasing: "exponentialIn",
 			};
 		},
 	},
