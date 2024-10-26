@@ -114,7 +114,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: `Profit & Number of Trades (${this.granularity})`,
+					text: `Culmulative (${this.granularity})`,
 					left: "left", // Position the title in the center
 					textStyle: {
 						color: "#ffffff", // Title text color
