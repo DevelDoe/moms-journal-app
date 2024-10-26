@@ -160,7 +160,7 @@ export default {
 					},
 				],
 				grid: {
-					left: "10%",
+					left: "100%",
 					right: "10%",
 					bottom: "10%",
 					containLabel: false,
