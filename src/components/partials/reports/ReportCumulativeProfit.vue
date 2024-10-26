@@ -25,7 +25,7 @@ use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent,
 
 export default {
 	props: {
-		date: {
+		filterDate: {
 			type: Array,
 			required: true,
 		},
