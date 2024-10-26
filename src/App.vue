@@ -48,19 +48,6 @@ export default {
 </script>
 
 <style>
-* {
-	box-sizing: border-box; /* Apply border-box globally */
-}
-body{
-	background-color: #0B192C;
-	color: #EAEAEA;
-}
-
-#app {
-	display: flex;
-	min-height: 100vh;
-}
-
 #sidebar {
 	width: 20%; /* Sidebar takes 20% of the total width */
 	background-color: #1E3E62;
