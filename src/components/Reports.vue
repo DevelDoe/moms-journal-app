@@ -130,13 +130,15 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
-			console.log("Initial trades:", this.trades); // Log the trades data to confirm it’s not empty
+			console.log("Initial trades (proxy):", this.trades);
+
 			this.hasCorruptData = false; // Reset corrupt data flag
 
-			const tradesArray = [...this.trades]; // Convert Proxy to standard array
-			console.log("Converted trades array:", tradesArray);
+			// Shallow unwrap each trade object using spread syntax
+			const tradesArray = this.trades.map((trade) => ({ ...trade }));
+			console.log("Shallow unwrapped trades array:", tradesArray);
 
-			const validTrades = this.trades.filter((trade) => {
+			const validTrades = tradesArray.filter((trade) => {
 				const isValid =
 					trade &&
 					trade.symbol &&
@@ -147,18 +149,20 @@ export default {
 					trade.date;
 
 				if (!isValid) {
-					this.hasCorruptData = true;
+					this.hasCorruptData = true; // Mark if there's corrupt data
 					return false;
 				}
 				return isValid;
 			});
 
-			console.log("Valid trades:", validTrades); // Log valid trades to check filter behavior
+			console.log("Valid trades after filtering:", validTrades);
 
+			// If no filter date is selected, return all valid trades
 			if (!this.filterDate) {
 				return validTrades;
 			}
 
+			// Filter trades by selected date if a date is set
 			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
 			return validTrades.filter((trade) => {
 				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
