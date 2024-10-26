@@ -63,7 +63,7 @@ body{
 
 #sidebar {
 	width: 20%; /* Sidebar takes 20% of the total width */
-	background-color: #000000;
+	background-color: #1E3E62;
 
 	padding: 20px;
 	height: 100%; /* Full height sidebar */
