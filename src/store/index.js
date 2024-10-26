@@ -16,6 +16,7 @@ export default createStore({
 	state: {
 		user: null,
 		token: localStorage.getItem("token") || "",
+		refreshToken: localStorage.getItem("refreshToken") || "",
 		orders: [],
 		trades: [],
 		summaries: [],
@@ -27,13 +28,17 @@ export default createStore({
 			}
 			Object.assign(state.user, userData);
 		},
-		setToken(state, token) {
+		setToken(state, { token, refreshToken }) {
 			state.token = token;
-			if (token) {
-				localStorage.setItem("token", token);
-			} else {
-				localStorage.removeItem("token");
-			}
+			state.refreshToken = refreshToken;
+			localStorage.setItem("token", token);
+			localStorage.setItem("refreshToken", refreshToken);
+		},
+		clearToken(state) {
+			state.token = "";
+			state.refreshToken = "";
+			localStorage.removeItem("token");
+			localStorage.removeItem("refreshToken");
 		},
 		clearState(state) {
 			state.user = null;
