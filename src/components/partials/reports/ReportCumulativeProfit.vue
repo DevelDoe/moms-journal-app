@@ -210,7 +210,7 @@ export default {
 					left: "center",
 					top: "0%",
 					textStyle: { color: "#333" },
-					icon: "circle", 
+					
 				},
 				animationDuration: 5000, // Set animation duration in milliseconds
 			};
