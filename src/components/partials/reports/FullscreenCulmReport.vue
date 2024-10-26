@@ -145,14 +145,14 @@ export default {
 				],
 				series: [
 					{
-						name: "Cumulative Profit",
+						name: "Profits",
 						type: "line",
 						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
 						itemStyle: { color: "#e57373" },
 						smooth: true,
 					},
 					{
-						name: "Number of Trades",
+						name: "Trades",
 						type: "line",
 						data: this.cumulativeProfitData.tradeCountData,
 						yAxisIndex: 1,
