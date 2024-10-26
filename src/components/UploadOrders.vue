@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<h2>Import Orders</h2>
-		
 		<input type="file" @change="handleFileUpload" accept=".txt" />
-		<button @click="importOrders" :disabled="!orders.length ">Import Orders</button>
+		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
 
-		<!-- Cumulative Profit Over Time Chart -->
-		<ReportCumulativeProfit  :trades="filteredTrades" />
+		<!-- Display the cumulative profit report for the uploaded trades -->
+		<ReportCumulativeProfit :trades="trades" />
 
+		<!-- Display the list of uploaded orders -->
 		<table v-if="orders.length > 0" class="orders-table">
 			<thead>
 				<tr>
@@ -23,10 +23,7 @@
 				<tr
 					v-for="order in orders"
 					:key="order._id"
-					:class="{
-						buy: order.side === 'buy',
-						sell: order.side === 'sell',
-					}"
+					:class="{ buy: order.side === 'buy', sell: order.side === 'sell' }"
 				>
 					<td>{{ order.symbol }}</td>
 					<td>{{ new Date(order.date).toLocaleTimeString() }}</td>
@@ -37,12 +34,14 @@
 				</tr>
 			</tbody>
 		</table>
-
 	</div>
 </template>
 
 <script>
+import ReportCumulativeProfit from "./ReportCumulativeProfit.vue"; // Assuming this is the path
+
 export default {
+	components: { ReportCumulativeProfit },
 	data() {
 		return {
 			orders: [], // Store parsed orders
