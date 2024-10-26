@@ -169,7 +169,7 @@ export default {
 						},
 						axisLabel: {
 							color: "#1E3E62",
-							fontSize: 12,
+							fontSize: 22,
 						},
 						splitLine: {
 							lineStyle: {
