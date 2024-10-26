@@ -5,8 +5,8 @@
 		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
 
 		<!-- Display the cumulative profit report for the uploaded trades -->
-		<FullScreenCulmReport v-if="isChartVisible" :trades="trades" :granularity="granularity" @close="isChartVisible = false"  />
-			
+		<FullScreenCulmReport v-if="isChartVisible" :trades="trades" :granularity="granularity" @close="isChartVisible = false" />
+
 		<!-- Display the list of uploaded orders -->
 		<table v-if="orders.length > 0" class="orders-table">
 			<thead>
@@ -40,7 +40,7 @@ export default {
 	components: { FullScreenCulmReport },
 	data() {
 		return {
-			orders: [], 
+			orders: [],
 			trades: [],
 			isChartVisible: false,
 			granularity: "hourly",
@@ -98,7 +98,6 @@ export default {
 				})
 				.filter((order) => order !== null); // Filter out any null entries due to parsing errors
 		},
-		// Send parsed orders to the backend
 		async importOrders() {
 			try {
 				// Dispatch the action and receive the new trades
@@ -109,7 +108,12 @@ export default {
 				this.trades = newTrades; // Directly use new trades for the chart
 				this.isChartVisible = true;
 			} catch (error) {
-				this.message = "Failed to import orders.";
+				// Check if the error response has a specific status code
+				if (error.response && error.response.status === 400) {
+					this.message = "Duplicate orders detected. No orders were saved.";
+				} else {
+					this.message = "Failed to import orders.";
+				}
 				console.error(error);
 			}
 		},
@@ -160,5 +164,4 @@ export default {
 	background-color: #ccffcc; /* Light green for sell */
 	color: green;
 }
-
 </style>
