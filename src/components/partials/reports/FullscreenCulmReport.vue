@@ -134,12 +134,12 @@ export default {
 				yAxis: [
 					{
 						type: "value",
-						name: "Cumulative Profit",
+						name: "$",
 						position: "left",
 					},
 					{
 						type: "value",
-						name: "Number of Trades",
+						name: "Trades",
 						position: "right",
 					},
 				],
