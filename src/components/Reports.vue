@@ -164,7 +164,6 @@ export default {
     const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
     return formattedFilterDate === formattedTradeDate;
 });
-}
 		},
 		// Fetch the summaries from Vuex store
 		summaries() {
