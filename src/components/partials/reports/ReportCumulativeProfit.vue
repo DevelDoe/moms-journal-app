@@ -168,7 +168,7 @@ export default {
 				yAxis: [
 					{
 						type: "value",
-						name: "Cumulative Profit",
+						name: "Profits",
 						position: "left",
 						axisLine: {
 							lineStyle: { color: "#1E3E62" },
