@@ -32,7 +32,6 @@
 					<td>{{ order.quantity }}</td>
 					<td>${{ order.price.toFixed(4) }}</td>
 					<td>{{ new Date(order.date).toLocaleDateString() }}</td>
-					<td>{{ selectedAccount.number }}</td> <!-- Displaying the selected account number -->
 				</tr>
 			</tbody>
 		</table>
