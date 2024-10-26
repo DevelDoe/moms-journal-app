@@ -114,7 +114,7 @@ export default {
 		chartOptions() {
 			return {
 				text: `Profit & Number of Trades (${this.granularity})`,
-				left: "center", // Position the title in the center
+				left: "left", // Position the title in the center
 				textStyle: {
 					color: "#ffffff", // Title text color
 					fontSize: 18, // Font size
