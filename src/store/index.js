@@ -70,7 +70,6 @@ export default createStore({
 				commit("setUser", user);
 				debouncedSuccessToast("Logged in successfully!");
 
-				// Immediately fetch orders in the background after successful login
 				await dispatch("fetchOrders");
 				return true;
 			} catch (error) {
@@ -80,25 +79,34 @@ export default createStore({
 			}
 		},
 		async fetchUser({ commit, state }) {
-			try {
-				if (state.token) {
-					// Set the axios header for authorization
-					axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
+			if (state.token) {
+				// Set the axios header for authorization
+				axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
 
+				try {
 					// Use the /profile endpoint to fetch user information
 					const response = await axios.get("http://localhost:5000/api/user/profile");
 
 					// Commit the user information to Vuex
 					commit("setUser", response.data);
 					debouncedSuccessToast(`Welcome back, ${response.data.name}`);
+				} catch (error) {
+					console.error("Failed to fetch user data:", error);
+					const message = error.response?.data?.msg || "Error fetching user.";
+					debouncedErrorToast(message);
+					commit("setToken", null);
+					commit("setUser", null);
+					localStorage.removeItem("token");
 				}
-			} catch (error) {
-				console.error("Failed to fetch user data:", error);
+			}
+		},
+		handleAuthError(commit, error) {
+			if (error.response?.status === 401) {
+				commit("clearState");
+				debouncedErrorToast("Session expired. Please log in again.");
+			} else {
 				const message = error.response?.data?.msg || "Error fetching user.";
 				debouncedErrorToast(message);
-				commit("setToken", null);
-				commit("setUser", null);
-				localStorage.removeItem("token");
 			}
 		},
 		async updateUser({ commit, state }, updatedUserData) {
