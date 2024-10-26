@@ -100,7 +100,7 @@ nav ul li a:hover {
 }
 
 nav ul li a.router-link-exact-active {
-	background-color: #bbb;
+	background-color: #FF6500;
 	color: #fff;
 }
 
