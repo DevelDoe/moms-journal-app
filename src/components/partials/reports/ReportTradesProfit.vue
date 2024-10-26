@@ -109,100 +109,95 @@ export default {
 			};
 		},
 		chartOptions() {
-			return {
-				title: {
-					text: `Trades & Profits (${this.granularity})`, // Include granularity dynamically
-					left: "left", // Position the title to the left
-					textStyle: {
-						color: "#ffffff", // Title text color
-						fontSize: 18, // Font size
-						fontWeight: "bold", // Font weight
-					},
-					subtext: "", // Add a subtitle if needed
-					subtextStyle: {
-						color: "#aaa", // Subtitle color
-						fontSize: 14,
-					},
-				},
-				tooltip: {
-					trigger: "axis",
-					axisPointer: {
-						type: "shadow",
-					},
-					formatter: (params) => {
-						return params
-							.map((param) => {
-								return `${param.seriesName}: ${parseFloat(param.value).toFixed(2)}`;
-							})
-							.join("<br/>");
-					},
-				},
-				legend: {
-					orient: "horizontal",
-					left: "center",
-					top: "0%",
-					textStyle: { color: "#333" },
-					icon: "circle",
-				},
-				grid: {
-					left: "5%",
-					right: "5%",
-					bottom: "5%",
-					containLabel: false,
-				},
-				xAxis: {
-					type: "value",
-					position: "top",
-					splitLine: {
-						lineStyle: {
-							type: "dashed",
-						},
-					},
-				},
-				yAxis: {
-					type: "category",
-					axisLine: { show: false },
-					axisLabel: { show: true },
-					axisTick: { show: false },
-					splitLine: { show: false },
-					data: this.tradeProfitAndTradeCountData.labels, // Labels for categories (e.g., days or hours)
-				},
-				series: [
-					{
-						name: "Number of Trades",
-						type: "bar",
-						stack: "Total",
-						data: this.tradeProfitAndTradeCountData.tradeCountData.map((value) => {
-							return {
-								value: parseFloat(value).toFixed(2),
-								itemStyle: {
-									color: value >= 0 ? "#5470C6" : "#e57373", // Blue for positive values, red for negative
-								},
-							};
-						}),
-					},
-					{
-						name: "Profit/Loss",
-						type: "bar",
-						stack: "Total",
-						label: {
-							show: false,
-							position: "right",
-							formatter: (params) => parseFloat(params.value).toFixed(2),
-						},
-						data: this.tradeProfitAndTradeCountData.profitData.map((value) => {
-							return {
-								value: parseFloat(value).toFixed(2),
-								itemStyle: {
-									color: value >= 0 ? "#A7C957" : "#e57373", // Green for positive values, red for negative
-								},
-							};
-						}),
-					},
-				],
-			};
+	const { labels, profitData, tradeCountData } = this.tradeProfitAndTradeCountData;
+
+	if (!labels || labels.length === 0) {
+		return {}; // Prevent rendering if there's no data
+	}
+
+	return {
+		title: {
+			text: `Trades & Profits (${this.granularity})`,
+			left: "left",
+			textStyle: {
+				color: "#ffffff",
+				fontSize: 18,
+				fontWeight: "bold",
+			},
 		},
-	},
+		tooltip: {
+			trigger: "axis",
+			axisPointer: { type: "shadow" },
+			formatter: (params) => {
+				return params
+					.map((param) => `${param.seriesName}: ${parseFloat(param.value).toFixed(2)}`)
+					.join("<br/>");
+			},
+		},
+		legend: {
+			orient: "horizontal",
+			left: "center",
+			top: "0%",
+			textStyle: { color: "#aaa" },
+			icon: "circle",
+		},
+		grid: {
+			left: "10%", // Add some padding on both sides for centering
+			right: "10%",
+			bottom: "5%",
+			containLabel: true,
+		},
+		xAxis: {
+			type: "value",
+			position: "center", // This keeps the axis at the center
+			min: -Math.max(...profitData, ...tradeCountData) * 1.1, // Dynamically calculate min and max based on data
+			max: Math.max(...profitData, ...tradeCountData) * 1.1,
+			splitLine: {
+				lineStyle: { type: "dashed" },
+			},
+			axisLine: {
+				lineStyle: { color: "#888" },
+			},
+			axisLabel: {
+				color: "#aaa",
+			},
+		},
+		yAxis: {
+			type: "category",
+			axisLine: { show: false },
+			axisLabel: { color: "#aaa" },
+			axisTick: { show: false },
+			splitLine: { show: false },
+			data: labels,
+		},
+		series: [
+			{
+				name: "Number of Trades",
+				type: "bar",
+				stack: "Total",
+				data: tradeCountData.map((value) => ({
+					value: parseFloat(value).toFixed(2),
+					itemStyle: { color: value >= 0 ? "#5470C6" : "#e57373" },
+				})),
+			},
+			{
+				name: "Profit/Loss",
+				type: "bar",
+				stack: "Total",
+				label: {
+					show: false,
+					position: "right",
+					formatter: (params) => parseFloat(params.value).toFixed(2),
+				},
+				data: profitData.map((value) => ({
+					value: parseFloat(value).toFixed(2),
+					itemStyle: { color: value >= 0 ? "#A7C957" : "#e57373" },
+				})),
+			},
+		],
+	};
+}
+
 };
 </script>
 
