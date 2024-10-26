@@ -1,12 +1,10 @@
-<!-- ./src/components/partials/charts/CumulativeProfitChart.vue -->
 <template>
 	<div class="cumulative-profit-chart">
 		<div class="chart-header">
-			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
-				>?
+			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
+				?
 				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you
-					periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
+					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
 				</div>
 			</span>
 		</div>
@@ -25,7 +23,7 @@ use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent,
 
 export default {
 	props: {
-		filterDate: {
+		trades: {
 			type: Array,
 			required: true,
 		},
@@ -47,125 +45,45 @@ export default {
 		},
 	},
 	computed: {
-		trades() {
-			const tradesData = this.$store.getters.getTrades;
-			return tradesData && Array.isArray(tradesData) ? tradesData : [];
-		},
-		filteredTrades() {
-			this.hasCorruptData = false; // Reset corrupt data flag
-
-			// Shallow unwrap each trade object using spread syntax
-			const tradesArray = this.trades.map((trade) => ({ ...trade }));
-
-			const validTrades = tradesArray.filter((trade) => {
-				const isValid =
-					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
-
-				if (!isValid) {
-					this.hasCorruptData = true; // Mark if there's corrupt data
-					return false;
-				}
-				return isValid;
-			});
-
-			// If no filter date is selected, return all valid trades
-			if (!this.filterDate) {
-				return validTrades;
-			}
-
-			// Filter trades by selected date if a date is set
-			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
-			return validTrades.filter((trade) => {
-				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
-				return formattedFilterDate === formattedTradeDate;
-			});
-		},
 		cumulativeProfitData() {
-			if (this.filteredTrades.length === 0) {
-				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
+			if (this.trades.length === 0) {
+				return { labels: [], profitData: [], tradeCountData: [] };
 			}
 
-			const isSingleDay = this.filterDate !== ""; // Assume filterDate means filtering to a specific day
-
-			// Sort the trades by date
-			const sortedTrades = [...this.filteredTrades].sort((a, b) => new Date(a.date) - new Date(b.date));
-
-			// Initialize cumulative values
 			let cumulativeProfit = 0;
 			let cumulativeTradeCount = 0;
 			const labels = [];
 			const profitData = [];
 			const tradeCountData = [];
 
-			if (isSingleDay) {
-				// Group trades by minute for the filtered day
-				const tradesByMinute = sortedTrades.reduce((acc, trade) => {
-					const date = new Date(trade.date);
-					const minuteKey = `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`; // e.g., '14:05'
-					if (!acc[minuteKey]) {
-						acc[minuteKey] = [];
-					}
-					acc[minuteKey].push(trade);
-					return acc;
-				}, {});
+			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
+			const tradesByDay = sortedTrades.reduce((acc, trade) => {
+				const dateKey = new Date(trade.date).toLocaleDateString();
+				if (!acc[dateKey]) {
+					acc[dateKey] = [];
+				}
+				acc[dateKey].push(trade);
+				return acc;
+			}, {});
 
-				// Calculate cumulative profit and number of trades for each minute
-				Object.keys(tradesByMinute).forEach((minute) => {
-					const trades = tradesByMinute[minute];
-					labels.push(minute);
+			Object.keys(tradesByDay).forEach((date) => {
+				const trades = tradesByDay[date];
+				labels.push(date);
 
-					// Update cumulative profit
-					trades.forEach((trade) => {
-						cumulativeProfit += trade.profitLoss;
-					});
-					profitData.push(cumulativeProfit);
-
-					// Update cumulative number of trades
-					cumulativeTradeCount += trades.length;
-					tradeCountData.push(cumulativeTradeCount);
+				trades.forEach((trade) => {
+					cumulativeProfit += trade.profitLoss;
 				});
-			} else {
-				// Group trades by day
-				const tradesByDay = sortedTrades.reduce((acc, trade) => {
-					const dateKey = new Date(trade.date).toLocaleDateString();
-					if (!acc[dateKey]) {
-						acc[dateKey] = [];
-					}
-					acc[dateKey].push(trade);
-					return acc;
-				}, {});
+				profitData.push(cumulativeProfit);
 
-				// Calculate cumulative profit and cumulative number of trades for each day
-				Object.keys(tradesByDay).forEach((date) => {
-					const trades = tradesByDay[date];
-					labels.push(date);
-
-					// Update cumulative profit
-					trades.forEach((trade) => {
-						cumulativeProfit += trade.profitLoss;
-					});
-					profitData.push(cumulativeProfit);
-
-					// Update cumulative number of trades
-					cumulativeTradeCount += trades.length;
-					tradeCountData.push(cumulativeTradeCount);
-				});
-			}
+				cumulativeTradeCount += trades.length;
+				tradeCountData.push(cumulativeTradeCount);
+			});
 
 			return {
 				labels,
 				profitData,
 				tradeCountData,
 			};
-		},
-		cumulativeProfitLabels() {
-			return this.cumulativeProfitData.labels;
-		},
-		cumulativeProfitValues() {
-			return this.cumulativeProfitData.profitData;
-		},
-		cumulativeTradeCountValues() {
-			return this.cumulativeProfitData.tradeCountData;
 		},
 		chartOptions() {
 			return {
@@ -180,7 +98,7 @@ export default {
 				},
 				xAxis: {
 					type: "category",
-					data: this.labels, // Labels for time periods (e.g., dates)
+					data: this.cumulativeProfitData.labels,
 				},
 				yAxis: [
 					{
@@ -198,21 +116,17 @@ export default {
 					{
 						name: "Cumulative Profit",
 						type: "line",
-						data: this.profitData.map((value) => parseFloat(value.toFixed(2))), // Cumulative profit data over time data: this.profitData, // Cumulative profit data over time
-						itemStyle: {
-							color: "#e57373", // Line color for profit
-						},
-						smooth: true, // Make the line smooth
+						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
+						itemStyle: { color: "#e57373" },
+						smooth: true,
 					},
 					{
 						name: "Number of Trades",
 						type: "line",
-						data: this.tradeCountData, // Number of trades at each point in time
-						yAxisIndex: 1, // Use the second y-axis for trade count
-						itemStyle: {
-							color: "#5470C6", // Line color for trade count
-						},
-						smooth: true, // Make the line smooth
+						data: this.cumulativeProfitData.tradeCountData,
+						yAxisIndex: 1,
+						itemStyle: { color: "#5470C6" },
+						smooth: true,
 					},
 				],
 			};
