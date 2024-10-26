@@ -165,7 +165,7 @@ export default {
 						name: "Number of Trades",
 						position: "right",
 						axisLine: {
-							lineStyle: { color: "#1E3E62" },
+							lineStyle: { color: "#eaeaea" },
 						},
 						axisLabel: {
 							color: "#1E3E62",
