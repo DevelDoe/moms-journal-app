@@ -5,7 +5,7 @@
 		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
 
 		<!-- Display the cumulative profit report for the uploaded trades -->
-		<FullScreenCulmReport v-if="trades && trades.length > 0" :trades="trades" granularity="hourly" />
+		<FullScreenCulmReport v-if="trades && trades.length > 0" :trades="trades" granularity="granularity" />
 			
 		<!-- Display the list of uploaded orders -->
 		<table v-if="orders.length > 0" class="orders-table">
@@ -43,6 +43,7 @@ export default {
 			orders: [], // Store parsed orders
 			message: "", // Store success or error messages
 			trades: [],
+			granularity: "hourly",
 		};
 	},
 	methods: {
