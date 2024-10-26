@@ -15,10 +15,9 @@
 				<input type="date" id="filter-date" v-model="filterDate" />
 			</div>
 
-			<!-- Check if accountId and filterDate are defined before rendering -->
-			<div v-if="selectedAccountId && filterDate" class="trades">
-				<!-- Display TradesSummary and ExpenseSummary components -->
-				<TradesSummary :filterDate="filterDate" :accountId="selectedAccountId" />
+			<!-- Trades Summary component, only filtered by date -->
+			<div v-if="filterDate" class="trades">
+				<TradesSummary :filterDate="filterDate" />
 			</div>
 		</div>
 	</div>
@@ -31,7 +30,6 @@ export default {
 	data() {
 		return {
 			user: null,
-			selectedAccountId: null,
 			filterDate: "",
 			isLoading: true,
 		};
@@ -39,28 +37,19 @@ export default {
 	components: {
 		TradesSummary,
 	},
-	computed: {
-		userAccounts() {
-			return this.$store.getters.getUserAccounts;
-		},
-	},
 	mounted() {
-		this.fetchUserAndAccountData();
+		this.fetchUserData();
 	},
 	methods: {
-		async fetchUserAndAccountData() {
+		async fetchUserData() {
 			this.isLoading = true;
 			try {
 				await this.$store.dispatch("fetchUser");
 				this.user = this.$store.getters.getUser;
-
-				if (this.userAccounts.length > 0) {
-					this.selectedAccountId = this.userAccounts[0].accountId;
-				}
 				this.isLoading = false;
 			} catch (error) {
 				this.isLoading = false;
-				console.error("Error fetching user or account data:", error);
+				console.error("Error fetching user data:", error);
 			}
 		},
 	},
