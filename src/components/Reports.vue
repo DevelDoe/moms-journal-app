@@ -130,40 +130,41 @@ export default {
 			const tradesData = this.$store.getters.getTrades;
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
-		// Filter trades by selected date
-		filteredTrades() {
-			this.hasCorruptData = false; // Reset corrupt data flag
+		computed: {
+			filteredTrades() {
+				this.hasCorruptData = false; // Reset corrupt data flag
 
-			const validTrades = this.trades.filter((trade) => {
-				const isValid =
-					trade &&
-					trade.symbol &&
-					trade.accountId && // Added this line to check for the presence of accountId
-					trade.buyPrice !== undefined &&
-					trade.sellPrice !== undefined &&
-					trade.profitLoss !== undefined &&
-					trade.date;
+				// Filter out any trades with missing or corrupted data
+				const validTrades = this.trades.filter((trade) => {
+					const isValid =
+						trade &&
+						trade.symbol &&
+						trade.accountId && // Added this line to check for the presence of accountId
+						trade.buyPrice !== undefined &&
+						trade.sellPrice !== undefined &&
+						trade.profitLoss !== undefined &&
+						trade.date;
 
-				if (!isValid) {
-					this.hasCorruptData = true; // Mark if there's corrupt data
-					return false;
+					if (!isValid) {
+						this.hasCorruptData = true; // Mark if there's corrupt data
+						return false;
+					}
+
+					return isValid;
+				});
+
+				// If no filter date is selected, return all valid trades
+				if (!this.filterDate) {
+					return validTrades;
 				}
 
-				return isValid;
-			});
-
-			// If no filter date is selected, return all valid trades
-			if (!this.filterDate) {
-				return validTrades;
-			}
-
-			// Filter trades by selected date if a date is set
-			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
-
-			return validTrades.filter((trade) => {
-    const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
-    return formattedFilterDate === formattedTradeDate;
-});
+				// Filter trades by selected date if a date is set
+				const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
+				return validTrades.filter((trade) => {
+					const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
+					return formattedFilterDate === formattedTradeDate;
+				});
+			},
 		},
 		// Fetch the summaries from Vuex store
 		summaries() {
