@@ -126,7 +126,7 @@ export default {
 					type: "category",
 					data: this.cumulativeProfitData.labels,
 					axisLine: {
-						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
+						lineStyle: { color: "#23436e" }, // Color of the x-axis line
 					},
 					axisLabel: {
 						color: "#23436e", // Color of the x-axis labels
