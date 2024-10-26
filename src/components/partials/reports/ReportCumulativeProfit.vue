@@ -121,7 +121,7 @@ export default {
 						fontSize: 18, // Font size
 						fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
 					},
-					subtext: "Overview of trade data", // Add a subtitle if needed
+					subtext: "", // Add a subtitle if needed
 					subtextStyle: {
 						color: "#aaa", // Subtitle color
 						fontSize: 14,
