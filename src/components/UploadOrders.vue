@@ -158,13 +158,5 @@ export default {
 	background-color: #ccffcc; /* Light green for sell */
 	color: green;
 }
-#cumulative-profit-chart {
-	position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    background: white;
-    height: 100%;
-    padding: 7%;
-}
+
 </style>
