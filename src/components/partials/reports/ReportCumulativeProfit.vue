@@ -46,9 +46,9 @@ export default {
 	},
 	computed: {
 		cumulativeProfitData() {
-			if (this.trades.length === 0) {
-				return { labels: [], profitData: [], tradeCountData: [] };
-			}
+			if (!this.trades || this.trades.length === 0) {
+        return { labels: [], profitData: [], tradeCountData: [] };
+    }
 
 			let cumulativeProfit = 0;
 			let cumulativeTradeCount = 0;
