@@ -36,7 +36,7 @@ export default createStore({
 			}
 		},
 		setOrders(state, orders) {
-			state.orders = orders;
+			state.orders = [...state.orders, ...orders]; // Append orders
 		},
 		addOrder(state, order) {
 			if (!state.orders) {
