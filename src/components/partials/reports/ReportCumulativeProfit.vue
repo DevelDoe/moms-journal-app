@@ -113,9 +113,9 @@ export default {
 		},
 		chartOptions() {
 			return {
-				title: {
-					text: `Cumulative Profit and Number of Trades (${this.granularity})`,
-				},
+				// title: {
+				// 	text: `Cumulative Profit and Number of Trades (${this.granularity})`,
+				// },
 				tooltip: {
 					trigger: "axis",
 					axisPointer: {
