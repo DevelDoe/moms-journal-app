@@ -105,7 +105,7 @@ export default {
 
 				// Set message and update trades in the chart for immediate display
 				this.message = "Orders successfully imported!";
-				this.filteredTrades = newTrades; // Directly use new trades for the chart
+				this.trades = newTrades; // Directly use new trades for the chart
 			} catch (error) {
 				this.message = "Failed to import orders.";
 				console.error(error);
