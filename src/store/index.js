@@ -113,23 +113,23 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async createMultipleOrders({ commit, dispatch }, { orders }) {
+		async createMultipleOrders({ commit, dispatch, state }, { orders }) {
 			try {
 			  console.log("Starting createMultipleOrders action...");
-		
+		  
 			  const response = await axios.post("http://localhost:5000/api/orders", { orders }, {
 				headers: { Authorization: `Bearer ${state.token}` },
 			  });
-		
+		  
 			  if (response.status === 201) {
 				console.log("Orders uploaded successfully.");
-		
+		  
 				// Call fetch actions and add logging
 				await dispatch("fetchOrders").then(() => console.log("fetchOrders completed"));
 				await dispatch("fetchTrades").then(() => console.log("fetchTrades completed"));
 				await dispatch("fetchAllSummaries").then(() => console.log("fetchAllSummaries completed"));
 			  }
-		
+		  
 			  debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
 			} catch (error) {
 			  const message = error.response?.data?.error || "Error uploading orders.";
