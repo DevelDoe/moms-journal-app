@@ -184,6 +184,12 @@ export default {
 						lineStyle: { width: 3 },
 					},
 				],
+				legend: {
+					orient: "horizontal",
+					left: "center",
+					bottom: "0%",
+					textStyle: { color: "#333" },
+				},
 				animationDuration: 5000, // Set animation duration in milliseconds
 			};
 		},
