@@ -15,8 +15,6 @@
 				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/Reports">Reports</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/WebSocketClient">WebSocketClient</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/update-profile">Update Profile</router-link></li>
 
 				<!-- Admin only: Create Broker -->
 				<li v-if="isAuthenticated && isAdmin"><router-link to="/create-broker">Create Broker</router-link></li>
