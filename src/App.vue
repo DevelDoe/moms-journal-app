@@ -1,27 +1,22 @@
 <template>
 	<div style="width: 100%">
-		<nav id="sidebar">
-			<ul>
-				<!-- General links -->
+		<nav :class="{ collapsed: isCollapsed }" id="sidebar">
+			<button @click="toggleSidebar" class="toggle-btn">
+				{{ isCollapsed ? '➡️' : '⬅️' }}
+			</button>
+			<ul v-if="!isCollapsed">
+				<!-- Sidebar links -->
 				<li><router-link to="/">Home</router-link></li>
-
-				<!-- Not authenticated -->
 				<li v-if="!isAuthenticated"><router-link to="/login">Login</router-link></li>
 				<li v-if="!isAuthenticated"><router-link to="/register">Register</router-link></li>
-
-				<!-- Authenticated users -->
 				<li v-if="isAuthenticated"><router-link to="/profile">Profile</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/Reports">Reports</router-link></li>
-
-				<!-- Admin only -->
-
-				<!-- Logout -->
 				<li v-if="isAuthenticated"><a @click="logout" style="cursor: pointer">Logout</a></li>
 			</ul>
 		</nav>
-		<div id="view">
+		<div :class="{ collapsed: isCollapsed }" id="view">
 			<router-view></router-view>
 		</div>
 	</div>
