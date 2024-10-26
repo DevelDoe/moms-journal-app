@@ -158,10 +158,13 @@ export default {
 			}
 
 			// Filter trades by selected date if a date is set
+			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
+
 			return validTrades.filter((trade) => {
-				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
-				return formattedFilterDate === formattedTradeDate;
-			});
+    const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
+    return formattedFilterDate === formattedTradeDate;
+});
+}
 		},
 		// Fetch the summaries from Vuex store
 		summaries() {
