@@ -148,13 +148,15 @@ export default createStore({
 					}
 				);
 
-				 // Show success message
-				 debouncedSuccessToast(response.data.message || "Orders uploaded successfully!");
-
-				 // Fetch the updated data
-				 await dispatch("fetchOrders");
-				 await dispatch("fetchTrades");
-				 await dispatch("fetchAllSummaries");
+				// Fetch updated orders, trades, and summaries after successful order upload
+				await Promise.all([
+					dispatch("fetchOrders"),
+					dispatch("fetchTrades"),
+					dispatch("fetchAllSummaries"),
+				]);
+		
+				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
+				toastSent = true;
 			} catch (error) {
 				const message = error.response?.data?.error || "Error uploading orders.";
 				debouncedErrorToast(message);
