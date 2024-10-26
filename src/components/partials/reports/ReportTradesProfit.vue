@@ -137,15 +137,6 @@ export default {
 				tradeCountData,
 			};
 		},
-		tradeProfitLabels() {
-			return this.tradeProfitAndTradeCountData.labels;
-		},
-		tradeProfitValues() {
-			return this.tradeProfitAndTradeCountData.profitData;
-		},
-		tradeTradeCountValues() {
-			return this.tradeProfitAndTradeCountData.tradeCountData;
-		},
 		chartOptions() {
 			return {
 				title: {
@@ -166,8 +157,10 @@ export default {
 					data: ["Number of Trades", "Profit/Loss"],
 				},
 				grid: {
-					top: 80,
-					bottom: 30,
+					left: "5%",
+					right: "5%",
+					bottom: "5%",
+					containLabel: false,
 				},
 				xAxis: {
 					type: "value",
