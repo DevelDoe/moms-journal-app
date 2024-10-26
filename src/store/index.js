@@ -115,64 +115,71 @@ export default createStore({
 		},
 		async createMultipleOrders({ commit, dispatch, state }, { orders }) {
 			try {
-			  console.log("Starting createMultipleOrders action...");
-		  
-			  const response = await axios.post("http://localhost:5000/api/orders", { orders }, {
-				headers: { Authorization: `Bearer ${state.token}` },
-			  });
-		  
-			  if (response.status === 201) {
-				console.log("Orders uploaded successfully.");
-		  
-				// Call fetch actions and add logging
-				await dispatch("fetchOrders").then(() => console.log("fetchOrders completed"));
-				await dispatch("fetchTrades").then(() => console.log("fetchTrades completed"));
-				await dispatch("fetchAllSummaries").then(() => console.log("fetchAllSummaries completed"));
-			  }
-		  
-			  debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
+				console.log("Starting createMultipleOrders action...");
+
+				const response = await axios.post(
+					"http://localhost:5000/api/orders",
+					{ orders },
+					{
+						headers: { Authorization: `Bearer ${state.token}` },
+					}
+				);
+
+				if (response.status === 201) {
+					console.log("Orders uploaded successfully.");
+
+					// Call fetch actions and add logging
+					await dispatch("fetchOrders").then(() => console.log("fetchOrders completed"));
+					await dispatch("fetchTrades").then(() => console.log("fetchTrades completed"));
+					await dispatch("fetchAllSummaries").then(() => console.log("fetchAllSummaries completed"));
+				}
+
+				// Returns the trade for the orders uploaded
+				return response.data.trades;
+
+				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
 			} catch (error) {
-			  const message = error.response?.data?.error || "Error uploading orders.";
-			  debouncedErrorToast(message);
-			  console.error("Error in createMultipleOrders:", error);
+				const message = error.response?.data?.error || "Error uploading orders.";
+				debouncedErrorToast(message);
+				console.error("Error in createMultipleOrders:", error);
 			}
-		  },
-		
-		  async fetchOrders({ commit, state }) {
+		},
+
+		async fetchOrders({ commit, state }) {
 			try {
-			  console.log("Fetching orders...");
-			  const response = await axios.get("http://localhost:5000/api/orders", {
-				headers: { Authorization: `Bearer ${state.token}` },
-			  });
-			  commit("setOrders", response.data);
+				console.log("Fetching orders...");
+				const response = await axios.get("http://localhost:5000/api/orders", {
+					headers: { Authorization: `Bearer ${state.token}` },
+				});
+				commit("setOrders", response.data);
 			} catch (error) {
-			  console.error("Error fetching orders:", error);
+				console.error("Error fetching orders:", error);
 			}
-		  },
-		
-		  async fetchTrades({ commit, state }) {
+		},
+
+		async fetchTrades({ commit, state }) {
 			try {
-			  console.log("Fetching trades...");
-			  const response = await axios.get("http://localhost:5000/api/trades", {
-				headers: { Authorization: `Bearer ${state.token}` },
-			  });
-			  commit("setTrades", response.data);
+				console.log("Fetching trades...");
+				const response = await axios.get("http://localhost:5000/api/trades", {
+					headers: { Authorization: `Bearer ${state.token}` },
+				});
+				commit("setTrades", response.data);
 			} catch (error) {
-			  console.error("Error fetching trades:", error);
+				console.error("Error fetching trades:", error);
 			}
-		  },
-		
-		  async fetchAllSummaries({ commit, state }) {
+		},
+
+		async fetchAllSummaries({ commit, state }) {
 			try {
-			  console.log("Fetching summaries...");
-			  const response = await axios.get("http://localhost:5000/api/trades/summaries", {
-				headers: { Authorization: `Bearer ${state.token}` },
-			  });
-			  commit("setSummaries", response.data);
+				console.log("Fetching summaries...");
+				const response = await axios.get("http://localhost:5000/api/trades/summaries", {
+					headers: { Authorization: `Bearer ${state.token}` },
+				});
+				commit("setSummaries", response.data);
 			} catch (error) {
-			  console.error("Error fetching summaries:", error);
+				console.error("Error fetching summaries:", error);
 			}
-		  },
+		},
 		async fetchFilteredSummaries({ commit, state }, { minProfit, maxProfit, minTrades, maxTrades, date }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/trades/summaries/filter", {
