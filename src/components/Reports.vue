@@ -142,7 +142,6 @@ export default {
 				const isValid =
 					trade &&
 					trade.symbol &&
-					trade.accountId &&
 					trade.buyPrice !== undefined &&
 					trade.sellPrice !== undefined &&
 					trade.profitLoss !== undefined &&
