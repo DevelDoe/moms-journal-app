@@ -16,7 +16,6 @@ const OrdersList = () => import("../components/OrdersList.vue");
 const UploadOrders = () => import("../components/UploadOrders.vue");
 const Reports = () => import("../components/Reports.vue");
 
-
 // Defining Routes: The routes array defines the paths and components that Vue Router will handle:
 const routes = [
 	{ path: "/", component: Home },
