@@ -156,7 +156,7 @@ export default {
 						lineStyle: { type: "none" },
 					},
 					axisLine: {
-						lineStyle: { color: "#888" },
+						lineStyle: { color: "#1E3E62" },
 					},
 					axisLabel: {
 						color: "#aaa",
