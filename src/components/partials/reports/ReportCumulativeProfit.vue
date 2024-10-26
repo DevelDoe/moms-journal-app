@@ -141,7 +141,7 @@ export default {
 					icon: "circle",
 				},
 				grid: {
-					left: "5%",
+					left: "6%",
 					right: "5%",
 					bottom: "5%",
 					top: "20%",
