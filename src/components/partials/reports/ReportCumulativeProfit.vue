@@ -139,7 +139,7 @@ export default {
 						name: "Cumulative Profit",
 						position: "left",
 						axisLine: {
-							lineStyle: { color: "#888" },
+							lineStyle: { color: "#1E3E62" },
 						},
 						axisLabel: {
 							color: "#333",
