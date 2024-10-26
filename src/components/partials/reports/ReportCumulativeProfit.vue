@@ -115,7 +115,8 @@ export default {
 			return {
 				title: {
 					text: `Profit & Number of Trades (${this.granularity})`,
-					color: '#eaeaea'
+					color: '#eaeaea',
+					fontSize: 16,
 				},
 				tooltip: {
 					trigger: "axis",
