@@ -1,13 +1,6 @@
 <template>
 	<div class="fullscreen-chart" v-if="isVisible">
 		<div class="chart-header">
-			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
-				?
-				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you
-					periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
-				</div>
-			</span>
 			<button class="close-btn" @click="closeFullScreen">Close Chart</button>
 		</div>
 		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 100%"></v-chart>
