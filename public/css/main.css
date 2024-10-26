@@ -4,7 +4,15 @@
 	font-weight: 900;
 	font-style: normal;
 }
+/* Hide scrollbar globally but allow scrolling */
+body, html {
+    overflow: auto; /* Enable scrolling */
+    scrollbar-width: none; /* Firefox - hide scrollbar */
+}
 
+body::-webkit-scrollbar, html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Edge - hide scrollbar */
+}
 body {
 	font-family: "Montserrat", sans-serif !important;
 	background-color: #0b192c;

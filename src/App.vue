@@ -49,18 +49,20 @@ export default {
 
 <style>
 #sidebar {
-	width: 20%; /* Sidebar takes 20% of the total width */
-	background-color: #1E3E62;
-
-	padding: 20px;
-	height: 100%; /* Full height sidebar */
-	float: left;
+    position: fixed; /* Fix the sidebar in place */
+    top: 0;
+    left: 0;
+    width: 20%; /* Sidebar takes 20% of the total width */
+    background-color: #1E3E62;
+    padding: 20px;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Adds scrollbar if content overflows */
 }
 
 #view {
-	width: 80%;
-	padding: 20px;
-	float: right;
+    margin-left: 20%; /* Offset the main view to the right of the sidebar */
+    padding: 20px;
+    width: 80%;
 }
 
 nav ul {
