@@ -166,7 +166,11 @@ export default {
 					},
 				},
 				legend: {
-					data: ["Number of Trades", "Profit/Loss"],
+					orient: "horizontal",
+					left: "center",
+					top: "0%",
+					textStyle: { color: "#333" },
+					icon: "circle",
 				},
 				grid: {
 					left: "5%",
