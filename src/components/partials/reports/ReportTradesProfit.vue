@@ -143,7 +143,7 @@ export default {
 				},
 				grid: {
 					left: "1%", // Add some padding on both sides for centering
-					right: "6%",
+					right: "2%",
 					bottom: "1%",
 					containLabel: true,
 				},
