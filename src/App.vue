@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import toggleIcon from "@/assets/images/drawer.webp"; // Adjust path as needed
 
 export default {
@@ -33,12 +34,20 @@ export default {
 			toggleIcon, // Icon for the toggle button
 		};
 	},
+	computed: {
+		...mapGetters(["isAuthenticated", "getUser"]), // Check if user is authenticated and get user details
+		isAdmin() {
+			// Only admins should see the create broker link
+			return this.getUser && this.getUser.role === "admin";
+		},
+	},
 	methods: {
 		toggleSidebar() {
 			this.isCollapsed = !this.isCollapsed; // Toggle sidebar state
 		},
 		logout() {
-			// Add logout functionality here
+			// Dispatch the logout action and pass the router instance
+			this.$store.dispatch("logout", this.$router);
 		},
 	},
 };
