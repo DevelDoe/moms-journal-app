@@ -7,6 +7,14 @@
 			</button>
 			<ul v-if="!isCollapsed">
 				<!-- Sidebar links here -->
+				<li><router-link to="/">Home</router-link></li>
+				<li v-if="!isAuthenticated"><router-link to="/login">Login</router-link></li>
+				<li v-if="!isAuthenticated"><router-link to="/register">Register</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/profile">Profile</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
+				<li v-if="isAuthenticated"><router-link to="/reports">Reports</router-link></li>
+				<li v-if="isAuthenticated"><a @click="logout" style="cursor: pointer">Logout</a></li>
 			</ul>
 		</nav>
 		<div :class="{ collapsed: isCollapsed }" id="view">
@@ -29,84 +37,73 @@ export default {
 		toggleSidebar() {
 			this.isCollapsed = !this.isCollapsed; // Toggle sidebar state
 		},
+		logout() {
+			// Add logout functionality here
+		},
 	},
 };
 </script>
 
-
 <style>
 #sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #1E3E62;
-    padding: 20px;
-    height: 100vh;
-    overflow-y: auto;
-    transition: width 0.3s;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: #1e3e62;
+	padding: 20px;
+	height: 100vh;
+	width: 20%; /* Sidebar width when expanded */
+	overflow-y: auto;
+	transition: width 0.3s ease; /* Smooth transition for collapse/expand */
 }
 
 #sidebar.collapsed {
-    width: 60px; /* Narrow width when collapsed */
-}
-
-#sidebar ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#sidebar ul li {
-    margin-bottom: 10px;
-}
-
-#sidebar ul li a {
-    color: #EAEAEA;
-    text-decoration: none;
-    padding: 10px;
-    display: block;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-#sidebar ul li a:hover {
-    background-color: #FF6500;
-    color: #0b192c;
+	width: 60px; /* Sidebar width when collapsed */
 }
 
 #view {
-    transition: margin-left 0.3s;
-    margin-left: 20%; /* Default width for expanded sidebar */
-    padding: 20px;
+	transition: margin-left 0.3s ease; /* Smooth transition for collapse/expand */
+	margin-left: 20%; /* Default margin to leave space for sidebar */
+	padding: 20px;
 }
 
 #view.collapsed {
-    margin-left: 60px; /* Shift content to the left when sidebar is collapsed */
+	margin-left: 60px; /* Reduced margin when sidebar is collapsed */
 }
 
-/* Toggle button styles */
 .toggle-btn {
-    background: none;
-    border: none;
-    color: #ffffff;
-    font-size: 18px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    padding: 5px;
+	background: none;
+	border: none;
+	color: #ffffff;
+	font-size: 18px;
+	cursor: pointer;
+	margin-bottom: 20px;
+	padding: 5px;
 }
 
-nav ul {
+.toggle-btn img {
+	width: 24px; /* Adjust the size of the icon */
+	height: 24px;
+	transition: transform 0.3s;
+}
+
+/* Optional: Rotate icon when sidebar is collapsed */
+#sidebar.collapsed .toggle-btn img {
+	transform: rotate(180deg);
+}
+
+#sidebar ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 }
 
-nav ul li {
+#sidebar ul li {
 	margin-bottom: 10px;
 }
 
-nav ul li a {
-	color: #EAEAEA;
+#sidebar ul li a {
+	color: #eaeaea;
 	text-decoration: none;
 	padding: 10px;
 	display: block;
@@ -114,30 +111,26 @@ nav ul li a {
 	transition: background-color 0.3s;
 }
 
-nav ul li a:hover {
-	background-color: #FF6500;
+#sidebar ul li a:hover {
+	background-color: #ff6500;
 	color: #0b192c;
 }
 
-nav ul li a.router-link-exact-active {
-	background-color: #FF6500;
+#sidebar ul li a.router-link-exact-active {
+	background-color: #ff6500;
 	color: #fff;
 }
 
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
-	#app {
-		flex-direction: column; /* Stack sidebar and main content vertically on smaller screens */
-	}
-
 	#sidebar {
-		width: 100%; /* Sidebar takes full width on smaller screens */
+		width: 100%; /* Full width on smaller screens */
 		border-right: none;
 		border-bottom: 1px solid #ddd;
 	}
 
 	#view {
-		width: 100%; /* Content area takes full width on smaller screens */
+		width: 100%;
 	}
 }
 </style>
