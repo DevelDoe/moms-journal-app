@@ -47,6 +47,7 @@ export default {
 		return {
 			orders: [], // Store parsed orders
 			message: "", // Store success or error messages
+			uploadedTrades: false,
 		};
 	},
 	computed: {
