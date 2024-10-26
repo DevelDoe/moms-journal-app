@@ -30,7 +30,7 @@
 			<!-- <AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" /> -->
 
 			<!-- Trades.vue -->
-			<TradesProfitChart
+			<ReportTradesProfit
 				v-if="tradeProfitLabels.length > 0 && tradeProfitValues.length > 0 && tradeTradeCountValues.length > 0"
 				:labels="tradeProfitLabels"
 				:profitData="tradeProfitValues"
@@ -38,31 +38,31 @@
 			/>
 
 			<!-- Cumulative Profit Over Time Chart -->
-			<cumulative-profit-chart :labels="cumulativeProfitLabels" :profitData="cumulativeProfitValues" :tradeCountData="cumulativeTradeCountValues" />
+			<ReportCumulativeProfit :labels="cumulativeProfitLabels" :profitData="cumulativeProfitValues" :tradeCountData="cumulativeTradeCountValues" />
 
 			<!-- Profit/Loss Distribution Histogram -->
-			<ProfitLossHistogram
+			<ReportProfitLossHistogram
 				v-if="profitLossDistributionChartData.labels.length > 0 && profitLossDistributionChartData.data.length > 0"
 				:labels="profitLossDistributionChartData.labels"
 				:data="profitLossDistributionChartData.data"
 			/>
 
 			<!-- Trades by Hour Chart Partial -->
-			<TradesByHourChart
+			<ReportTradesByHour
 				v-if="tradesByHourChartData.labels.length > 0 && tradesByHourChartData.data.length > 0"
 				:labels="tradesByHourChartData.labels"
 				:data="tradesByHourChartData.data"
 			/>
 
 			<!-- Trades by Minute Chart Partial -->
-			<TradesByMinuteChart
+			<ReportTradesByMinuteChart
 				v-if="tradesByMinuteChartData.labels.length > 0 && tradesByMinuteChartData.data.length > 0"
 				:labels="tradesByMinuteChartData.labels"
 				:data="tradesByMinuteChartData.data"
 			/>
 
 			<!-- Profit by Whole Dollar Range Chart -->
-			<ProfitByPriceRangeChart
+			<ReportProfitByPriceRange
 				v-if="profitByWholeDollarRangeChartData.labels.length > 0 && profitByWholeDollarRangeChartData.data.length > 0"
 				:labels="profitByWholeDollarRangeChartData.labels"
 				:data="profitByWholeDollarRangeChartData.data"
@@ -78,12 +78,13 @@
 import AnalyzeTrades from "./partials/AnalyzeTrades.vue"; // Import the AnalyzeTrades component
 import TradesSummary from "./partials/TradesSummary.vue"; // Import the new component
 import TradesList from "./partials/TradesList.vue"; // Import the new TradesList component
-import ProfitByPriceRangeChart from "./partials/charts/ProfitByPriceRangeChart.vue"; // Import the new ProfitByPriceRangeChart component
-import TradesByHourChart from "./partials/charts/TradesByHourChart.vue"; // Import the new TradesByHourChart component
-import TradesByMinuteChart from "./partials/charts/TradesByMinuteChart.vue"; // Import the TradesByMinuteChart component
-import ProfitLossHistogram from "./partials/charts/ProfitLossHistogram.vue"; // Import the ProfitLossHistogram component
-import CumulativeProfitChart from "./partials/charts/CumulativeProfitChart.vue";
-import TradesProfitChart from "./partials/charts/TradesProfitChart.vue";
+
+import ReportProfitByPriceRange from "./partials/reports/ReportProfitByPriceRange.vue"; // Import the new ProfitByPriceRangeChart component
+import ReportTradesByHour from "./partials/reports/ReportTradesByHour.vue"; // Import the new TradesByHourChart component
+import ReportTradesByMinute from "./partials/reports/ReportTradesByMinute.vue"; // Import the TradesByMinuteChart component
+import ReportProfitLossHistogram from "./partials/reports/ReportProfitLossHistogram.vue"; // Import the ProfitLossHistogram component
+import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
+import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
 
 import axios from "axios"; // Make sure axios is imported
 import { use } from "echarts/core";
@@ -110,12 +111,12 @@ export default {
 		TradesSummary,
 		VChart,
 		TradesList,
-		ProfitByPriceRangeChart,
-		TradesByHourChart,
-		TradesByMinuteChart,
-		ProfitLossHistogram,
-		CumulativeProfitChart,
-		TradesProfitChart,
+		ReportProfitByPriceRange,
+		ReportTradesByHour,
+		ReportTradesByMinute,
+		ReportProfitLossHistogram,
+		ReportCumulativeProfit,
+		ReportTradesProfit,
 	},
 	async mounted() {
 		// Fetch trades and historical trades when the component is mounted
