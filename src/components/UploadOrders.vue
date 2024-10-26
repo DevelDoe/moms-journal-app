@@ -3,7 +3,7 @@
 		<h2>Import Orders</h2>
 		
 		<input type="file" @change="handleFileUpload" accept=".txt" />
-		<button @click="importOrders" :disabled="!orders.length || !selectedAccount">Import Orders</button>
+		<button @click="importOrders" :disabled="!orders.length ">Import Orders</button>
 
 		<table v-if="orders.length > 0" class="orders-table">
 			<thead>
