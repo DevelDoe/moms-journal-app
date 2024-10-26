@@ -18,10 +18,7 @@ export default createStore({
 		token: localStorage.getItem("token") || "",
 		orders: [],
 		trades: [],
-		brokers: [],
-		selectedBrokerDetails: null,
 		summaries: [],
-		ordersByAccount: [],
 	},
 	mutations: {
 		setUser(state, userData) {
@@ -29,20 +26,6 @@ export default createStore({
 				state.user = {};
 			}
 			Object.assign(state.user, userData);
-		},
-		addUserAccount(state, account) {
-			if (!state.user || !state.user.accounts) {
-				state.user = { ...state.user, accounts: [] }; // Ensure user and accounts exist
-			}
-			state.user.accounts.push(account);
-		},
-		removeUserAccount(state, accountNumber) {
-			if (state.user && state.user.accounts) {
-				state.user.accounts = state.user.accounts.filter((account) => account.number !== accountNumber);
-			}
-		},
-		setSelectedBrokerDetails(state, broker) {
-			state.selectedBrokerDetails = broker; // Store the fetched broker details
 		},
 		setToken(state, token) {
 			state.token = token;
@@ -71,28 +54,8 @@ export default createStore({
 		setTrades(state, trades) {
 			state.trades = trades;
 		},
-		setBrokers(state, brokers) {
-			state.brokers = brokers; // Replace the entire brokers array
-		},
-		setBroker(state, updatedBroker) {
-			if (state.brokers) {
-				const index = state.brokers.findIndex((broker) => broker._id === updatedBroker._id);
-				if (index !== -1) {
-					state.brokers.splice(index, 1, updatedBroker); // Update the broker in the brokers array
-				}
-			}
-		},
-		addBroker(state, broker) {
-			if (!state.brokers) {
-				state.brokers = []; // Ensure brokers array exists if not already initialized
-			}
-			state.brokers.push(broker); // Append the newly created broker to the brokers array
-		},
 		setSummaries(state, summaries) {
 			state.summaries = summaries;
-		},
-		setOrdersByAccount(state, orders) {
-			state.ordersByAccount = orders; // Set the fetched orders in state
 		},
 	},
 	actions: {
@@ -150,54 +113,6 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async fetchAccountSpecifications(accountId) {
-			try {
-				const response = await axios.get(`http://localhost:5000/api/brokers/accounts/${accountId}`);
-				return response.data; // Return the account specifications
-			} catch (error) {
-				console.error("Error fetching account specifications:", error);
-				throw error; // Re-throw for further handling if needed
-			}
-		},
-		async addUserAccount({ commit, state }, accountData) {
-			try {
-				const brokerResponse = await axios.get(`http://localhost:5000/api/brokers/${accountData.brokerId}`);
-				const broker = brokerResponse.data;
-
-				const accountTypeDetails = broker.accountTypes.find((accountType) => accountType._id === accountData.accountId);
-
-				const newAccount = {
-					type: accountTypeDetails.type,
-					brokerId: accountData.brokerId,
-					accountId: accountData.accountId,
-					number: accountData.number,
-					balance: accountData.balance || 0,
-					specifications: accountTypeDetails,
-				};
-
-				const response = await axios.post("http://localhost:5000/api/user/add-account", newAccount, {
-					headers: { Authorization: `Bearer ${state.token}` },
-				});
-
-				commit("addUserAccount", response.data); // Commit the new account only
-				debouncedSuccessToast("Account added successfully!");
-			} catch (error) {
-				const message = error.response?.data?.msg || "Error adding account.";
-				debouncedErrorToast(message);
-			}
-		},
-		async removeUserAccount({ commit, state }, accountId) {
-			try {
-				const response = await axios.delete(`http://localhost:5000/api/user/remove-account/${accountId}`, {
-					headers: { Authorization: `Bearer ${state.token}` },
-				});
-				commit("setUser", response.data);
-				debouncedSuccessToast("Account removed successfully!");
-			} catch (error) {
-				const message = error.response?.data?.msg || "Error removing account.";
-				debouncedErrorToast(message);
-			}
-		},
 		async fetchOrders({ commit, dispatch, state }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/orders", {
@@ -208,29 +123,6 @@ export default createStore({
 			} catch (error) {
 				const message = error.response?.data?.msg || "Error fetching orders.";
 				debouncedErrorToast(message);
-			}
-		},
-		async fetchOrdersByAccountId({ commit, state }, accountId) {
-			try {
-				// Log to check if the correct accountId and token are being sent
-				console.log("Fetching orders for accountId:", accountId, "Token:", state.token);
-
-				// Make the API request
-				const response = await axios.get(`http://localhost:5000/api/orders/${accountId}`, {
-					headers: { Authorization: `Bearer ${state.token}` }, // Ensure token is correctly set
-				});
-
-				// Commit the result to Vuex store
-				commit("setOrdersByAccount", response.data); // Pass the response data to the mutation
-
-				// Return the data to the caller
-				return response.data;
-			} catch (error) {
-				// Log the error to catch any issues
-				console.error("Error fetching orders:", error);
-				throw error;
-			} finally {
-				// Perform any cleanup or reset loading state if needed
 			}
 		},
 		async createOrder({ commit, state }, orderData) {
@@ -283,20 +175,6 @@ export default createStore({
 				console.error("Error fetching trades:", error);
 			}
 		},
-		async fetchTradesByAccount({ commit, state }, accountId) {
-			try {
-				const response = await axios.get(`http://localhost:5000/api/trades/${accountId}`, {
-					headers: { Authorization: `Bearer ${state.token}` },
-				});
-
-				const trades = response.data; // Assuming this is where the trades are stored
-				commit("setTrades", trades); // Commit to Vuex state
-				return trades; // <-- Make sure to return the trades here
-			} catch (error) {
-				console.error("Error fetching trades:", error);
-				throw error;
-			}
-		},
 		async fetchAllSummaries({ commit, state }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/trades/summaries", {
@@ -318,81 +196,6 @@ export default createStore({
 				console.error("Error fetching filtered summaries:", error);
 			}
 		},
-		async fetchBrokers({ commit }) {
-			try {
-				const response = await axios.get("http://localhost:5000/api/brokers");
-				commit("setBrokers", response.data);
-				debouncedSuccessToast("Brokers fetched successfully!");
-			} catch (error) {
-				console.error("Error fetching brokers:", error);
-				const message = error.response?.data?.msg || "Error fetching brokers.";
-				debouncedErrorToast(message);
-			}
-		},
-		async createBrokerAction({ commit, state }, brokerData) {
-			try {
-				// Include token in the headers if the user is authenticated
-				const response = await axios.post("http://localhost:5000/api/brokers", brokerData, {
-					headers: {
-						Authorization: `Bearer ${state.token}`, // Ensure the token is in the state
-					},
-				});
-
-				commit("addBroker", response.data);
-				debouncedSuccessToast(`Broker '${response.data.name}' created successfully!`);
-			} catch (error) {
-				console.error("Error creating broker:", error);
-				const message = error.response?.data?.msg || "Error creating broker.";
-				debouncedErrorToast(message);
-				throw error; // Optional: Rethrow the error for further handling
-			}
-		},
-		async updateBrokerAction({ commit }, { brokerId, broker }) {
-			try {
-				const response = await axios.put(`http://localhost:5000/api/brokers/${brokerId}`, broker);
-
-				// Optional: update broker in the store if you want
-				commit("setBroker", response.data);
-
-				debouncedSuccessToast(`Broker "${response.data.name}" updated successfully!`);
-			} catch (error) {
-				console.error("Error updating broker:", error);
-				const message = error.response?.data?.msg || "Error updating broker.";
-				debouncedErrorToast(message);
-				throw error;
-			}
-		},
-		async deleteBrokerAction({ commit, state }, brokerId) {
-			try {
-				// Make the DELETE request to the backend
-				await axios.delete(`http://localhost:5000/api/brokers/${brokerId}`, {
-					headers: {
-						Authorization: `Bearer ${state.token}`, // Ensure the token is in the state
-					},
-				});
-	
-				// Fetch updated brokers after deletion
-				await this.dispatch("fetchBrokers"); 
-	
-				debouncedSuccessToast(`Broker deleted successfully!`);
-			} catch (error) {
-				const message = error.response?.data?.msg || "Error deleting broker.";
-				debouncedErrorToast(message);
-	
-				console.error("Error deleting broker:", error);
-				throw error; // Re-throw the error for further handling in the component
-			}
-		},
-		async fetchBrokerByAccountType({ commit }, accountType) {
-			try {
-				const response = await axios.get(`/api/brokers/account/${accountType}`);
-				commit("setSelectedBrokerDetails", response.data); // Commit the broker details to the store
-			} catch (error) {
-				console.error("Error fetching broker by account type:", error.message);
-				const message = error.response?.data?.msg || "Error fetching broker by account type.";
-				debouncedErrorToast(message);
-			}
-		},
 		logout({ commit }, router) {
 			// Clear the state
 			commit("clearState");
@@ -409,11 +212,8 @@ export default createStore({
 	getters: {
 		isAuthenticated: (state) => !!state.token,
 		getUser: (state) => state.user,
-		getUserAccounts: (state) => (state.user ? state.user.accounts : []),
 		getOrders: (state) => state.orders,
 		getTrades: (state) => state.trades,
-		getBrokers: (state) => state.brokers,
 		getSummaries: (state) => state.summaries,
-		getOrdersByAccount: (state) => state.ordersByAccount,
 	},
 });
