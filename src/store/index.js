@@ -148,17 +148,13 @@ export default createStore({
 					}
 				);
 
-				// Destructure the response data to get orders, trades, and summaries
-				const { orders: newOrders, trades, summaries } = response.data;
+				 // Show success message
+				 debouncedSuccessToast(response.data.message || "Orders uploaded successfully!");
 
-				// Commit orders, trades, and summaries to the Vuex state
-				newOrders.forEach((order) => {
-					commit("addOrder", order); // Add each uploaded order to Vuex
-				});
-				commit("setTrades", trades); // Store trades in Vuex
-				commit("setSummaries", summaries); // Store summaries in Vuex
-
-				debouncedSuccessToast("Orders, trades, and summaries saved successfully!");
+				 // Fetch the updated data
+				 await dispatch("fetchOrders");
+				 await dispatch("fetchTrades");
+				 await dispatch("fetchAllSummaries");
 			} catch (error) {
 				const message = error.response?.data?.error || "Error uploading orders.";
 				debouncedErrorToast(message);
