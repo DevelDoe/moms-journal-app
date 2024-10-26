@@ -208,7 +208,7 @@ export default {
 				legend: {
 					orient: "horizontal",
 					left: "center",
-					top: "100%",
+					top: "0%",
 					textStyle: { color: "#333" },
 				},
 				animationDuration: 5000, // Set animation duration in milliseconds
