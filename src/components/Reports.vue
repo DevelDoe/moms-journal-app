@@ -130,32 +130,32 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
+			console.log("Initial trades:", this.trades); // Log the trades data to confirm it’s not empty
 			this.hasCorruptData = false; // Reset corrupt data flag
 
-			// Filter out any trades with missing or corrupted data
 			const validTrades = this.trades.filter((trade) => {
 				const isValid =
 					trade &&
 					trade.symbol &&
-					trade.accountId && // Added this line to check for the presence of accountId
+					trade.accountId &&
 					trade.buyPrice !== undefined &&
 					trade.sellPrice !== undefined &&
 					trade.profitLoss !== undefined &&
 					trade.date;
 
 				if (!isValid) {
-					this.hasCorruptData = true; // Mark if there's corrupt data
+					this.hasCorruptData = true;
 					return false;
 				}
 				return isValid;
 			});
 
-			// If no filter date is selected, return all valid trades
+			console.log("Valid trades:", validTrades); // Log valid trades to check filter behavior
+
 			if (!this.filterDate) {
 				return validTrades;
 			}
 
-			// Filter trades by selected date if a date is set
 			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
 			return validTrades.filter((trade) => {
 				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
