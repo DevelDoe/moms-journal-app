@@ -14,7 +14,6 @@
 					<th>Quantity</th>
 					<th>Price</th>
 					<th>Date</th>
-					<th>Account</th>
 				</tr>
 			</thead>
 			<tbody>
