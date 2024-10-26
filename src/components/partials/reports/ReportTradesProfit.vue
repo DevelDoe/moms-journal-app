@@ -157,7 +157,7 @@ export default {
 					},
 					axisLabel: {
 						color: "#1E3E62", // Color of the x-axis labels
-						fontSize: 0, // Size of the font for the labels
+						fontSize: 10, // Size of the font for the labels
 					},
 					splitLine: {
 						lineStyle: {
