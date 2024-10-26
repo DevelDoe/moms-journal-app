@@ -225,7 +225,7 @@ export default {
 					},
 				],
 				animationDuration: 5000,
-				animationEasing: "exponentialIn",
+				animationEasing: "quarticInOut",
 			};
 		},
 	},
