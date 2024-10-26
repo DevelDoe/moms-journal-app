@@ -201,7 +201,7 @@ export default {
 					},
 				],
 				animationDuration: 4000,
-				animationEasing: "quadraticInOut",
+				animationEasing: "quadraticIn",
 			};
 		},
 	},
