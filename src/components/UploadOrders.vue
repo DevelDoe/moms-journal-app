@@ -20,11 +20,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr
-					v-for="order in orders"
-					:key="order._id"
-					:class="{ buy: order.side === 'buy', sell: order.side === 'sell' }"
-				>
+				<tr v-for="order in orders" :key="order._id" :class="{ buy: order.side === 'buy', sell: order.side === 'sell' }">
 					<td>{{ order.symbol }}</td>
 					<td>{{ new Date(order.date).toLocaleTimeString() }}</td>
 					<td>{{ order.side }}</td>
@@ -54,7 +50,6 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
-
 			this.hasCorruptData = false; // Reset corrupt data flag
 
 			// Shallow unwrap each trade object using spread syntax
@@ -62,12 +57,7 @@ export default {
 
 			const validTrades = tradesArray.filter((trade) => {
 				const isValid =
-					trade &&
-					trade.symbol &&
-					trade.buyPrice !== undefined &&
-					trade.sellPrice !== undefined &&
-					trade.profitLoss !== undefined &&
-					trade.date;
+					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
 
 				if (!isValid) {
 					this.hasCorruptData = true; // Mark if there's corrupt data
@@ -144,10 +134,12 @@ export default {
 		// Send parsed orders to the backend
 		async importOrders() {
 			try {
-				// Send the entire array of orders to the backend
-				await this.$store.dispatch("createMultipleOrders", { orders: this.orders });
+				// Dispatch the action and receive the new trades
+				const newTrades = await this.$store.dispatch("createMultipleOrders", { orders: this.orders });
 
+				// Set message and update trades in the chart for immediate display
 				this.message = "Orders successfully imported!";
+				this.filteredTrades = newTrades; // Directly use new trades for the chart
 			} catch (error) {
 				this.message = "Failed to import orders.";
 				console.error(error);
