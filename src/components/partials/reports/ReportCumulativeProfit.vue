@@ -163,7 +163,7 @@ export default {
 </script>
 
 <style scoped>
-.cumulative-profit-chart {
+#cumulative-profit-chart {
 	margin-top: 20px;
 }
 .chart-header {
