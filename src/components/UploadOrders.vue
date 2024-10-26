@@ -5,7 +5,7 @@
 		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
 
 		<!-- Display the cumulative profit report for the uploaded trades -->
-		<ReportCumulativeProfit :trades="filteredTrades" />
+		<ReportCumulativeProfit :trades="trades" />
 
 		<!-- Display the list of uploaded orders -->
 		<table v-if="orders.length > 0" class="orders-table">
@@ -48,35 +48,6 @@ export default {
 		trades() {
 			const tradesData = this.$store.getters.getTrades;
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
-		},
-		filteredTrades() {
-			this.hasCorruptData = false; // Reset corrupt data flag
-
-			// Shallow unwrap each trade object using spread syntax
-			const tradesArray = this.trades.map((trade) => ({ ...trade }));
-
-			const validTrades = tradesArray.filter((trade) => {
-				const isValid =
-					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
-
-				if (!isValid) {
-					this.hasCorruptData = true; // Mark if there's corrupt data
-					return false;
-				}
-				return isValid;
-			});
-
-			// If no filter date is selected, return all valid trades
-			if (!this.filterDate) {
-				return validTrades;
-			}
-
-			// Filter trades by selected date if a date is set
-			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
-			return validTrades.filter((trade) => {
-				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
-				return formattedFilterDate === formattedTradeDate;
-			});
 		},
 	},
 	methods: {
