@@ -153,12 +153,12 @@ export default {
 							fontSize: 12,
 						},
 						splitLine: {
-      lineStyle: {
-        color: "#1E3E62", // Ensure the same color for consistency
-        width: 1,
-        type: "solid",
-      },
-    },
+							lineStyle: {
+								color: "#1E3E62", // Ensure the same color for consistency
+								width: 1,
+								type: "solid",
+							},
+						},
 					},
 					{
 						type: "value",
@@ -170,6 +170,13 @@ export default {
 						axisLabel: {
 							color: "#1E3E62",
 							fontSize: 12,
+						},
+						splitLine: {
+							lineStyle: {
+								color: "#1E3E62", // Ensure the same color for consistency
+								width: 1,
+								type: "solid",
+							},
 						},
 					},
 				],
