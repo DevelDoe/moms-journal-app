@@ -32,7 +32,7 @@
 			<!-- Cumulative Profit Over Time Chart -->
 			<ReportCumulativeProfit :trades="filteredTrades" />
 
-			
+
 			<!-- Trades.vue
 			<ReportTradesProfit
 				v-if="tradeProfitLabels.length > 0 && tradeProfitValues.length > 0 && tradeTradeCountValues.length > 0"
@@ -102,7 +102,6 @@ export default {
 			filterDate: "", // Stores the selected date for filtering
 			isLoading: true, // Loading state
 			tradesLoaded: false, // Ensure trades are loaded before filtering
-			historicalTrades: [], // Historical trades
 			hasCorruptData: false,
 		};
 	},
