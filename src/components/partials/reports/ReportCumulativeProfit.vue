@@ -133,12 +133,12 @@ export default {
 						fontSize: 14, // Size of the font for the labels
 					},
 					splitLine: {
-      lineStyle: {
-        color: "#444", // Change this to your preferred color for the horizontal lines
-        width: 1,      // Thickness of the lines
-        type: "solid", // Options: 'solid', 'dashed', 'dotted'
-      },
-					
+						lineStyle: {
+							color: "#444", // Change this to your preferred color for the horizontal lines
+							width: 1, // Thickness of the lines
+							type: "solid", // Options: 'solid', 'dashed', 'dotted'
+						},
+					},
 				},
 				yAxis: [
 					{
