@@ -116,6 +116,12 @@ export default {
 				// title: {
 				// 	text: `Cumulative Profit and Number of Trades (${this.granularity})`,
 				// },
+				tooltip: {
+					trigger: "axis",
+					axisPointer: {
+						type: "line",
+					},
+				},
 				legend: {
 					orient: "horizontal",
 					left: "center",
@@ -123,12 +129,7 @@ export default {
 					textStyle: { color: "#333" },
 					icon: "circle", 
 				},
-				tooltip: {
-					trigger: "axis",
-					axisPointer: {
-						type: "line",
-					},
-				},
+				
 				xAxis: {
 					type: "category",
 					data: this.cumulativeProfitData.labels,
