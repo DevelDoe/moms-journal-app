@@ -25,7 +25,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import toggleIcon from "@/assets/images/drawer.webp"; // Adjust path as needed
+import toggleIcon from "@/assets/images/drawer.png"; // Adjust path as needed
 
 export default {
 	data() {
