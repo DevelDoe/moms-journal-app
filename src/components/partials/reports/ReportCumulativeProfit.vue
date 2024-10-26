@@ -116,6 +116,13 @@ export default {
 				// title: {
 				// 	text: `Cumulative Profit and Number of Trades (${this.granularity})`,
 				// },
+				legend: {
+					orient: "horizontal",
+					left: "center",
+					top: "0%",
+					textStyle: { color: "#333" },
+					icon: "circle", 
+				},
 				tooltip: {
 					trigger: "axis",
 					axisPointer: {
@@ -205,13 +212,6 @@ export default {
 						lineStyle: { width: 3 },
 					},
 				],
-				legend: {
-					orient: "horizontal",
-					left: "center",
-					top: "0%",
-					textStyle: { color: "#333" },
-					icon: "circle", 
-				},
 				animationDuration: 5000, // Set animation duration in milliseconds
 			};
 		},
