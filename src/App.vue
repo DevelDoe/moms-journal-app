@@ -50,31 +50,33 @@ export default {
     width: 60px; /* Narrow width when collapsed */
 }
 
-.toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 
-.toggle-btn img {
-    width: 24px; /* Adjust size */
-    height: 24px;
-    transition: transform 0.3s;
+#sidebar ul li {
+    margin-bottom: 10px;
 }
 
-/* Optional rotation for open/close */
-#sidebar.collapsed .toggle-btn img {
-    transform: rotate(180deg); /* Rotates icon when collapsed */
+#sidebar ul li a {
+    color: #EAEAEA;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+#sidebar ul li a:hover {
+    background-color: #FF6500;
+    color: #0b192c;
 }
 
 #view {
-    margin-left: 20%; /* Default width for expanded sidebar */
     transition: margin-left 0.3s;
+    margin-left: 20%; /* Default width for expanded sidebar */
     padding: 20px;
 }
 
@@ -82,6 +84,45 @@ export default {
     margin-left: 60px; /* Shift content to the left when sidebar is collapsed */
 }
 
+/* Toggle button styles */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+
+nav ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+nav ul li {
+	margin-bottom: 10px;
+}
+
+nav ul li a {
+	color: #EAEAEA;
+	text-decoration: none;
+	padding: 10px;
+	display: block;
+	border-radius: 4px;
+	transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+	background-color: #FF6500;
+	color: #0b192c;
+}
+
+nav ul li a.router-link-exact-active {
+	background-color: #FF6500;
+	color: #fff;
+}
 
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
