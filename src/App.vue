@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import toggleIcon from "./images/drawer.webp"; // Adjust path as needed
+import toggleIcon from ".../images/drawer.webp"; // Adjust path as needed
 
 export default {
 	data() {
