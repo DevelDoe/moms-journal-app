@@ -40,7 +40,8 @@ export default {
 	components: { FullScreenCulmReport },
 	data() {
 		return {
-			orders: [], // Store parsed orders
+			orders: [], 
+			trades: [],
 			isChartVisible: false,
 			granularity: "hourly",
 		};
