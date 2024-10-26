@@ -200,7 +200,7 @@ export default {
 						})),
 					},
 				],
-				animationDuration: 5000,
+				animationDuration: 4000,
 				animationEasing: "quadraticOut",
 			};
 		},
