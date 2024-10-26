@@ -16,7 +16,7 @@ const NewOrder = () => import("../components/NewOrder.vue");
 const OrdersList = () => import("../components/OrdersList.vue");
 const UploadOrders = () => import("../components/UploadOrders.vue");
 const Reports = () => import("../components/Reports.vue");
-// const WebSocketClient = () => import("../components/WebSocketClient.vue");
+// const WebSocketClient = () => import("../components/partials/WebSocketClient.vue");
 
 const exampleChart = () => import("../components/exampleChart.vue");
 
