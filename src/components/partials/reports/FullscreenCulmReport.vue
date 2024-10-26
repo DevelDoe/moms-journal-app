@@ -134,7 +134,7 @@ export default {
 				yAxis: [
 					{
 						type: "value",
-						name: "$",
+						name: "Profit",
 						position: "left",
 					},
 					{
