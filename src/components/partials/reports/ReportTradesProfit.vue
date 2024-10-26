@@ -66,69 +66,44 @@ export default {
 		},
 	},
 	computed: {
-		tradeProfitAndTradeCountData() {
-			// Check if trades prop is defined and not empty
+		cumulativeProfitData() {
 			if (!this.trades || this.trades.length === 0) {
-				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
+				return { labels: [], profitData: [], tradeCountData: [] };
 			}
 
-			// Sort the trades by date
-			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
-
-			const isSingleDay = this.filterDate !== ""; // Determine if filtering to a specific day
-
+			let cumulativeProfit = 0;
+			let cumulativeTradeCount = 0;
 			const labels = [];
 			const profitData = [];
 			const tradeCountData = [];
 
-			if (isSingleDay) {
-				// Group trades by hour for the filtered day
-				const tradesByHour = sortedTrades.reduce((acc, trade) => {
-					const date = new Date(trade.date);
-					const hourKey = `${date.getHours()}:00`; // e.g., '14:00'
-					if (!acc[hourKey]) {
-						acc[hourKey] = [];
-					}
-					acc[hourKey].push(trade);
-					return acc;
-				}, {});
+			// Sort trades by date
+			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-				// Prepare labels and data for the chart
-				Object.keys(tradesByHour).forEach((hour) => {
-					const trades = tradesByHour[hour];
-					labels.push(hour);
+			// Group trades by selected granularity (e.g., hourly, daily, weekly)
+			const groupedTrades = sortedTrades.reduce((acc, trade) => {
+				const key = this.formatDate(trade.date); // Format based on granularity
+				if (!acc[key]) {
+					acc[key] = [];
+				}
+				acc[key].push(trade);
+				return acc;
+			}, {});
 
-					// Calculate total profit for the hour
-					const hourlyProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
-					profitData.push(hourlyProfit);
+			// Calculate cumulative profit and trade count for each group
+			Object.keys(groupedTrades).forEach((group) => {
+				const trades = groupedTrades[group];
+				labels.push(group);
 
-					// Number of trades in this hour
-					tradeCountData.push(trades.length);
-				});
-			} else {
-				// Group trades by day
-				const tradesByDay = sortedTrades.reduce((acc, trade) => {
-					const dateKey = new Date(trade.date).toLocaleDateString();
-					if (!acc[dateKey]) {
-						acc[dateKey] = [];
-					}
-					acc[dateKey].push(trade);
-					return acc;
-				}, {});
+				// Calculate total profit for the group (e.g., hour, day)
+				const groupProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+				cumulativeProfit += groupProfit; // Update cumulative profit
+				profitData.push(cumulativeProfit);
 
-				// Prepare labels and data for the chart
-				Object.keys(tradesByDay).forEach((date) => {
-					const trades = tradesByDay[date];
-					labels.push(date);
-
-					// Calculate total profit for the day
-					const tradeProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
-					profitData.push(tradeProfit);
-
-					// Number of trades on this day
-					tradeCountData.push(trades.length);
-				});
-			}
+				// Calculate total trade count for the group
+				cumulativeTradeCount += trades.length; // Update cumulative trade count
+				tradeCountData.push(cumulativeTradeCount);
+			});
 
 			return {
 				labels,
