@@ -50,20 +50,63 @@ export default {
 
 <style>
 #sidebar {
-    position: fixed; /* Fix the sidebar in place */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 20%; /* Sidebar takes 20% of the total width */
     background-color: #1E3E62;
     padding: 20px;
-    height: 100vh; /* Full viewport height */
-    overflow-y: auto; /* Adds scrollbar if content overflows */
+    height: 100vh;
+    overflow-y: auto;
+    transition: width 0.3s;
+}
+
+#sidebar.collapsed {
+    width: 60px; /* Narrow width when collapsed */
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar ul li {
+    margin-bottom: 10px;
+}
+
+#sidebar ul li a {
+    color: #EAEAEA;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+#sidebar ul li a:hover {
+    background-color: #FF6500;
+    color: #0b192c;
 }
 
 #view {
-    margin-left: 20%; /* Offset the main view to the right of the sidebar */
+    transition: margin-left 0.3s;
+    margin-left: 20%; /* Default width for expanded sidebar */
     padding: 20px;
-    width: 80%;
+}
+
+#view.collapsed {
+    margin-left: 60px; /* Shift content to the left when sidebar is collapsed */
+}
+
+/* Toggle button styles */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 5px;
 }
 
 nav ul {
