@@ -4,10 +4,10 @@
 		<h1>Reports</h1>
 
 		<!-- Date Picker for Filtering -->
-		<div class="date-filter">
+		<!-- <div class="date-filter">
 			<label for="filter-date">Filter by Date:</label>
 			<input type="date" id="filter-date" v-model="filterDate" @change="filterTradesByDate" />
-		</div>
+		</div> -->
 
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading trades...</p>
