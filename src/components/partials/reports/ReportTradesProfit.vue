@@ -153,7 +153,7 @@ export default {
 					min: -Math.max(...profitData, ...tradeCountData) * 1.1, // Dynamically calculate min and max based on data
 					max: Math.max(...profitData, ...tradeCountData) * 1.1,
 					splitLine: {
-						lineStyle: { type: "dashed" },
+						lineStyle: { type: "none" },
 					},
 					axisLine: {
 						lineStyle: { color: "#888" },
