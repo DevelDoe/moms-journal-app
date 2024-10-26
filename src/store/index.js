@@ -113,7 +113,7 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async fetchOrders({ commit, state }) {
+		async fetchOrders({ commit, dispatch, state }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/orders", {
 					headers: { Authorization: `Bearer ${state.token}` },
@@ -162,7 +162,7 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async fetchTrades({ commit, state }) {
+		async fetchOrders({ commit, dispatch, state }) {
 			try {
 				// Make an API request to fetch trades for the user
 				const response = await axios.get("http://localhost:5000/api/trades", {
