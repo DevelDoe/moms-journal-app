@@ -129,7 +129,7 @@ export default {
 						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
 					},
 					axisLabel: {
-						color: "#333", // Color of the x-axis labels
+						color: "#1E3E62", // Color of the x-axis labels
 						fontSize: 12, // Size of the font for the labels
 					},
 				},
