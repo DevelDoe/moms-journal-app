@@ -200,6 +200,7 @@ export default {
 						})),
 					},
 				],
+				animationDuration: 5000,
 			};
 		},
 	},
