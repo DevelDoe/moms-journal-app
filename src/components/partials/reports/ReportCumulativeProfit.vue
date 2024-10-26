@@ -215,7 +215,7 @@ export default {
 						lineStyle: { width: 3 },
 					},
 					{
-						name: "Number of Trades",
+						name: "Trades",
 						type: "line",
 						data: this.cumulativeProfitData.tradeCountData,
 						yAxisIndex: 1,
