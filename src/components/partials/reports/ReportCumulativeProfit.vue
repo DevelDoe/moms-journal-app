@@ -130,7 +130,7 @@ export default {
 				tooltip: {
 					trigger: "axis",
 					axisPointer: {
-						type: "line",
+						type: "shadow",
 					},
 				},
 				legend: {
