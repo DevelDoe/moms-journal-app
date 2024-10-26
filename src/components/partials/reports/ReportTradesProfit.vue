@@ -139,7 +139,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: "Trades & profits",
+					text: "Trades & Profits",
 					left: "left", // Position the title in the center
 					textStyle: {
 						color: "#ffffff", // Title text color
