@@ -200,7 +200,7 @@ export default {
 						})),
 					},
 				],
-				animationDuration: 4000,
+				animationDuration: 3000,
 				animationEasing: "cubicIn",
 			};
 		},
