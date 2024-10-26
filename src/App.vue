@@ -1,19 +1,12 @@
 <template>
 	<div style="width: 100%">
 		<nav :class="{ collapsed: isCollapsed }" id="sidebar">
+			<!-- Toggle Button with Icon -->
 			<button @click="toggleSidebar" class="toggle-btn">
-				{{ isCollapsed ? '➡️' : '⬅️' }}
+				<img :src="toggleIcon" alt="Toggle Sidebar" />
 			</button>
 			<ul v-if="!isCollapsed">
-				<!-- Sidebar links -->
-				<li><router-link to="/">Home</router-link></li>
-				<li v-if="!isAuthenticated"><router-link to="/login">Login</router-link></li>
-				<li v-if="!isAuthenticated"><router-link to="/register">Register</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/profile">Profile</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/Reports">Reports</router-link></li>
-				<li v-if="isAuthenticated"><a @click="logout" style="cursor: pointer">Logout</a></li>
+				<!-- Sidebar links here -->
 			</ul>
 		</nav>
 		<div :class="{ collapsed: isCollapsed }" id="view">
@@ -23,30 +16,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import toggleIcon from "@/assets/sidebar-toggle-icon.png"; // Adjust path as needed
 
 export default {
 	data() {
 		return {
 			isCollapsed: false, // Track sidebar collapsed state
+			toggleIcon, // Icon for the toggle button
 		};
-	},
-	computed: {
-		...mapGetters(["isAuthenticated", "getUser"]),
-		isAdmin() {
-			return this.getUser && this.getUser.role === "admin";
-		},
 	},
 	methods: {
 		toggleSidebar() {
 			this.isCollapsed = !this.isCollapsed; // Toggle sidebar state
 		},
-		logout() {
-			this.$store.dispatch("logout", this.$router);
-		},
 	},
 };
 </script>
+
 
 <style>
 #sidebar {
