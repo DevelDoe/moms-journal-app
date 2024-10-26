@@ -30,7 +30,7 @@ export default {
 		},
 		granularity: {
 			type: String,
-			default: "hourly", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
+			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
 		},
 	},
 	components: {
