@@ -51,6 +51,10 @@ export default {
 * {
 	box-sizing: border-box; /* Apply border-box globally */
 }
+body{
+	background-color: #252A34;
+	color: #bbb;
+}
 
 #app {
 	display: flex;
