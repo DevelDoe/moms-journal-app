@@ -101,7 +101,6 @@ export default {
 			filterDate: "", // Stores the selected date for filtering
 			isLoading: true, // Loading state
 			tradesLoaded: false, // Ensure trades are loaded before filtering
-			rawFilteredTrades: [], // Rename this property
 			historicalTrades: [], // Historical trades
 			hasCorruptData: false,
 		};
