@@ -139,7 +139,7 @@ export default createStore({
 		},
 		async createMultipleOrders({ commit, state }, { orders }) {
 			try {
-				// Send orders directly, assuming accountId is already included in the parsed order
+				// Send orders directly
 				const response = await axios.post(
 					"http://localhost:5000/api/orders",
 					{ orders }, // Send the orders as they are
