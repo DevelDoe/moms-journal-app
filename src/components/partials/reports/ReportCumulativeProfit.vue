@@ -134,7 +134,7 @@ export default {
 					},
 					splitLine: {
 						lineStyle: {
-							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
+							color: "#23436e", // Change this to your preferred color for the horizontal lines
 							width: 1, // Thickness of the lines
 							type: "solid", // Options: 'solid', 'dashed', 'dotted'
 						},
