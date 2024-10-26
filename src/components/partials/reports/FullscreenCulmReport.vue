@@ -230,5 +230,6 @@ export default {
 	border: none;
 	padding: 10px 20px;
 	cursor: pointer;
+    z-index: 9999;
 }
 </style>
