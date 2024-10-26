@@ -52,7 +52,7 @@ export default {
 	box-sizing: border-box; /* Apply border-box globally */
 }
 body{
-	background-color: #000000;
+	background-color: #0B192C;
 	color: #EAEAEA;
 }
 
