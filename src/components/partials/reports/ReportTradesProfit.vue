@@ -159,7 +159,7 @@ export default {
 						lineStyle: { color: "#1E3E62" },
 					},
 					axisLabel: {
-						color: "#aaa",
+						color: "#1E3E62",
 					},
 				},
 				yAxis: {
