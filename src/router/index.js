@@ -16,7 +16,7 @@ const NewOrder = () => import("../components/NewOrder.vue");
 const OrdersList = () => import("../components/OrdersList.vue");
 const UploadOrders = () => import("../components/UploadOrders.vue");
 const Reports = () => import("../components/Reports.vue");
-const WebSocketClient = () => import("../components/WebSocketClient.vue");
+// const WebSocketClient = () => import("../components/WebSocketClient.vue");
 
 const exampleChart = () => import("../components/exampleChart.vue");
 
@@ -32,7 +32,7 @@ const routes = [
 	{ path: "/orders", component: OrdersList, meta: { requiresAuth: true } },
 	{ path: "/upload-orders", component: UploadOrders, meta: { requiresAuth: true } },
 	{ path: "/Reports", component: Reports, meta: { requiresAuth: true } },
-	{ path: "/WebSocketClient", component: WebSocketClient, meta: { requiresAuth: true } },
+	// { path: "/WebSocketClient", component: WebSocketClient, meta: { requiresAuth: true } },
 ];
 
 // The createRouter function initializes the router with the history mode,
