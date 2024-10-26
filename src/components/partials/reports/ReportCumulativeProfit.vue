@@ -134,7 +134,7 @@ export default {
 					},
 					splitLine: {
 						lineStyle: {
-							color: "#ccc", // Color of horizontal grid lines
+							color: "#1E3E62", // Color of horizontal grid lines
 							width: 1, // Thickness of grid lines
 							type: "dashed", // Style: 'solid', 'dashed', or 'dotted'
 						},
