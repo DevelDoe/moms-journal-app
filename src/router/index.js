@@ -11,7 +11,7 @@ const Home = () => import("../components/Home.vue");
 const Login = () => import("../components/Login.vue");
 const Register = () => import("../components/Register.vue");
 const Profile = () => import("../components/Profile.vue");
-const About = () => import("../components/About.vue");
+// const About = () => import("../components/About.vue");
 const NewOrder = () => import("../components/NewOrder.vue");
 const OrdersList = () => import("../components/OrdersList.vue");
 const UploadOrders = () => import("../components/UploadOrders.vue");
