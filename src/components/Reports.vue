@@ -136,7 +136,6 @@ export default {
 
 			// Shallow unwrap each trade object using spread syntax
 			const tradesArray = this.trades.map((trade) => ({ ...trade }));
-			console.log("Shallow unwrapped trades array:", tradesArray);
 
 			const validTrades = tradesArray.filter((trade) => {
 				const isValid =
@@ -153,8 +152,6 @@ export default {
 				}
 				return isValid;
 			});
-
-			console.log("Valid trades after filtering:", validTrades);
 
 			// If no filter date is selected, return all valid trades
 			if (!this.filterDate) {
