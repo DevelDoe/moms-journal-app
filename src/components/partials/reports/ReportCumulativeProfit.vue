@@ -126,15 +126,15 @@ export default {
 					type: "category",
 					data: this.cumulativeProfitData.labels,
 					axisLine: {
-						lineStyle: { color: "#23436e" }, // Color of the x-axis line
+						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
 					},
 					axisLabel: {
-						color: "#23436e", // Color of the x-axis labels
+						color: "#1E3E62", // Color of the x-axis labels
 						fontSize: 14, // Size of the font for the labels
 					},
 					splitLine: {
 						lineStyle: {
-							color: "#23436e", // Change this to your preferred color for the horizontal lines
+							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
 							width: 1, // Thickness of the lines
 							type: "solid", // Options: 'solid', 'dashed', 'dotted'
 						},
@@ -146,10 +146,10 @@ export default {
 						name: "Cumulative Profit",
 						position: "left",
 						axisLine: {
-							lineStyle: { color: "#23436e" },
+							lineStyle: { color: "#1E3E62" },
 						},
 						axisLabel: {
-							color: "#23436e",
+							color: "#1E3E62",
 							fontSize: 16,
 						},
 						splitLine: {
