@@ -152,14 +152,19 @@ export default {
 					position: "center", // This keeps the axis at the center
 					min: -Math.max(...profitData, ...tradeCountData) * 1.1, // Dynamically calculate min and max based on data
 					max: Math.max(...profitData, ...tradeCountData) * 1.1,
-					splitLine: {
-						lineStyle: { type: "line" },
-					},
 					axisLine: {
-						lineStyle: { color: "#1E3E62" },
+						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
 					},
 					axisLabel: {
-						color: "#1E3E62",
+						color: "#1E3E62", // Color of the x-axis labels
+						fontSize: 14, // Size of the font for the labels
+					},
+					splitLine: {
+						lineStyle: {
+							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
+							width: 1, // Thickness of the lines
+							type: "solid", // Options: 'solid', 'dashed', 'dotted'
+						},
 					},
 				},
 				yAxis: {
