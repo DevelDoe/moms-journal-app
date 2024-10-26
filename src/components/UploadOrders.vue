@@ -110,6 +110,7 @@ export default {
 				this.isChartVisible = true;
 			} catch (error) {
 				this.message = "Failed to import orders.";
+				this.isChartVisible = false;
 				console.error(error);
 			}
 		},
