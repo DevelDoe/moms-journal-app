@@ -172,7 +172,7 @@ export default {
 						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
 						itemStyle: { color: "#e57373" },
 						smooth: true,
-						lineStyle: { width: 3 },
+						lineStyle: { width: 8 },
 					},
 					{
 						name: "Number of Trades",
