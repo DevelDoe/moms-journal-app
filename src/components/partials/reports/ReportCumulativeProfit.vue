@@ -138,6 +138,13 @@ export default {
 						type: "value",
 						name: "Cumulative Profit",
 						position: "left",
+						axisLine: {
+							lineStyle: { color: "#888" },
+						},
+						axisLabel: {
+							color: "#333",
+							fontSize: 12,
+						},
 					},
 					{
 						type: "value",
