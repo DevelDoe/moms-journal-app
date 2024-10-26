@@ -103,19 +103,19 @@ export default {
 				// Dispatch the action and receive the new trades
 				const newTrades = await this.$store.dispatch("createMultipleOrders", { orders: this.orders });
 
-				// Set message and update trades in the chart for immediate display
-				this.message = "Orders successfully imported!";
-				this.trades = newTrades; // Directly use new trades for the chart
-				this.isChartVisible = true; // Only show the chart if the orders were imported successfully
-			} catch (error) {
-				// Check if the error response has a specific status code
-				if (error.response && error.response.status === 400) {
-					this.message = "Duplicate orders detected. No orders were saved.";
-					this.isChartVisible = false; // Hide the chart if there's a duplicate error
+				// Check if trades were returned, indicating successful import
+				if (newTrades) {
+					this.message = "Orders successfully imported!";
+					this.trades = newTrades; // Directly use new trades for the chart
+					this.isChartVisible = true; // Show the chart
 				} else {
-					this.message = "Failed to import orders.";
-					this.isChartVisible = false; // Hide the chart for other errors as well
+					// If no trades were returned, it likely means there was a duplicate or no orders were processed
+					this.message = "Duplicate orders detected. No orders were saved.";
+					this.isChartVisible = false; // Hide the chart
 				}
+			} catch (error) {
+				this.message = "Failed to import orders.";
+				this.isChartVisible = false; // Hide the chart in case of any errors
 				console.error(error);
 			}
 		},
