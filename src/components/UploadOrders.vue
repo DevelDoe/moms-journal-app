@@ -5,7 +5,7 @@
 		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
 
 		<!-- Display the cumulative profit report for the uploaded trades -->
-		<FullScreenCulmReport v-if="isChartVisible" :trades="trades" :granularity="granularity" />
+		<FullScreenCulmReport v-if="isChartVisible" :trades="trades" :granularity="granularity" @close="isChartVisible = false"  />
 			
 		<!-- Display the list of uploaded orders -->
 		<table v-if="orders.length > 0" class="orders-table">
