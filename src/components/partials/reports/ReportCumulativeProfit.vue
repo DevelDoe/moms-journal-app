@@ -118,8 +118,6 @@ export default {
 				textStyle: {
 					color: "#ffffff", // Title text color
 					fontSize: 18, // Font size
-					fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
-					fontFamily: "Arial", // Font family (e.g., Arial, sans-serif)
 				},
 				subtext: "Overview of trade data", // Add a subtitle if needed
 				subtextStyle: {
