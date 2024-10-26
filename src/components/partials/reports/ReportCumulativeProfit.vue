@@ -142,8 +142,8 @@ export default {
 				},
 				grid: {
 					left: "6%",
-					right: "5%",
-					bottom: "5%",
+					right: "6%",
+					bottom: "6%",
 					top: "20%",
 					containLabel: false,
 				},
