@@ -24,17 +24,13 @@ use([CanvasRenderer, BarChart, LineChart, TitleComponent, TooltipComponent, Grid
 
 export default {
 	props: {
-		labels: {
+		trades: {
 			type: Array,
 			required: true,
 		},
-		profitData: {
-			type: Array,
-			required: true,
-		},
-		tradeCountData: {
-			type: Array,
-			required: true,
+		granularity: {
+			type: String,
+			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
 		},
 	},
 	components: {
@@ -54,6 +50,84 @@ export default {
 		},
 	},
 	computed: {
+		tradeProfitAndTradeCountData() {
+			if (this.filteredTrades.length === 0) {
+				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
+			}
+
+			// Sort the trades by date
+			const sortedTrades = [...this.filteredTrades].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+			const isSingleDay = this.filterDate !== ""; // Determine if filtering to a specific day
+
+			const labels = [];
+			const profitData = [];
+			const tradeCountData = [];
+
+			if (isSingleDay) {
+				// Group trades by hour for the filtered day
+				const tradesByHour = sortedTrades.reduce((acc, trade) => {
+					const date = new Date(trade.date);
+					const hourKey = `${date.getHours()}:00`; // e.g., '14:00'
+					if (!acc[hourKey]) {
+						acc[hourKey] = [];
+					}
+					acc[hourKey].push(trade);
+					return acc;
+				}, {});
+
+				// Prepare labels and data for the chart
+				Object.keys(tradesByHour).forEach((hour) => {
+					const trades = tradesByHour[hour];
+					labels.push(hour);
+
+					// Calculate total profit for the hour
+					const hourlyProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+					profitData.push(hourlyProfit);
+
+					// Number of trades in this hour
+					tradeCountData.push(trades.length);
+				});
+			} else {
+				// Group trades by day
+				const tradesByDay = sortedTrades.reduce((acc, trade) => {
+					const dateKey = new Date(trade.date).toLocaleDateString();
+					if (!acc[dateKey]) {
+						acc[dateKey] = [];
+					}
+					acc[dateKey].push(trade);
+					return acc;
+				}, {});
+
+				// Prepare labels and data for the chart
+				Object.keys(tradesByDay).forEach((date) => {
+					const trades = tradesByDay[date];
+					labels.push(date);
+
+					// Calculate total profit for the day
+					const tradeProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
+					profitData.push(tradeProfit);
+
+					// Number of trades on this day
+					tradeCountData.push(trades.length);
+				});
+			}
+
+			return {
+				labels,
+				profitData,
+				tradeCountData,
+			};
+		},
+		tradeProfitLabels() {
+			return this.tradeProfitAndTradeCountData.labels;
+		},
+		tradeProfitValues() {
+			return this.tradeProfitAndTradeCountData.profitData;
+		},
+		tradeTradeCountValues() {
+			return this.tradeProfitAndTradeCountData.tradeCountData;
+		},
 		chartOptions() {
 			return {
 				title: {
