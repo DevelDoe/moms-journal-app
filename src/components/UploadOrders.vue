@@ -5,6 +5,9 @@
 		<input type="file" @change="handleFileUpload" accept=".txt" />
 		<button @click="importOrders" :disabled="!orders.length ">Import Orders</button>
 
+		<!-- Cumulative Profit Over Time Chart -->
+		<ReportCumulativeProfit :trades="filteredTrades" />
+
 		<table v-if="orders.length > 0" class="orders-table">
 			<thead>
 				<tr>
