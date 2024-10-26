@@ -49,12 +49,9 @@ export default {
 </script>
 
 <style>
-
 * {
 	box-sizing: border-box; /* Apply border-box globally */
 }
-
-
 
 #app {
 	display: flex;
