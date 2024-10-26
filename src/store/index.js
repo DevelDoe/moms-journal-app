@@ -91,12 +91,7 @@ export default createStore({
 					commit("setUser", response.data);
 					debouncedSuccessToast(`Welcome back, ${response.data.name}`);
 				} catch (error) {
-					console.error("Failed to fetch user data:", error);
-					const message = error.response?.data?.msg || "Error fetching user.";
-					debouncedErrorToast(message);
-					commit("setToken", null);
-					commit("setUser", null);
-					localStorage.removeItem("token");
+					this.handleAuthError(commit, error);
 				}
 			}
 		},
