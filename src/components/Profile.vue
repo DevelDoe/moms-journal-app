@@ -9,17 +9,6 @@
 		<div v-else>
 			<h1>{{ user.name }}</h1>
 
-			<!-- Account Selection -->
-			<div>
-				<label for="account">Select Account:</label>
-				<select v-model="selectedAccountId">
-					<option disabled value="">Please select an account</option>
-					<option v-for="account in userAccounts" :key="account.accountId" :value="account.accountId">
-						{{ account.specifications.type }} ({{ account.number }})
-					</option>
-				</select>
-			</div>
-
 			<!-- Date Picker for Filtering -->
 			<div class="date-filter">
 				<label for="filter-date">Filter by Date:</label>
