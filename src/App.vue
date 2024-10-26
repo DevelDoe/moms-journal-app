@@ -84,7 +84,7 @@ nav ul li {
 }
 
 nav ul li a {
-	color: #08D9D6;
+	color: #FF2E63;
 	text-decoration: none;
 	padding: 10px;
 	display: block;
