@@ -46,13 +46,7 @@ export default {
 		return {
 			orders: [], // Store parsed orders
 			message: "", // Store success or error messages
-			selectedAccount: null, // Store selected account object
 		};
-	},
-	computed: {
-		userAccounts() {
-			return this.$store.getters.getUserAccounts; // Get the user's accounts from Vuex
-		},
 	},
 	methods: {
 		// Handle file upload and parse the file
@@ -102,8 +96,6 @@ export default {
 						side: side.trim() === "BOT" ? "buy" : "sell",
 						quantity: parseInt(quantity.trim(), 10),
 						price: price,
-						accountId: this.selectedAccount.accountId, // Use the selected account's accountId
-						accountNr: this.selectedAccount.number // Use the selected account's account number
 					};
 				})
 				.filter((order) => order !== null); // Filter out any null entries due to parsing errors
