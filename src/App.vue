@@ -25,17 +25,26 @@
 <script>
 import { mapGetters } from "vuex";
 
+<script>
+import { mapGetters } from "vuex";
+
 export default {
+	data() {
+		return {
+			isCollapsed: false, // Track sidebar collapsed state
+		};
+	},
 	computed: {
-		...mapGetters(["isAuthenticated", "getUser"]), // Check if user is authenticated and get user details
+		...mapGetters(["isAuthenticated", "getUser"]),
 		isAdmin() {
-			// Only admins should see the create broker link
 			return this.getUser && this.getUser.role === "admin";
 		},
 	},
 	methods: {
+		toggleSidebar() {
+			this.isCollapsed = !this.isCollapsed; // Toggle sidebar state
+		},
 		logout() {
-			// Dispatch the logout action and pass the router instance
 			this.$store.dispatch("logout", this.$router);
 		},
 	},
