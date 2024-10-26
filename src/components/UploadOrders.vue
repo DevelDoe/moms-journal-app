@@ -20,7 +20,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="order in orders" :key="order._id" :class="{ buy: order.side === 'buy', sell: order.side === 'sell' }">
+				<tr
+					v-for="order in orders"
+					:key="order._id"
+					:class="{ buy: order.side === 'buy', sell: order.side === 'sell' }"
+				>
 					<td>{{ order.symbol }}</td>
 					<td>{{ new Date(order.date).toLocaleTimeString() }}</td>
 					<td>{{ order.side }}</td>
@@ -50,6 +54,7 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
+
 			this.hasCorruptData = false; // Reset corrupt data flag
 
 			// Shallow unwrap each trade object using spread syntax
@@ -57,7 +62,12 @@ export default {
 
 			const validTrades = tradesArray.filter((trade) => {
 				const isValid =
-					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
+					trade &&
+					trade.symbol &&
+					trade.buyPrice !== undefined &&
+					trade.sellPrice !== undefined &&
+					trade.profitLoss !== undefined &&
+					trade.date;
 
 				if (!isValid) {
 					this.hasCorruptData = true; // Mark if there's corrupt data
@@ -142,10 +152,6 @@ export default {
 				this.message = "Failed to import orders.";
 				console.error(error);
 			}
-		},
-		handleFileUpload(event) {
-			// Process file and update `orders` with parsed orders
-			// Existing handleFileUpload logic
 		},
 	},
 };
