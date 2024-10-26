@@ -40,8 +40,6 @@
 				:tradeCountData="tradeTradeCountValues"
 			/>-->
 
-			
-
 			<!-- Profit/Loss Distribution Histogram -->
 			<!-- <ReportProfitLossHistogram
 				v-if="profitLossDistributionChartData.labels.length > 0 && profitLossDistributionChartData.data.length > 0"
@@ -80,7 +78,6 @@
 import AnalyzeTrades from "./partials/AnalyzeTrades.vue"; // Import the AnalyzeTrades component
 import TradesSummary from "./partials/TradesSummary.vue"; // Import the new component
 import TradesList from "./partials/TradesList.vue"; // Import the new TradesList component
-
 
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
 import ReportProfitByPriceRange from "./partials/reports/ReportProfitByPriceRange.vue"; // Import the new ProfitByPriceRangeChart component
@@ -136,6 +133,7 @@ export default {
 		// Filter trades by selected date
 		filteredTrades() {
 			this.hasCorruptData = false; // Reset corrupt data flag
+
 			const validTrades = this.trades.filter((trade) => {
 				const isValid =
 					trade &&
@@ -153,10 +151,12 @@ export default {
 
 				return isValid;
 			});
-			// If no date is selected, return all valid trades
+
+			// If no filter date is selected, return all valid trades
 			if (!this.filterDate) {
 				return validTrades;
 			}
+			
 			// Filter by date if filterDate is set
 			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
 			return validTrades.filter((trade) => {
