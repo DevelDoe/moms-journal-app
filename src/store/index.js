@@ -35,15 +35,6 @@ export default createStore({
 				localStorage.removeItem("token");
 			}
 		},
-		setOrders(state, orders) {
-			state.orders = [...state.orders, ...orders]; // Append orders
-		},
-		addOrder(state, order) {
-			if (!state.orders) {
-				state.orders = []; // Ensure orders array exists
-			}
-			state.orders.push(order);
-		},
 		clearState(state) {
 			state.user = null;
 			state.token = "";
@@ -51,11 +42,20 @@ export default createStore({
 			state.trades = [];
 			localStorage.removeItem("token");
 		},
+		setOrders(state, orders) {
+			state.orders = orders; // Replace with new orders
+		},
+		addOrder(state, order) {
+			if (!state.orders) {
+				state.orders = []; // Ensure orders array exists
+			}
+			state.orders.push(order);
+		},
 		setTrades(state, trades) {
-			state.trades = [...state.trades, ...trades]; // Append trades
+			state.trades = trades; // Replace with new trades
 		},
 		setSummaries(state, summaries) {
-			state.summaries = [...state.summaries, ...summaries]; // Append summaries
+			state.summaries = summaries; // Replace with new summaries
 		},
 	},
 	actions: {
