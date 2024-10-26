@@ -159,6 +159,12 @@ export default {
 						},
 					},
 				],
+				grid: {
+					left: "10%",
+					right: "10%",
+					bottom: "10%",
+					containLabel: true,
+				},
 				series: [
 					{
 						name: "Cumulative Profit",
