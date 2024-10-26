@@ -163,7 +163,7 @@ export default {
 					left: "10%",
 					right: "10%",
 					bottom: "10%",
-					containLabel: false,
+					containLabel: true,
 				},
 				series: [
 					{
