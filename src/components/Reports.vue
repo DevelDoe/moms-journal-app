@@ -133,6 +133,9 @@ export default {
 			console.log("Initial trades:", this.trades); // Log the trades data to confirm it’s not empty
 			this.hasCorruptData = false; // Reset corrupt data flag
 
+			const tradesArray = [...this.trades]; // Convert Proxy to standard array
+			console.log("Converted trades array:", tradesArray);
+
 			const validTrades = this.trades.filter((trade) => {
 				const isValid =
 					trade &&
