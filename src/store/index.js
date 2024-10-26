@@ -121,7 +121,7 @@ export default createStore({
 				console.log("Orders Response:", response.data);
 
 				commit("setOrders", response.data);
-				
+
 				console.log("State after setOrders:", state.orders);
 			} catch (error) {
 				console.error("Error fetching orders:", error);
@@ -158,7 +158,6 @@ export default createStore({
 				]);
 
 				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
-				toastSent = true;
 			} catch (error) {
 				const message = error.response?.data?.error || "Error uploading orders.";
 				debouncedErrorToast(message);
