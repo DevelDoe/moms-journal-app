@@ -52,7 +52,7 @@ export default createStore({
 			localStorage.removeItem("token");
 		},
 		setTrades(state, trades) {
-			state.trades = trades;
+			state.trades = [...state.trades, ...trades]; // Append trades
 		},
 		setSummaries(state, summaries) {
 			state.summaries = summaries;
