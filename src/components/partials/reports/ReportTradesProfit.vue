@@ -139,7 +139,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: "Trades vs Profit/Loss",
+					text: "",
 				},
 				tooltip: {
 					trigger: "axis",
