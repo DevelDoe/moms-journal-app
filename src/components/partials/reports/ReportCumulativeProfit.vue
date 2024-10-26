@@ -144,7 +144,7 @@ export default {
 					left: "5%",
 					right: "5%",
 					bottom: "5%",
-					top: "20%",
+					top: "50%",
 					containLabel: false,
 				},
 				xAxis: {
