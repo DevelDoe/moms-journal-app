@@ -177,14 +177,14 @@ export default {
 					axisLabel: { show: true },
 					axisTick: { show: false },
 					splitLine: { show: false },
-					data: this.labels, // Labels for categories (e.g., days or hours)
+					data: this.tradeProfitAndTradeCountData.labels, // Labels for categories (e.g., days or hours)
 				},
 				series: [
 					{
 						name: "Number of Trades",
 						type: "bar",
 						stack: "Total",
-						data: this.tradeCountData.map((value) => {
+						data: this.tradeProfitAndTradeCountData.tradeCountData.map((value) => {
 							return {
 								value: parseFloat(value).toFixed(2),
 								itemStyle: {
@@ -202,7 +202,7 @@ export default {
 							position: "right",
 							formatter: (params) => parseFloat(params.value).toFixed(2),
 						},
-						data: this.profitData.map((value) => {
+						data: this.tradeProfitAndTradeCountData.profitData.map((value) => {
 							return {
 								value: parseFloat(value).toFixed(2),
 								itemStyle: {
