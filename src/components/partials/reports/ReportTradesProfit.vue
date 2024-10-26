@@ -201,7 +201,7 @@ export default {
 					},
 				],
 				animationDuration: 6000,
-				animationEasing: "exponentialOut",
+				animationEasing: "exponentialIn",
 			};
 		},
 	},
