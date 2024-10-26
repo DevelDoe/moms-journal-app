@@ -145,7 +145,7 @@ export default {
 					right: "5%",
 					bottom: "5%",
 					top: "10%",
-					containLabel: true,
+					containLabel: false,
 				},
 				xAxis: {
 					type: "category",
