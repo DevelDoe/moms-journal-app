@@ -55,7 +55,7 @@ export default createStore({
 			state.trades = [...state.trades, ...trades]; // Append trades
 		},
 		setSummaries(state, summaries) {
-			state.summaries = summaries;
+			state.summaries = [...state.summaries, ...summaries]; // Append summaries
 		},
 	},
 	actions: {
