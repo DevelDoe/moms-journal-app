@@ -30,7 +30,6 @@
 			<div v-if="selectedAccountId && filterDate" class="trades">
 				<!-- Display TradesSummary and ExpenseSummary components -->
 				<TradesSummary :filterDate="filterDate" :accountId="selectedAccountId" />
-				<ExpenseSummary :filterDate="filterDate" :accountId="selectedAccountId" />
 			</div>
 		</div>
 	</div>
@@ -38,7 +37,6 @@
 
 <script>
 import TradesSummary from "./partials/TradesSummary.vue";
-import ExpenseSummary from "./partials/ExpenseSummary.vue";
 
 export default {
 	data() {
@@ -51,7 +49,6 @@ export default {
 	},
 	components: {
 		TradesSummary,
-		ExpenseSummary,
 	},
 	computed: {
 		userAccounts() {
