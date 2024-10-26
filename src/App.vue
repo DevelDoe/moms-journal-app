@@ -3,7 +3,7 @@
 		<nav :class="{ collapsed: isCollapsed }" id="sidebar">
 			<!-- Toggle Button with Icon -->
 			<button @click="toggleSidebar" class="toggle-btn">
-				<img :src="require('@/assets/images/drawer.webp')" alt="Toggle Sidebar" />
+				<img :src="toggleIcon" alt="Toggle Sidebar" />
 			</button>
 			<ul v-if="!isCollapsed">
 				<!-- Sidebar links here -->
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-// import toggleIcon from "@/assets/images/imagesdrawer.webp"; // Adjust path as needed
+import toggleIcon from "@/assets/images/imagesdrawer.webp"; // Adjust path as needed
 
 export default {
 	data() {
