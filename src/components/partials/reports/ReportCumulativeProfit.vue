@@ -175,7 +175,7 @@ export default {
 							lineStyle: {
 								color: "#1E3E62", // Ensure the same color for consistency
 								width: 1,
-								type: "dotted",
+								type: "dashed",
 							},
 						},
 					},
