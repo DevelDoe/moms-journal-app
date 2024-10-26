@@ -41,7 +41,6 @@ export default {
 	data() {
 		return {
 			orders: [], // Store parsed orders
-			message: "", // Store success or error messages
 			isChartVisible: false,
 			granularity: "hourly",
 		};
