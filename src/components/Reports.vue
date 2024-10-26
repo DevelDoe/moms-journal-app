@@ -30,7 +30,7 @@
 			<!-- <AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" /> -->
 
 			<!-- Cumulative Profit Over Time Chart -->
-			<ReportCumulativeProfit :labels="cumulativeProfitLabels" :profitData="cumulativeProfitValues" :tradeCountData="cumulativeTradeCountValues" />
+			<ReportCumulativeProfit :filterDate="filterDate" />
 
 			<!-- Trades.vue
 			<ReportTradesProfit
