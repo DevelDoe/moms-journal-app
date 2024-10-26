@@ -171,7 +171,7 @@ export default {
 					ype: "category", // This sets the axis to categorical mode, allowing for labeled points
 					data: labels, // Custom labels (e.g., dates, categories) provided by `labels` array
 					axisLine: { show: false }, // Hide axis line if desired
-					axisLabel: { color: "#1E3E62",fontSize: 10,}, // Set axis label color
+					axisLabel: { color: "#1E3E62",fontSize: 4,}, // Set axis label color
 					axisTick: { show: false }, // Hide ticks if desired
 					splitLine: { show: false }, // Hide grid lines if desired
 				},
