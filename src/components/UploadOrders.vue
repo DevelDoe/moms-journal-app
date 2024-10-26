@@ -2,15 +2,6 @@
 	<div>
 		<h2>Import Orders</h2>
 		
-		<!-- Dropdown for selecting an account -->
-		<label for="account">Select Account:</label>
-		<select v-model="selectedAccount" id="account">
-			<option disabled value="">Please select an account</option>
-			<option v-for="account in userAccounts" :key="account.accountId" :value="account">
-				{{ account.specifications.type }} ({{ account.number }})
-			</option>
-		</select>
-		
 		<input type="file" @change="handleFileUpload" accept=".txt" />
 		<button @click="importOrders" :disabled="!orders.length || !selectedAccount">Import Orders</button>
 
