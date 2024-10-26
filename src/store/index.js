@@ -113,16 +113,16 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async fetchOrders({ commit, dispatch, state }) {
+		async fetchOrders({ commit, state }) {
 			try {
 				const response = await axios.get("http://localhost:5000/api/orders", {
 					headers: { Authorization: `Bearer ${state.token}` },
 				});
-				commit("setOrders", response.data); // Store orders in Vuex
-				debouncedSuccessToast("Orders fetched successfully!");
+				console.log("Orders Response:", response.data);
+				commit("setOrders", response.data);
+				console.log("State after setOrders:", state.orders);
 			} catch (error) {
-				const message = error.response?.data?.msg || "Error fetching orders.";
-				debouncedErrorToast(message);
+				console.error("Error fetching orders:", error);
 			}
 		},
 		async createOrder({ commit, state }, orderData) {
@@ -154,7 +154,7 @@ export default createStore({
 					dispatch("fetchTrades").then((res) => console.log("Fetched Trades:", res)),
 					dispatch("fetchAllSummaries").then((res) => console.log("Fetched Summaries:", res)),
 				]);
-		
+
 				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
 				toastSent = true;
 			} catch (error) {
