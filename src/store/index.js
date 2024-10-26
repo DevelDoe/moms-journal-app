@@ -150,12 +150,17 @@ export default createStore({
 					}
 				);
 
-				// Fetch updated orders, trades, and summaries after successful order upload
-				await Promise.all([
-					dispatch("fetchOrders"),
-					dispatch("fetchTrades"),
-					dispatch("fetchAllSummaries"),
-				]);
+				if (response.status === 201) {
+					console.log("Orders uploaded successfully.");
+		
+					// Call fetchOrders via dispatch to get the latest orders
+					await dispatch("fetchOrders");
+					// Likewise, call any additional dispatches as needed
+					await Promise.all([
+						dispatch("fetchTrades"),
+						dispatch("fetchAllSummaries"),
+					]);
+				}
 
 				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
 			} catch (error) {
