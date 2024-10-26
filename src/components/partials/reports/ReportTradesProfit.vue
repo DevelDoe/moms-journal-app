@@ -140,9 +140,9 @@ export default {
 					icon: "circle",
 				},
 				grid: {
-					left: "5%", // Add some padding on both sides for centering
-					right: "5%",
-					bottom: "5%",
+					left: "0%", // Add some padding on both sides for centering
+					right: "0%",
+					bottom: "0%",
 					containLabel: true,
 				},
 				xAxis: {
