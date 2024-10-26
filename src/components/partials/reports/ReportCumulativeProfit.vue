@@ -172,7 +172,7 @@ export default {
 						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
 						itemStyle: { color: "#e57373" },
 						smooth: true,
-						lineStyle: { width: 4 },
+						lineStyle: { width: 3 },
 					},
 					{
 						name: "Number of Trades",
@@ -181,7 +181,7 @@ export default {
 						yAxisIndex: 1,
 						itemStyle: { color: "#5470C6" },
 						smooth: true,
-						lineStyle: { width: 2 },
+						lineStyle: { width: 1 },
 					},
 				],
 				animationDuration: 5000, // Set animation duration in milliseconds
