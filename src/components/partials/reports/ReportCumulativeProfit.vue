@@ -129,7 +129,12 @@ export default {
 					textStyle: { color: "#333" },
 					icon: "circle", 
 				},
-				
+				grid: {
+					left: "5%",
+					right: "5%",
+					bottom: "5%",
+					containLabel: false,
+				},
 				xAxis: {
 					type: "category",
 					data: this.cumulativeProfitData.labels,
@@ -188,12 +193,6 @@ export default {
 						},
 					},
 				],
-				grid: {
-					left: "5%",
-					right: "5%",
-					bottom: "5%",
-					containLabel: false,
-				},
 				series: [
 					{
 						name: "Cumulative Profit",
