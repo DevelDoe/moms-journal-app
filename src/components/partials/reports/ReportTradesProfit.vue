@@ -66,23 +66,23 @@ export default {
 		},
 	},
 	computed: {
-		cumulativeProfitData() {
+		tradeProfitAndTradeCountData() {
 			if (!this.trades || this.trades.length === 0) {
+				// Return default structure with empty arrays
 				return { labels: [], profitData: [], tradeCountData: [] };
 			}
 
+			// Continue with your grouping and calculations here
 			let cumulativeProfit = 0;
 			let cumulativeTradeCount = 0;
 			const labels = [];
 			const profitData = [];
 			const tradeCountData = [];
 
-			// Sort trades by date
 			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-			// Group trades by selected granularity (e.g., hourly, daily, weekly)
 			const groupedTrades = sortedTrades.reduce((acc, trade) => {
-				const key = this.formatDate(trade.date); // Format based on granularity
+				const key = this.formatDate(trade.date);
 				if (!acc[key]) {
 					acc[key] = [];
 				}
@@ -90,18 +90,15 @@ export default {
 				return acc;
 			}, {});
 
-			// Calculate cumulative profit and trade count for each group
 			Object.keys(groupedTrades).forEach((group) => {
 				const trades = groupedTrades[group];
 				labels.push(group);
 
-				// Calculate total profit for the group (e.g., hour, day)
 				const groupProfit = trades.reduce((sum, trade) => sum + trade.profitLoss, 0);
-				cumulativeProfit += groupProfit; // Update cumulative profit
+				cumulativeProfit += groupProfit;
 				profitData.push(cumulativeProfit);
 
-				// Calculate total trade count for the group
-				cumulativeTradeCount += trades.length; // Update cumulative trade count
+				cumulativeTradeCount += trades.length;
 				tradeCountData.push(cumulativeTradeCount);
 			});
 
