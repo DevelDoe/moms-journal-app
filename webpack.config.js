@@ -32,11 +32,7 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: "babel-loader",
-        include: [
-          path.resolve(__dirname, "src"),
-          path.resolve(__dirname, "node_modules/vue-echarts"),
-          path.resolve(__dirname, "node_modules/echarts"),
-        ],
+				include: [path.resolve(__dirname, "src"), path.resolve(__dirname, "node_modules/vue-echarts"), path.resolve(__dirname, "node_modules/echarts")],
 				exclude: /node_modules/,
 			},
 			{
@@ -50,14 +46,14 @@ module.exports = {
 					filename: "fonts/[name][ext]", // Output path for font files
 				},
 			},
-		],
-		{
-			test: /\.(png|jpe?g|gif|webp|svg)$/i,
-			type: "asset/resource",
-			generator: {
-				filename: "images/[name][ext]", // Output path for image files
+			{
+				test: /\.(png|jpe?g|gif|webp|svg)$/i,
+				type: "asset/resource",
+				generator: {
+					filename: "images/[name][ext]", // Output path for image files
+				},
 			},
-		},
+		],
 	},
 	plugins: [
 		new VueLoaderPlugin(),
