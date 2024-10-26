@@ -29,17 +29,9 @@
 			<!-- WebSocket Analyze Component -->
 			<!-- <AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" /> -->
 
-			<!-- Cumulative Profit Over Time Chart -->
 			<ReportCumulativeProfit :trades="filteredTrades" />
 
-
-			<!-- Trades.vue
-			<ReportTradesProfit
-				v-if="tradeProfitLabels.length > 0 && tradeProfitValues.length > 0 && tradeTradeCountValues.length > 0"
-				:labels="tradeProfitLabels"
-				:profitData="tradeProfitValues"
-				:tradeCountData="tradeTradeCountValues"
-			/>-->
+			<ReportTradesProfit :trades="filteredTrades" />
 
 			<!-- Profit/Loss Distribution Histogram -->
 			<!-- <ReportProfitLossHistogram
@@ -81,11 +73,11 @@ import TradesSummary from "./partials/TradesSummary.vue"; // Import the new comp
 import TradesList from "./partials/TradesList.vue"; // Import the new TradesList component
 
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
+import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
 import ReportProfitByPriceRange from "./partials/reports/ReportProfitByPriceRange.vue"; // Import the new ProfitByPriceRangeChart component
 import ReportTradesByHour from "./partials/reports/ReportTradesByHour.vue"; // Import the new TradesByHourChart component
 import ReportTradesByMinute from "./partials/reports/ReportTradesByMinute.vue"; // Import the TradesByMinuteChart component
 import ReportProfitLossHistogram from "./partials/reports/ReportProfitLossHistogram.vue"; // Import the ProfitLossHistogram component
-import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
 
 import axios from "axios"; // Make sure axios is imported
 import { use } from "echarts/core";
@@ -110,12 +102,12 @@ export default {
 		TradesSummary,
 		VChart,
 		// TradesList,
+		ReportCumulativeProfit,
+		ReportTradesProfit,
 		// ReportProfitByPriceRange,
 		// ReportTradesByHour,
 		// ReportTradesByMinute,
 		// ReportProfitLossHistogram,
-		ReportCumulativeProfit,
-		// ReportTradesProfit,
 	},
 	async mounted() {
 		// Fetch trades and historical trades when the component is mounted
@@ -130,7 +122,6 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
-
 			this.hasCorruptData = false; // Reset corrupt data flag
 
 			// Shallow unwrap each trade object using spread syntax
@@ -138,12 +129,7 @@ export default {
 
 			const validTrades = tradesArray.filter((trade) => {
 				const isValid =
-					trade &&
-					trade.symbol &&
-					trade.buyPrice !== undefined &&
-					trade.sellPrice !== undefined &&
-					trade.profitLoss !== undefined &&
-					trade.date;
+					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
 
 				if (!isValid) {
 					this.hasCorruptData = true; // Mark if there's corrupt data
@@ -373,7 +359,7 @@ export default {
 				data: Object.values(distribution),
 			};
 		},
-		
+
 		tradeProfitAndTradeCountData() {
 			if (this.filteredTrades.length === 0) {
 				return { labels: [], profitData: [], tradeCountData: [] }; // No trades available
