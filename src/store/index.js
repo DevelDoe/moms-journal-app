@@ -150,9 +150,9 @@ export default createStore({
 
 				// Fetch updated orders, trades, and summaries after successful order upload
 				await Promise.all([
-					dispatch("fetchOrders"),
-					dispatch("fetchTrades"),
-					dispatch("fetchAllSummaries"),
+					dispatch("fetchOrders").then((res) => console.log("Fetched Orders:", res)),
+					dispatch("fetchTrades").then((res) => console.log("Fetched Trades:", res)),
+					dispatch("fetchAllSummaries").then((res) => console.log("Fetched Summaries:", res)),
 				]);
 		
 				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
