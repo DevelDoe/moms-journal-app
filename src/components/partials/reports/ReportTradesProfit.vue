@@ -142,7 +142,7 @@ export default {
 					icon: "circle",
 				},
 				grid: {
-					left: "0%", // Add some padding on both sides for centering
+					left: "1%", // Add some padding on both sides for centering
 					right: "0%",
 					bottom: "0%",
 					containLabel: true,
