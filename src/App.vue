@@ -66,7 +66,6 @@ body{
 	background-color: #000000;
 
 	padding: 20px;
-	border-right: 1px solid #ddd;
 	height: 100%; /* Full height sidebar */
 	float: left;
 }
