@@ -74,6 +74,7 @@ import TradesList from "./partials/TradesList.vue"; // Import the new TradesList
 
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
 import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
+
 import ReportProfitByPriceRange from "./partials/reports/ReportProfitByPriceRange.vue"; // Import the new ProfitByPriceRangeChart component
 import ReportTradesByHour from "./partials/reports/ReportTradesByHour.vue"; // Import the new TradesByHourChart component
 import ReportTradesByMinute from "./partials/reports/ReportTradesByMinute.vue"; // Import the TradesByMinuteChart component
