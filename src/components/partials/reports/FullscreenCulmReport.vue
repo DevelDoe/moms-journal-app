@@ -45,6 +45,7 @@ export default {
 		},
 		closeFullScreen() {
 			this.isVisible = false; // Close the full-screen chart
+			this.$emit("close"); // Emit an event to notify the parent component
 		},
 		formatDate(date) {
 			const d = new Date(date);
@@ -223,6 +224,6 @@ export default {
 	border: none;
 	padding: 10px 20px;
 	cursor: pointer;
-    z-index: 9999;
+	z-index: 9999;
 }
 </style>
