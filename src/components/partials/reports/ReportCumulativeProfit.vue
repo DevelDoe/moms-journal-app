@@ -2,15 +2,13 @@
 <template>
 	<div class="cumulative-profit-chart">
 		<div class="chart-header">
-
-				<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
-					>?
-					<div v-if="isTooltipVisible" class="tooltip-text">
-						This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing
-						you periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
-					</div>
-				</span>
-
+			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
+				>?
+				<div v-if="isTooltipVisible" class="tooltip-text">
+					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you
+					periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
+				</div>
+			</span>
 		</div>
 		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
 	</div>
@@ -26,7 +24,12 @@ import VChart from "vue-echarts";
 use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
 
 export default {
-
+	props: {
+		date: {
+			type: Array,
+			required: true,
+		},
+	},
 	components: {
 		VChart,
 	},
@@ -49,7 +52,6 @@ export default {
 			return tradesData && Array.isArray(tradesData) ? tradesData : [];
 		},
 		filteredTrades() {
-
 			this.hasCorruptData = false; // Reset corrupt data flag
 
 			// Shallow unwrap each trade object using spread syntax
@@ -57,12 +59,7 @@ export default {
 
 			const validTrades = tradesArray.filter((trade) => {
 				const isValid =
-					trade &&
-					trade.symbol &&
-					trade.buyPrice !== undefined &&
-					trade.sellPrice !== undefined &&
-					trade.profitLoss !== undefined &&
-					trade.date;
+					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
 
 				if (!isValid) {
 					this.hasCorruptData = true; // Mark if there's corrupt data
