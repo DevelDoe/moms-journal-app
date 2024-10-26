@@ -28,6 +28,10 @@ export default {
 			type: Array,
 			required: true,
 		},
+		granularity: {
+			type: String,
+			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
+		},
 	},
 	components: {
 		VChart,
@@ -44,6 +48,24 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
+		formatDate(date) {
+			const d = new Date(date);
+			switch (this.granularity) {
+				case "hourly":
+					return `${d.toLocaleDateString()} ${d.getHours()}:00`;
+				case "daily":
+					return d.toLocaleDateString();
+				case "weekly":
+					const weekStart = new Date(d.setDate(d.getDate() - d.getDay()));
+					return `${weekStart.toLocaleDateString()} (Week)`;
+				case "monthly":
+					return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+				case "yearly":
+					return d.getFullYear().toString();
+				default:
+					return d.toLocaleDateString();
+			}
+		},
 	},
 	computed: {
 		cumulativeProfitData() {
@@ -58,18 +80,21 @@ export default {
 			const tradeCountData = [];
 
 			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
-			const tradesByDay = sortedTrades.reduce((acc, trade) => {
-				const dateKey = new Date(trade.date).toLocaleDateString();
-				if (!acc[dateKey]) {
-					acc[dateKey] = [];
+
+			// Group trades based on selected granularity
+			const groupedTrades = sortedTrades.reduce((acc, trade) => {
+				const key = this.formatDate(trade.date);
+				if (!acc[key]) {
+					acc[key] = [];
 				}
-				acc[dateKey].push(trade);
+				acc[key].push(trade);
 				return acc;
 			}, {});
 
-			Object.keys(tradesByDay).forEach((date) => {
-				const trades = tradesByDay[date];
-				labels.push(date);
+			// Calculate cumulative profit and trade count for each group
+			Object.keys(groupedTrades).forEach((group) => {
+				const trades = groupedTrades[group];
+				labels.push(group);
 
 				trades.forEach((trade) => {
 					cumulativeProfit += trade.profitLoss;
@@ -89,7 +114,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: "Cumulative Profit and Number of Trades Over Time",
+					text: `Cumulative Profit and Number of Trades (${this.granularity})`,
 				},
 				tooltip: {
 					trigger: "axis",
