@@ -142,18 +142,23 @@ export default createStore({
 				// Send orders directly, assuming accountId is already included in the parsed order
 				const response = await axios.post(
 					"http://localhost:5000/api/orders",
-					{ orders }, // Just send the orders as they are
+					{ orders }, // Send the orders as they are
 					{
 						headers: { Authorization: `Bearer ${state.token}` },
 					}
 				);
 
-				// Commit the orders and show success toast
-				response.data.orders.forEach((order) => {
+				// Destructure the response data to get orders, trades, and summaries
+				const { orders: newOrders, trades, summaries } = response.data;
+
+				// Commit orders, trades, and summaries to the Vuex state
+				newOrders.forEach((order) => {
 					commit("addOrder", order); // Add each uploaded order to Vuex
 				});
+				commit("setTrades", trades); // Store trades in Vuex
+				commit("setSummaries", summaries); // Store summaries in Vuex
 
-				debouncedSuccessToast("All orders uploaded successfully!");
+				debouncedSuccessToast("Orders, trades, and summaries saved successfully!");
 			} catch (error) {
 				const message = error.response?.data?.error || "Error uploading orders.";
 				debouncedErrorToast(message);
