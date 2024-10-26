@@ -84,6 +84,7 @@ nav ul li a {
 
 nav ul li a:hover {
 	background-color: #ddd;
+	color: #FF6500;
 }
 
 nav ul li a.router-link-exact-active {
