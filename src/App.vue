@@ -16,8 +16,7 @@
 				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
 				<li v-if="isAuthenticated"><router-link to="/Reports">Reports</router-link></li>
 
-				<!-- Admin only: Create Broker -->
-				<li v-if="isAuthenticated && isAdmin"><router-link to="/create-broker">Create Broker</router-link></li>
+				<!-- Admin only -->
 
 				<!-- Logout -->
 				<li v-if="isAuthenticated"><a @click="logout" style="cursor: pointer">Logout</a></li>
