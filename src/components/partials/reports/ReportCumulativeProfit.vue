@@ -130,7 +130,7 @@ export default {
 					},
 					axisLabel: {
 						color: "#1E3E62", // Color of the x-axis labels
-						fontSize: 16, // Size of the font for the labels
+						fontSize: 22, // Size of the font for the labels
 					},
 				},
 				yAxis: [
