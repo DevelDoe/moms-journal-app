@@ -155,7 +155,7 @@ export default {
 						smooth: true,
 					},
 				],
-				animationDuration: 2000, // Set animation duration in milliseconds
+				animationDuration: 20000, // Set animation duration in milliseconds
 			};
 		},
 	},
