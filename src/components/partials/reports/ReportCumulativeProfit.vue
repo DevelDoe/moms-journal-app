@@ -224,7 +224,7 @@ export default {
 						lineStyle: { width: 3 },
 					},
 				],
-				animationDuration: 5000,
+				animationDuration: 4000,
 				animationEasing: "quarticInOut",
 			};
 		},
