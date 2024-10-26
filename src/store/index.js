@@ -97,6 +97,7 @@ export default createStore({
 				 axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
 				 const response = await axios.get("http://localhost:5000/api/user/profile");
 				 commit("setUser", response.data);
+				 debouncedSuccessToast(`Welcome back, ${response.data.name}`);
 				
 			} catch (error) {
 				console.error("Failed to fetch user data:", error);
