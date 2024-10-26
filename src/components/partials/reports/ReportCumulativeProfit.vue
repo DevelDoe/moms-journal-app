@@ -132,6 +132,13 @@ export default {
 						color: "#1E3E62", // Color of the x-axis labels
 						fontSize: 14, // Size of the font for the labels
 					},
+					splitLine: {
+						lineStyle: {
+							color: "#ccc", // Color of horizontal grid lines
+							width: 1, // Thickness of grid lines
+							type: "dashed", // Style: 'solid', 'dashed', or 'dotted'
+						},
+					},
 				},
 				yAxis: [
 					{
