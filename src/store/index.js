@@ -16,7 +16,6 @@ export default createStore({
 	state: {
 		user: null,
 		token: localStorage.getItem("token") || "",
-		refreshToken: localStorage.getItem("refreshToken") || "",
 		orders: [],
 		trades: [],
 		summaries: [],
@@ -28,17 +27,13 @@ export default createStore({
 			}
 			Object.assign(state.user, userData);
 		},
-		setToken(state, { token, refreshToken }) {
+		setToken(state, token) {
 			state.token = token;
-			state.refreshToken = refreshToken;
-			localStorage.setItem("token", token);
-			localStorage.setItem("refreshToken", refreshToken);
-		},
-		clearToken(state) {
-			state.token = "";
-			state.refreshToken = "";
-			localStorage.removeItem("token");
-			localStorage.removeItem("refreshToken");
+			if (token) {
+				localStorage.setItem("token", token);
+			} else {
+				localStorage.removeItem("token");
+			}
 		},
 		clearState(state) {
 			state.user = null;
@@ -86,25 +81,24 @@ export default createStore({
 		},
 		async fetchUser({ commit, state }) {
 			try {
-				// Decode token to check expiration (Optional, but helps to avoid extra requests)
-				const decodedToken = jwtDecode(state.token);
-				const isTokenExpired = decodedToken.exp * 1000 < Date.now();
-				if (isTokenExpired) {
-				  await dispatch("refreshToken"); // Refresh the token if expired
-				}
+				if (state.token) {
+					// Set the axios header for authorization
+					axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
 
-				 // Set authorization header
-				 axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
-				 const response = await axios.get("http://localhost:5000/api/user/profile");
-				 commit("setUser", response.data);
-				 debouncedSuccessToast(`Welcome back, ${response.data.name}`);
-				
+					// Use the /profile endpoint to fetch user information
+					const response = await axios.get("http://localhost:5000/api/user/profile");
+
+					// Commit the user information to Vuex
+					commit("setUser", response.data);
+					debouncedSuccessToast(`Welcome back, ${response.data.name}`);
+				}
 			} catch (error) {
 				console.error("Failed to fetch user data:", error);
 				const message = error.response?.data?.msg || "Error fetching user.";
 				debouncedErrorToast(message);
-				console.error("Error fetching user:", error);
-       			commit("clearToken");
+				commit("setToken", null);
+				commit("setUser", null);
+				localStorage.removeItem("token");
 			}
 		},
 		async updateUser({ commit, state }, updatedUserData) {
