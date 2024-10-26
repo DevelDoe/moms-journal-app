@@ -42,7 +42,7 @@ export default {
 		return {
 			orders: [], // Store parsed orders
 			message: "", // Store success or error messages
-			trades: [],
+			isChartVisible: false,
 			granularity: "hourly",
 		};
 	},
