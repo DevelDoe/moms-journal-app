@@ -42,20 +42,20 @@ export default createStore({
 			state.trades = [];
 			localStorage.removeItem("token");
 		},
-		setOrders(state, orders) {
-			state.orders = orders; // Replace with new orders
-		},
 		addOrder(state, order) {
 			if (!state.orders) {
 				state.orders = []; // Ensure orders array exists
 			}
 			state.orders.push(order);
 		},
+		setOrders(state, orders) {
+			state.orders = orders;
+		},
 		setTrades(state, trades) {
-			state.trades = trades; // Replace with new trades
+			state.trades = trades;
 		},
 		setSummaries(state, summaries) {
-			state.summaries = summaries; // Replace with new summaries
+			state.summaries = summaries;
 		},
 	},
 	actions: {
