@@ -25,7 +25,7 @@ const routes = [
 	{ path: "/", component: Home },
 	{ path: "/login", component: Login },
 	{ path: "/register", component: Register },
-	{ path: "/about", component: About },
+	// { path: "/about", component: About },
 	{ path: "/exampleChart", component: exampleChart },
 	{ path: "/profile", component: Profile, meta: { requiresAuth: true } },
 	{ path: "/new-order", component: NewOrder, meta: { requiresAuth: true } },
