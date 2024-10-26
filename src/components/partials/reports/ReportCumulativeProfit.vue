@@ -113,17 +113,19 @@ export default {
 		},
 		chartOptions() {
 			return {
-				text: `Profit & Number of Trades (${this.granularity})`,
-				left: "left", // Position the title in the center
-				textStyle: {
-					color: "#ffffff", // Title text color
-					fontSize: 18, // Font size
-					fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
-				},
-				subtext: "Overview of trade data", // Add a subtitle if needed
-				subtextStyle: {
-					color: "#aaa", // Subtitle color
-					fontSize: 14,
+				title: {
+					text: `Profit & Number of Trades (${this.granularity})`,
+					left: "left", // Position the title in the center
+					textStyle: {
+						color: "#ffffff", // Title text color
+						fontSize: 18, // Font size
+						fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
+					},
+					subtext: "Overview of trade data", // Add a subtitle if needed
+					subtextStyle: {
+						color: "#aaa", // Subtitle color
+						fontSize: 14,
+					},
 				},
 				tooltip: {
 					trigger: "axis",
