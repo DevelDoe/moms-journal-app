@@ -42,13 +42,8 @@ export default {
 		return {
 			orders: [], // Store parsed orders
 			message: "", // Store success or error messages
+			trades: ""
 		};
-	},
-	computed: {
-		trades() {
-			const tradesData = this.$store.getters.getTrades;
-			return tradesData && Array.isArray(tradesData) ? tradesData : [];
-		},
 	},
 	methods: {
 		// Handle file upload and parse the file
