@@ -59,7 +59,7 @@ export default {
 
 #sidebar {
 	width: 20%; /* Sidebar takes 20% of the total width */
-	background-color: 252A34;
+	background-color: #252A34;
 	padding: 20px;
 	border-right: 1px solid #ddd;
 	height: 100%; /* Full height sidebar */
