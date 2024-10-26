@@ -201,7 +201,7 @@ export default {
 					},
 				],
 				animationDuration: 3000,
-				animationEasing: "sinusoidalIn",
+				animationEasing: "elasticIn",
 			};
 		},
 	},
