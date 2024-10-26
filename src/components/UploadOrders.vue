@@ -37,7 +37,7 @@
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue"; // Assuming this is the path
 
 export default {
-	components: { ReportCumulativeProfit },
+	components: { FullScreenChart },
 	data() {
 		return {
 			orders: [], // Store parsed orders
