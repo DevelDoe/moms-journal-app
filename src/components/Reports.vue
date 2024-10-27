@@ -6,7 +6,7 @@
 		</div>
 		
 
-		<div id="date-range-picker">
+		<div class="date-range-picker">
 			<label>Start Date:</label>
 			<input type="date" v-model="startDate" />
 			<label>End Date:</label>
