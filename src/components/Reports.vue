@@ -163,6 +163,7 @@ export default {
     font-size: 20px;
     color: #333;
     background-color: #ffffff;
+	font-family: "Montserrat", sans-serif !important;
 }
 
 .date-range-picker input[type="date"]:focus {
