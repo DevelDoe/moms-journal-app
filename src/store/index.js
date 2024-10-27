@@ -160,12 +160,22 @@ export default createStore({
 			}
 		},
 
-		async fetchTrades({ commit, state }) {
+		async fetchTrades({ commit, state }, { start = null, end = null } = {}) {
 			try {
 				console.log("Fetching trades...");
+
+				// Build query parameters with start and end dates if they are provided
+				const params = {};
+				if (start) params.start = start;
+				if (end) params.end = end;
+
+				// Send request to the server with query parameters
 				const response = await axios.get("http://localhost:5000/api/trades", {
 					headers: { Authorization: `Bearer ${state.token}` },
+					params, // Pass the date range parameters in the request
 				});
+
+				// Commit the fetched trades to the Vuex store
 				commit("setTrades", response.data);
 			} catch (error) {
 				console.error("Error fetching trades:", error);
