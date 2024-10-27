@@ -87,6 +87,10 @@ export default {
 					left: "center",
 					bottom: 0, // Add some padding at the bottom of the chart for the legend
 					textStyle: { color: "#eaeaea" },
+					formatter: (name) => {
+						// Show only the starting number of each range
+						return name.split("-")[0];
+					},
 				},
 
 				series: [
@@ -108,7 +112,6 @@ export default {
 							smooth: 0.1,
 							length: 10,
 							length2: 20,
-							
 						},
 						itemStyle: {
 							// Dynamic gradient for each segment based on value
@@ -141,12 +144,11 @@ export default {
 </script>
 
 <style scoped>
-#price-range-chart{
+#price-range-chart {
 	min-height: 700px;
 	margin-bottom: 40px;
 }
 .profit-loss-histogram {
-
 }
 
 .chart-header {
