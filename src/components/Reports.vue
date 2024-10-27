@@ -142,17 +142,14 @@ export default {
 	color: #666;
 	margin-top: 20px;
 }
-
 .date-filter {
 	margin: 20px 0;
 }
-
 .trades-table {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 20px;
 }
-
 th,
 td {
 	padding: 10px;
