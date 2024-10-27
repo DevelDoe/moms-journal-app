@@ -42,7 +42,9 @@ export default {
 		};
 	},
 	mounted() {
-		this.setFullHeight();
+		nextTick(() => {
+            this.setFullHeight();
+        });
 		window.addEventListener("resize", this.setFullHeight);
 	},
 	beforeUnmount() {
