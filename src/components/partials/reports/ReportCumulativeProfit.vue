@@ -4,12 +4,11 @@
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
 				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart visualizes cumulative profit or loss alongside the trade count over a selected time period. It provides insights into periods of
-					sustained growth, significant drawdowns, and trading frequency, offering a clearer perspective on performance trends and trading activity.
+					This chart visualizes cumulative profit or loss alongside the trade count over a selected time period. It provides insights into periods of sustained growth, significant drawdowns, and trading frequency, offering a clearer perspective on performance trends and trading activity.
 				</div>
 			</span>
 		</div>
-		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="cumulative-profit-chart" class="full-height-content" ref="fullHeightElement"></v-chart>
+		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="cumulative-profit-chart"></v-chart>
 	</div>
 </template>
 
@@ -21,7 +20,7 @@ import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from
 import VChart from "vue-echarts";
 
 use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
-import { nextTick } from 'vue';
+
 export default {
 	props: {
 		trades: {
@@ -41,22 +40,7 @@ export default {
 			isTooltipVisible: false,
 		};
 	},
-	mounted() {
-		nextTick(() => {
-            this.setFullHeight();
-        });
-		window.addEventListener("resize", this.setFullHeight);
-	},
-	beforeUnmount() {
-		window.removeEventListener("resize", this.setFullHeight);
-	},
 	methods: {
-		setFullHeight() {
-			const element = this.$refs.fullHeightElement;
-			if (element) {
-				element.style.height = `${window.innerHeight}px`;
-			}
-		},
 		showTooltip() {
 			this.isTooltipVisible = true;
 		},
@@ -252,7 +236,7 @@ export default {
 	margin-top: 20px;
 }
 #cumulative-profit-chart {
-	height: 700px !important;
+	height: 100vh;
 }
 .chart-header {
 	display: flex;
