@@ -99,7 +99,7 @@ export default {
 						data: this.profitByPriceRange.data,
 						label: {
 							color: "#1E3E62",
-							formatter: "{a} : {c}", // Label format
+							formatter: "{b} : {c}", // Label format
 						},
 						labelLine: {
 							lineStyle: {
