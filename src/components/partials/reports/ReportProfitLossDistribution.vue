@@ -127,7 +127,7 @@ export default {
 						itemStyle: {
 							// Dynamic gradient for each segment based on value
 							color: (params) => {
-								const colors = ["#ff7f50", "#87ceeb", "#da70d6", "#32cd32", "#6495ed", "#ff69b4"];
+								const colors = ["#740938", "#87ceeb", "#da70d6", "#32cd32", "#6495ed", "#ff69b4"];
 								return {
 									type: "linear",
 									x: 0,
