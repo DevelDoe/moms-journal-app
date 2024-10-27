@@ -83,7 +83,7 @@ export default {
 				},
 				legend: {
 					orient: "horizontal",
-					left: "left",
+					left: "center",
 					textStyle: { color: "#eaeaea" },
 				},
 				series: [
