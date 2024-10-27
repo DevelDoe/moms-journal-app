@@ -67,8 +67,12 @@ export default {
 			}
 		},
 		resetData() {
-			// Recompute chart options to trigger re-rendering
-			this.$refs.chart.setOption(this.chartOptions, true);
+			// Ensure the chart ref is defined before attempting to call setOption
+			this.$nextTick(() => {
+				if (this.$refs.chart) {
+					this.$refs.chart.setOption(this.chartOptions, true);
+				}
+			});
 		},
 	},
 	computed: {
