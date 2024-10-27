@@ -1,9 +1,9 @@
 <!-- ./src/components/Reports.vue -->
 <template>
-	<div class="trades">
+	<div id="trades">
 		<h1>Reports</h1>
 
-		<div class="date-range-picker">
+		<div id="date-range-picker">
 			<label>Start Date:</label>
 			<input type="date" v-model="startDate" />
 			<label>End Date:</label>
