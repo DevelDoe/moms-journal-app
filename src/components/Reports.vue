@@ -141,9 +141,8 @@ export default {
 	border-radius: 8px;
 	padding: 16px;
 	width: 100%;
-	max-width: 600px;
+	max-width: 422px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	font-family: Arial, sans-serif;
 }
 
 .date-input {

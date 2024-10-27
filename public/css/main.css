@@ -37,3 +37,6 @@ body {
 	background-color: #ff6500 !important; /* Background color */
 	color: #1E3E62 !important; /* Text color */
 }
+input{
+	font-family: "Montserrat", sans-serif !important;
+}
