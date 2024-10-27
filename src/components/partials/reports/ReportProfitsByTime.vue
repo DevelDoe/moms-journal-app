@@ -8,8 +8,7 @@
 					and non-profitable times throughout the day.
 				</div>
 			</span>
-		</div>
-		<div class="granularity-picker">
+			<div class="granularity-picker">
 			<div class="granularity-input">
 				<select id="granularity" v-model="selectedGranularity">
 					<option value="hourly">Hourly</option>
@@ -17,6 +16,8 @@
 				</select>
 			</div>
 		</div>
+		</div>
+		
 		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="trades-by-time-chart"></v-chart>
 	</div>
 </template>
