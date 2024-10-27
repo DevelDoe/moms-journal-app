@@ -218,7 +218,7 @@ export default {
 						type: "line",
 						data: this.cumulativeProfitData.tradeCountData,
 						yAxisIndex: 1,
-						itemStyle: { color: "#5470C6" },
+						itemStyle: { color: "#FF9800" },
 						smooth: true,
 						lineStyle: { width: 3 },
 					},
