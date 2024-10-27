@@ -132,7 +132,7 @@ export default {
 				},
 				tooltip: {
 					trigger: "axis",
-					axisPointer: { type: "shadow" },
+					axisPointer: { type: "none" },
 				},
 				legend: {
 					orient: "horizontal",
