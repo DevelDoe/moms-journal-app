@@ -94,9 +94,6 @@ export default {
 				this.scrollToPreviousReport(currentIndex);
 			}
 		}, 500), // Throttle to trigger once every 500ms
-		async fetchTradesByDateRange(start = null, end = null) {
-			// Your fetch logic
-		},
 		updateViewportHeight() {
 			this.viewportHeight = window.innerHeight;
 		},
