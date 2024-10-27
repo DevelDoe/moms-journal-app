@@ -45,7 +45,7 @@ export default {
 			this.isTooltipVisible = false;
 		},
 	},
-	computed: {
+computed: {
     profitByPriceRange() {
         if (this.trades.length === 0) return { data: [] };
 
