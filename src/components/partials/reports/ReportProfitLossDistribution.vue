@@ -164,6 +164,7 @@ export default {
 .profit-loss-histogram {
 	margin-top: 20px;
 	max-width: 50%;
+	float: left;
 }
 
 .chart-header {
