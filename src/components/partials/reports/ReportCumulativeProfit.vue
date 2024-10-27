@@ -66,14 +66,6 @@ export default {
 					return d.toLocaleDateString();
 			}
 		},
-		resetData() {
-			// Ensure the chart ref is defined before attempting to call setOption
-			this.$nextTick(() => {
-				if (this.$refs.chart) {
-					this.$refs.chart.setOption(this.chartOptions, true);
-				}
-			});
-		},
 	},
 	computed: {
 		cumulativeProfitData() {
@@ -235,18 +227,6 @@ export default {
 				animationDuration: 3000,
 				animationEasing: "quarticInOut",
 			};
-		},
-	},
-	watch: {
-		trades: {
-			handler() {
-				this.resetData();
-			},
-			deep: true,
-			immediate: true,
-		},
-		granularity() {
-			this.resetData();
 		},
 	},
 };
