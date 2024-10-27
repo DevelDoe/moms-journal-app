@@ -145,7 +145,10 @@ export default {
 					min: -maxAbsValue,  // Set min to -maxAbsValue to center zero
 					max: maxAbsValue,   // Set max to maxAbsValue
 					axisLine: { show: false }, // Hide axis line if desired
-					axisLabel: { color: "#1E3E62", fontSize: 16 }, // Set axis label color
+					axisLabel: { 
+                color: "#1E3E62", 
+                fontSize: 16,
+               
 					axisTick: { show: false }, // Hide ticks if desired
 					splitLine: {
 						lineStyle: {
