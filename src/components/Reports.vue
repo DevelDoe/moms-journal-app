@@ -61,7 +61,7 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight,
+			viewportHeight: window.innerHeight - 20,
 			reports: [
 				ReportCumulativeProfit,
 				ReportProfitLossDistribution,
