@@ -103,7 +103,7 @@ export default {
 						},
 						labelLine: {
 							lineStyle: {
-								color: "#1E3E62",
+								color: "#162e49",
 							},
 							smooth: 0.1,
 							length: 100,
