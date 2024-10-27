@@ -49,11 +49,11 @@ export default {
     profitByPriceRange() {
         if (this.trades.length === 0) return { data: [] };
 
-        // Initialize and populate buckets with non-zero profit/loss values only
+        // Filter trades with non-zero profit/loss and populate only relevant buckets
         const buckets = this.trades.reduce((acc, trade) => {
             const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
-            
-            // Only create or add to the bucket if there is an actual profit/loss
+
+            // Create or add to the bucket if there is an actual profit/loss value
             if (trade.profitLoss !== 0) {
                 if (!acc[bucketLabel]) acc[bucketLabel] = 0;
                 acc[bucketLabel] += trade.profitLoss;
@@ -61,10 +61,10 @@ export default {
             return acc;
         }, {});
 
-        // Filter out any empty or zero-value buckets for the final data display
+        // Filter out buckets with zero values after aggregation to eliminate empty labels
         return {
             data: Object.entries(buckets)
-                .filter(([, value]) => value !== 0) // Strictly include only non-zero buckets
+                .filter(([, value]) => value !== 0) // Exclude zero-value buckets
                 .map(([label, value]) => ({
                     value: parseFloat(value.toFixed(2)),
                     name: label.split('-')[0], // Show only the starting value in the label
