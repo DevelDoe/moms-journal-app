@@ -129,6 +129,7 @@ export default {
 .trades-by-time-chart {
 	display: inline-block;
 	margin-top: 20px;
+	width: 100%;
 }
 .chart-header {
 	display: flex;
