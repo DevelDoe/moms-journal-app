@@ -127,7 +127,7 @@ export default {
 
 <style scoped>
 .trades-by-time-chart {
-	display: inline;
+	display: inline-block;
 	margin-top: 400px;
 }
 .chart-header {
