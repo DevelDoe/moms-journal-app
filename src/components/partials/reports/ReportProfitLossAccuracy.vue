@@ -92,7 +92,7 @@ export default {
 								],
 							},
 						},
-						pointer: { width: 6 },
+						pointer: { width: 1 },
 						title: { show: false },
 						detail: { valueAnimation: true, formatter: "{value}%", fontSize: 20 },
 						data: [{ value: this.accuracy }],
