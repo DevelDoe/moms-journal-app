@@ -211,6 +211,7 @@ export default {
 <style scoped>
 .daily-trades-profit-chart {
 	margin-top: 20px;
+	max-width: 50%;
 }
 
 .chart-header {
