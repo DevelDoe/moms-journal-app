@@ -142,14 +142,14 @@ export default {
 				yAxis: {
 					type: "value",
 					name: "Profit/Loss",
-					min: -maxAbsValue,  // Set min to -maxAbsValue to center zero
-					max: maxAbsValue,   // Set max to maxAbsValue
+					min: -maxAbsValue, // Set min to -maxAbsValue to center zero
+					max: maxAbsValue, // Set max to maxAbsValue
 					axisLine: { show: false }, // Hide axis line if desired
-					axisLabel: { 
-                color: "#1E3E62", 
-                fontSize: 16,
-                formatter: (value) => value.toFixed(2)  // Limit to 2 decimal places
-            },
+					axisLabel: {
+						color: "#1E3E62",
+						fontSize: 16,
+						formatter: (value) => value.toFixed(2), // Limit to 2 decimal places
+					},
 					axisTick: { show: false }, // Hide ticks if desired
 					splitLine: {
 						lineStyle: {
