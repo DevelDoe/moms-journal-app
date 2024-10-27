@@ -5,7 +5,7 @@
 				>?
 				<div v-if="isTooltipVisible" class="tooltip-text">
 					The distribution of profit and loss across different price ranges. This rose chart helps you quickly identify where your profits and losses
-					are concentrated, offering insights into risk and reward at various price points.
+					are concentrated, offering insights into risk and reward at various price points. Red is losses and green is profits.
 				</div>
 			</span>
 			<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="price-range-chart"></v-chart>
