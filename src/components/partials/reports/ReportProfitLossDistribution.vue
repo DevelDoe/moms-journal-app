@@ -126,7 +126,7 @@ export default {
 									],
 								};
 							},
-							shadowBlur: 100,
+							shadowBlur: 0,
 							shadowColor: "rgba(0, 0, 0, 0.5)",
 						},
 						animationType: "scale",
