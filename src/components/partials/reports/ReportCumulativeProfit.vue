@@ -67,7 +67,8 @@ export default {
 			}
 		},
 		resetData() {
-			this.$refs.chart.clear();
+			// Recompute chart options to trigger re-rendering
+			this.$refs.chart.setOption(this.chartOptions, true);
 		},
 	},
 	computed: {
