@@ -34,45 +34,54 @@ export default {
 			return totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(2) : 0;
 		},
 		profitToLossRatio() {
-			const totalProfit = this.trades
-				.filter((trade) => trade.profitLoss > 0)
-				.reduce((acc, trade) => acc + trade.profitLoss, 0);
-			const totalLoss = Math.abs(
-				this.trades.filter((trade) => trade.profitLoss < 0).reduce((acc, trade) => acc + trade.profitLoss, 0)
-			);
+			const totalProfit = this.trades.filter((trade) => trade.profitLoss > 0).reduce((acc, trade) => acc + trade.profitLoss, 0);
+			const totalLoss = Math.abs(this.trades.filter((trade) => trade.profitLoss < 0).reduce((acc, trade) => acc + trade.profitLoss, 0));
 
 			// Calculate ratio as "X:Y" format
 			const ratio = totalLoss > 0 ? (totalProfit / totalLoss).toFixed(2) : "1.00";
 			return `${ratio}:1`;
 		},
 		profitToLossGaugeOptions() {
-	return {
-		series: [
-			{
-				type: "gauge",
-				startAngle: 180,
-				endAngle: 0,
-				min: 0,      // Set min lower to center 1:1
-				max: 2,      // Adjust max to center 1:1
-				progress: { show: true, width: 10 },
-				axisLine: {
-					lineStyle: {
-						width: 10,
-						color: [[0.5, "#ffb74d"], [1, "#81c784"]],
+			return {
+				series: [
+					{
+						type: 'gauge',
+                min: 0,
+                max: 100,
+                splitNumber: 2,  // Fewer split marks for minimalism
+                axisLine: {
+                    lineStyle: {
+                        width: 6, // Thinner line for a minimal look
+                        color: [
+                            [0.5, '#91cc75'],  // Green for under 1:1 ratio
+                            [1, '#e57373']    // Red for over 1:1 ratio
+                        ]
+                    }
+                },
+                pointer: {
+                    width: 4, // Thin pointer
+                    length: '60%', // Shorter length for a subtle look
+                },
+                axisTick: {
+                    show: false // Hide tick marks for minimalism
+                },
+                splitLine: {
+                    show: false // Hide split lines for minimalism
+                },
+                axisLabel: {
+                    show: false // Hide labels around the gauge for a cleaner look
+                },
+                detail: {
+                    valueAnimation: true,
+                    fontSize: 16,
+                    color: '#333',
+                    formatter: '{value}%',  // Display the value in the center only
+                },
+						data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
 					},
-				},
-				pointer: { width: 6 },
-				title: { show: false },
-				detail: {
-					formatter: () => this.profitToLossRatio,
-					fontSize: 20,
-					color: "#eaeaea",
-				},
-				data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
-			},
-		],
-	};
-},
+				],
+			};
+		},
 		accuracyGaugeOptions() {
 			return {
 				series: [
@@ -86,7 +95,11 @@ export default {
 						axisLine: {
 							lineStyle: {
 								width: 10,
-								color: [[0.5, "#e57373"], [0.75, "#ffb74d"], [1, "#81c784"]],
+								color: [
+									[0.5, "#e57373"],
+									[0.75, "#ffb74d"],
+									[1, "#81c784"],
+								],
 							},
 						},
 						pointer: { width: 6 },
