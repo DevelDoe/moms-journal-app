@@ -21,20 +21,27 @@ import { CanvasRenderer } from "echarts/renderers";
 use([CanvasRenderer, GaugeChart, TitleComponent, TooltipComponent]);
 
 export default {
-	components: {
-		VChart,
-	},
 	props: {
-		profitToLossRatio: {
-			type: Number,
-			default: 100, // Default ratio for display purposes
-		},
-		accuracy: {
-			type: Number,
-			default: 75, // Default accuracy for display purposes
+		trades: {
+			type: Array,
+			required: true,
 		},
 	},
 	computed: {
+		accuracy() {
+			const totalTrades = this.trades.length;
+			const winningTrades = this.trades.filter((trade) => trade.profitLoss > 0).length;
+			return totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(2) : 0;
+		},
+		profitToLossRatio() {
+			const totalProfit = this.trades
+				.filter((trade) => trade.profitLoss > 0)
+				.reduce((acc, trade) => acc + trade.profitLoss, 0);
+			const totalLoss = Math.abs(
+				this.trades.filter((trade) => trade.profitLoss < 0).reduce((acc, trade) => acc + trade.profitLoss, 0)
+			);
+			return totalLoss > 0 ? ((totalProfit / totalLoss) * 100).toFixed(2) : 0;
+		},
 		profitToLossGaugeOptions() {
 			return {
 				series: [
@@ -43,12 +50,12 @@ export default {
 						startAngle: 180,
 						endAngle: 0,
 						min: 0,
-						max: 300, // Range for the Profit-to-Loss Ratio gauge
+						max: 300,
 						progress: { show: true, width: 10 },
 						axisLine: {
 							lineStyle: {
 								width: 10,
-								color: [[0.3, "#e57373"], [0.7, "#ffb74d"], [1, "#81c784"]], // Gradient: Red to Yellow to Green
+								color: [[0.3, "#e57373"], [0.7, "#ffb74d"], [1, "#81c784"]],
 							},
 						},
 						pointer: { width: 6 },
@@ -67,12 +74,12 @@ export default {
 						startAngle: 180,
 						endAngle: 0,
 						min: 0,
-						max: 100, // Range for the Accuracy gauge
+						max: 100,
 						progress: { show: true, width: 10 },
 						axisLine: {
 							lineStyle: {
 								width: 10,
-								color: [[0.5, "#e57373"], [0.75, "#ffb74d"], [1, "#81c784"]], // Gradient: Red to Yellow to Green
+								color: [[0.5, "#e57373"], [0.75, "#ffb74d"], [1, "#81c784"]],
 							},
 						},
 						pointer: { width: 6 },
@@ -84,6 +91,9 @@ export default {
 			};
 		},
 	},
+	components: {
+		VChart,
+	},
 };
 </script>
 
@@ -92,6 +102,7 @@ export default {
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+	width: 100%;
 }
 .gauge {
 	width: 45%;
