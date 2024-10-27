@@ -128,7 +128,6 @@ export default {
 }
 .page-title {
 	font-size: 4rem;
-	float: left;
 }
 .date-range-picker {
 	position: absolute;
