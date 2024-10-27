@@ -84,6 +84,7 @@ export default {
 			}
 		},
 		handleScroll(event) {
+			event.preventDefault(); // Prevent the default scrolling behavior
 			const activeReport = this.$refs.reportRefs.find((report) => {
 				const rect = report.getBoundingClientRect();
 				return rect.top >= 0 && rect.bottom <= window.innerHeight;
