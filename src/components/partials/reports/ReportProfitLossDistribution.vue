@@ -70,7 +70,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: "Profit by Stock Price Range",
+					text: "Profit by Price Range",
 					left: "center",
 					textStyle: {
 						color: "#eaeaea",
