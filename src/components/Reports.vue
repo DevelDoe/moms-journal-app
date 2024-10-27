@@ -33,7 +33,7 @@
 
 			<ReportTradesProfit :trades="filteredTrades" />
 
-			<ReportProfitLossHistogram :trades="filteredTrades" />
+			<ReportProfitLossDistribution :trades="filteredTrades" />
 
 			<!-- Trades by Hour Chart Partial -->
 			<!-- <ReportTradesByHour
