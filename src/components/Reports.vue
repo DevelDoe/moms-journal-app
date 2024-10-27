@@ -188,5 +188,6 @@ export default {
 }
 .report{
 	min-height: 500px;
+	margin-bottom: 20px;
 }
 </style>
