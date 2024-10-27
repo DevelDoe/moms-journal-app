@@ -158,7 +158,7 @@ export default {
 #price-range-chart {
 	min-height: 700px;
 	margin-bottom: 10vh;
-	margin-top: 5vh;
+	margin-top: 3vh;
 	height: 80vh !important;
 }
 
