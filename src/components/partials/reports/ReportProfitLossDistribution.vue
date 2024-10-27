@@ -123,7 +123,7 @@ export default {
 				yAxis: {
 					type: "category",
 					data: this.profitByPriceRange.labels,
-					name: "Price",
+					name: "",
 					type: "category", // This sets the axis to categorical mode, allowing for labeled points
 					axisLine: { show: false }, // Hide axis line if desired
 					axisLabel: { color: "#1E3E62",fontSize: 16,}, // Set axis label color
