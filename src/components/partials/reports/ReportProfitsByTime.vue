@@ -121,6 +121,10 @@ export default {
 				xAxis: {
 					type: "category",
 					data: this.aggregatedData.labels,
+					axisLabel: {
+						color: "#1E3E62", // Color of the x-axis labels
+						fontSize: 10, // Size of the font for the labels
+					},
 					splitLine: {
 						lineStyle: {
 							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
