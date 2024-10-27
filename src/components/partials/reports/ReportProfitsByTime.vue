@@ -200,7 +200,7 @@ export default {
 }
 #trades-by-time-chart {
 
-	height: 70vh !important;
+	height: 80vh !important;
 }
 .chart-header {
 	display: flex;
