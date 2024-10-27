@@ -180,7 +180,7 @@ export default {
 	display: inline-block;
 	margin-top: 20px;
 	width: 100%;
-	height: 80vh !important;
+	
 }
 .chart-header {
 	display: flex;
