@@ -157,7 +157,7 @@ export default {
 <style scoped>
 #price-range-chart {
 	min-height: 700px;
-	margin-bottom: 40px;
+	margin-bottom: 10vh;
 	height: 80vh !important;
 }
 
