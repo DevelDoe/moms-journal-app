@@ -236,7 +236,6 @@ export default {
 	
 }
 #cumulative-profit-chart {
-
 	height: 90vh !important;
 }
 .chart-header {
