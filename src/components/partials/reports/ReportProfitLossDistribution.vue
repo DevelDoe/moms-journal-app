@@ -103,12 +103,12 @@ export default {
 						},
 						labelLine: {
 							lineStyle: {
-								color: "rgba(255, 255, 255, 0.3)",
+								color: "#1E3E62",
 							},
 							smooth: 0.2,
 							length: 100,
 							length2: 200,
-							color: "#1E3E62",
+							
 						},
 						itemStyle: {
 							// Dynamic gradient for each segment based on value
