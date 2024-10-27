@@ -125,6 +125,9 @@ export default {
 #trades {
 	padding: 20px;
 }
+.header{
+	font-size: xx-large;
+}
 
 .no-trades {
 	font-size: 1.2em;
