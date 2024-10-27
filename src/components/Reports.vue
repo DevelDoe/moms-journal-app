@@ -94,7 +94,7 @@ export default {
 			tradesLoaded: false, // Ensure trades are loaded before filtering
 			hasCorruptData: false,
 			startDate: "", // Start date for filtering
-        	endDate: "", // End date for filtering
+			endDate: "", // End date for filtering
 		};
 	},
 	components: {
@@ -295,21 +295,20 @@ export default {
 		// Calculate Profit/Loss Distribution for histogram buckets
 	},
 	methods: {
-
-// Fetch trades from Vuex store with optional date range filtering
-async fetchTrades(start = null, end = null) {
-        try {
-            await this.$store.dispatch("fetchTrades", { start, end });
-        } catch (error) {
-            console.error("Error fetching trades:", error);
-        }
-    },
-    // Call fetchTrades with date range from date picker
-    async fetchTradesByDateRange() {
-        const start = this.startDate ? new Date(this.startDate).toISOString().split("T")[0] : null;
-        const end = this.endDate ? new Date(this.endDate).toISOString().split("T")[0] : null;
-        await this.fetchTrades(start, end);
-    },
+		// Fetch trades from Vuex store with optional date range filtering
+		async fetchTrades(start = null, end = null) {
+			try {
+				await this.$store.dispatch("fetchTrades", { start, end });
+			} catch (error) {
+				console.error("Error fetching trades:", error);
+			}
+		},
+		// Call fetchTrades with date range from date picker
+		async fetchTradesByDateRange() {
+			const start = this.startDate ? new Date(this.startDate).toISOString().split("T")[0] : null;
+			const end = this.endDate ? new Date(this.endDate).toISOString().split("T")[0] : null;
+			await this.fetchTrades(start, end);
+		},
 		// Fetch summaries from Vuex store
 		async fetchSummaries() {
 			try {
