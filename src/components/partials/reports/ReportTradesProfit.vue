@@ -209,12 +209,7 @@ export default {
 </script>
 
 <style scoped>
-.daily-trades-profit-chart {
-	margin-top: 20px;
-	/* width: 48%;
-	padding: 2%;
-	float: left; */
-}
+
 #daily-trades-profit-chart {
 	height: 80vh !important;
 	padding-top: 10vh;
