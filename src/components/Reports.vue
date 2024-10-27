@@ -66,37 +66,6 @@ export default {
 		ReportProfitsByTime,
 	},
 	methods: {
-		scrollToNextReport(index) {
-			const nextReport = this.$refs.reportRefs[index + 1];
-			if (nextReport) {
-				nextReport.scrollIntoView({ behavior: "smooth" });
-			}
-		},
-		scrollToPreviousReport(index) {
-			const previousReport = this.$refs.reportRefs[index - 1];
-			if (previousReport) {
-				previousReport.scrollIntoView({ behavior: "smooth" });
-			}
-		},
-		handleScroll: throttle(function (event) {
-			const activeReport = this.$refs.reportRefs.find((report) => {
-				const rect = report.getBoundingClientRect();
-				return rect.top >= 0 && rect.bottom <= window.innerHeight;
-			});
-
-			if (!activeReport) return;
-
-			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
-
-			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
-				this.scrollToNextReport(currentIndex);
-			} else if (event.deltaY < 0 && currentIndex > 0) {
-				this.scrollToPreviousReport(currentIndex);
-			}
-		}, 500), // Throttle to trigger once every 500ms
-		updateViewportHeight() {
-			this.viewportHeight = window.innerHeight;
-		},
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				// Ensure dates are either null or in "YYYY-MM-DD" format
@@ -138,6 +107,38 @@ export default {
 				this.isLoading = false;
 			}
 		},
+		scrollToNextReport(index) {
+			const nextReport = this.$refs.reportRefs[index + 1];
+			if (nextReport) {
+				nextReport.scrollIntoView({ behavior: "smooth" });
+			}
+		},
+		scrollToPreviousReport(index) {
+			const previousReport = this.$refs.reportRefs[index - 1];
+			if (previousReport) {
+				previousReport.scrollIntoView({ behavior: "smooth" });
+			}
+		},
+		handleScroll: throttle(function (event) {
+			const activeReport = this.$refs.reportRefs.find((report) => {
+				const rect = report.getBoundingClientRect();
+				return rect.top >= 0 && rect.bottom <= window.innerHeight;
+			});
+
+			if (!activeReport) return;
+
+			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
+
+			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
+				this.scrollToNextReport(currentIndex);
+			} else if (event.deltaY < 0 && currentIndex > 0) {
+				this.scrollToPreviousReport(currentIndex);
+			}
+		}, 500), // Throttle to trigger once every 500ms
+		updateViewportHeight() {
+			this.viewportHeight = window.innerHeight;
+		},
+		
 	},
 	mounted() {
 		this.fetchTradesByDateRange();
