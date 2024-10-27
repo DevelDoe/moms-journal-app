@@ -8,13 +8,15 @@
 				</div>
 			</span>
 		</div>
-		<div class="granularity-selector">
-			<label>Select Granularity:</label>
-			<select v-model="selectedGranularity">
-				<option value="hourly">Hourly</option>
-				<option value="minute">Minute</option>
-			</select>
-		</div>
+		<div class="granularity-picker">
+	<div class="granularity-input">
+		<label for="granularity">Granularity:</label>
+		<select id="granularity" v-model="selectedGranularity">
+			<option value="hourly">Hourly</option>
+			<option value="minute">Minute</option>
+		</select>
+	</div>
+</div>
 		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
 	</div>
 </template>
