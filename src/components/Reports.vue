@@ -151,7 +151,7 @@ export default {
 .date-range-picker label {
 	margin-bottom: 4px;
 	font-weight: bold;
-	color: #333;
+	color: #eaeaea;
 }
 
 .date-range-picker input[type="date"] {
