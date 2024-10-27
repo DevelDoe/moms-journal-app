@@ -1,3 +1,4 @@
+<!-- ./src/components/Reports.vue -->
 <template>
 	<div id="trades">
 		<div v-if="isLoading" class="loading-message">
@@ -7,6 +8,7 @@
 		<div v-else-if="trades && trades.length === 0" class="no-trades">
 			<p>No trades available for the selected date.</p>
 		</div>
+		<!-- Corrupt Data Warning -->
 		<div v-else-if="hasCorruptData" class="corrupt-data-warning">
 			<p>Some trades data is corrupted and could not be displayed. Please contact an administrator.</p>
 		</div>
@@ -25,16 +27,20 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="content">
 				<div class="report"><ReportCumulativeProfit 		:trades="trades" /></div>
 				<div class="report"><ReportProfitLossDistribution 	:trades="trades" /></div>
 				<div class="report"><ReportTradesProfit 			:trades="trades" /></div>
 				<div class="report"><ReportProfitsByTime 			:trades="trades" /></div>
+				
+				
+				
+				
 			</div>
 		</div>
 	</div>
 </template>
+
 
 <script>
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
@@ -50,13 +56,6 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight,
-			reports: [
-				ReportCumulativeProfit,
-				ReportProfitLossDistribution,
-				ReportTradesProfit,
-				ReportProfitsByTime,
-			],
 		};
 	},
 	components: {
@@ -118,26 +117,13 @@ export default {
 				this.isLoading = false;
 			}
 		},
-		scrollToNextReport(index) {
-			const nextReport = this.$refs.reportRefs[index + 1];
-			if (nextReport) {
-				nextReport.scrollIntoView({ behavior: "smooth" });
-			}
+	},
+	watch: {
+		startDate(newVal) {
+			if (newVal && this.endDate) this.fetchTradesByDateRange(newVal, this.endDate);
 		},
-		async fetchTradesByDateRange(start = null, end = null) {
-			// Your fetch logic
-		},
-	},
-	mounted() {
-		this.fetchTradesByDateRange();
-		window.addEventListener("resize", this.updateViewportHeight);
-	},
-	beforeUnmount() {
-		window.removeEventListener("resize", this.updateViewportHeight);
-	},
-	methods: {
-		updateViewportHeight() {
-			this.viewportHeight = window.innerHeight;
+		endDate(newVal) {
+			if (newVal && this.startDate) this.fetchTradesByDateRange(this.startDate, newVal);
 		},
 	},
 };
@@ -165,7 +151,7 @@ export default {
 .date-range-picker {
 	display: flex;
 	align-items: flex-end;
-	gap: 16px;
+	gap: 16px; /* Add spacing between the date inputs */
 	background-color: #1e3e62;
 	border-radius: 8px;
 	padding: 16px;
@@ -193,7 +179,7 @@ export default {
 	font-size: 16px;
 	color: #333;
 	background-color: #fff;
-	width: 180px;
+	width: 180px; /* Fixed width to keep both inputs aligned */
 }
 
 .date-input input[type="date"]:focus {
@@ -201,30 +187,8 @@ export default {
 	box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 	outline: none;
 }
-
-.report {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	position: relative;
-}
-button {
-	position: absolute;
-	bottom: 10px;
-	left: 50%;
-	transform: translateX(-50%);
-	background-color: #1e3e62;
-	color: white;
-	border: none;
-	padding: 10px 20px;
-	border-radius: 8px;
-	cursor: pointer;
-	font-size: 1rem;
-	transition: background-color 0.3s ease;
-}
-
-button:hover {
-	background-color: #007bff;
+.report{
+	min-height: 500px;
+	margin-bottom: 400px;
 }
 </style>
