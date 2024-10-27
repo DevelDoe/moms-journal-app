@@ -1,14 +1,14 @@
 script
 <!-- ./src/components/partials/charts/DailyTradesProfitChart.vue -->
 <template>
-	<div class="daily-trades-profit-chart">
+	<div class="daily-trades-profit">
 		<div class="chart-header">
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
 				>?
 				<div v-if="isTooltipVisible" class="tooltip-text">This chart allows you to compare the number of trades you made with the profit or loss.</div>
 			</span>
 		</div>
-		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
+		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="daily-trades-profit-chart"></v-chart>
 	</div>
 </template>
 
@@ -214,6 +214,9 @@ export default {
 	/* width: 48%;
 	padding: 2%;
 	float: left; */
+}
+.daily-trades-profit-chart {
+	height: 80vh !important;
 }
 
 .chart-header {
