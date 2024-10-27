@@ -156,10 +156,6 @@ export default {
 };
 </script>
 
-
-
-
-
 <style scoped>
 .profit-loss-histogram {
 	margin-top: 20px;
