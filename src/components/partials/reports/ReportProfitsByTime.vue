@@ -50,7 +50,6 @@ export default {
 			this.isTooltipVisible = false;
 		},
 	},
-
 	computed: {
 		chartOptions() {
 			return {
