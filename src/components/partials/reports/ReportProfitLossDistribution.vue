@@ -158,6 +158,7 @@ export default {
 #price-range-chart {
 	min-height: 700px;
 	margin-bottom: 40px;
+	height: 80vh !important;
 }
 .profit-loss-histogram {
 }
