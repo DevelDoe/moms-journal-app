@@ -100,7 +100,13 @@ export default {
 						radius: ["20%", "55%"],
 						center: ["50%", "50%"],
 						roseType: "radius",
-						data: this.profitByPriceRange.data,
+						data: this.profitByPriceRange.data.map((item) => {
+							// Modify the label to show only the starting value of each bucket
+							return {
+								...item,
+								name: item.name.split("-")[0], // Show only the starting value
+							};
+						}),
 						label: {
 							color: "#1E3E62",
 							formatter: "{b} : {c}", // Label format
