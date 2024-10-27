@@ -50,41 +50,44 @@ export default {
 	},
 	computed: {
 		profitByPriceRange() {
-			if (this.trades.length === 0) return { labels: [], data: [] };
+		if (this.trades.length === 0) return { labels: [], data: [] };
 
-			// Define price ranges in intervals of $1
-			const priceRanges = [
-				{ label: "$0-1", min: 0, max: 1 },
-				{ label: "$1-2", min: 1, max: 2 },
-				{ label: "$2-3", min: 2, max: 3 },
-				{ label: "$3-4", min: 3, max: 4 },
-				{ label: "$4-5", min: 4, max: 5 },
-				// Add more ranges as needed
-				{ label: "$9-10", min: 9, max: 10 },
-				{ label: "Above $10", min: 10, max: Infinity },
-			];
+		// Calculate min and max buyPrice
+		const prices = this.trades.map(trade => trade.buyPrice);
+		const minPrice = Math.min(...prices);
+		const maxPrice = Math.max(...prices);
 
-			// Initialize the buckets with zero profit
-			const buckets = {};
-			priceRanges.forEach((range) => {
-				buckets[range.label] = 0; // Start each bucket with 0 profit
-			});
+		// Define number of buckets and calculate interval size
+		const bucketCount = 10; // Number of dynamic intervals
+		const intervalSize = (maxPrice - minPrice) / bucketCount;
 
-			// Aggregate profit for each trade within its price range using `buyPrice`
-			this.trades.forEach((trade) => {
-				const buyPrice = trade.buyPrice;
-				const profitLoss = trade.profitLoss;
-				const bucket = priceRanges.find((range) => buyPrice >= range.min && buyPrice < range.max);
-				if (bucket) {
-					buckets[bucket.label] += profitLoss; // Sum profits/losses within each price range
-				}
-			});
-
+		// Create dynamic bucket ranges
+		const buckets = Array.from({ length: bucketCount }, (_, i) => {
+			const min = minPrice + i * intervalSize;
+			const max = min + intervalSize;
 			return {
-				labels: Object.keys(buckets),
-				data: Object.values(buckets),
+				label: `$${min.toFixed(2)} - $${max.toFixed(2)}`,
+				min,
+				max,
+				totalProfit: 0, // Initialize profit for each bucket
 			};
-		},
+		});
+
+		// Aggregate profit for each trade within its price range
+		this.trades.forEach((trade) => {
+			const profitLoss = trade.profitLoss;
+			const bucket = buckets.find((range) => trade.buyPrice >= range.min && trade.buyPrice < range.max);
+			if (bucket) {
+				bucket.totalProfit += profitLoss; // Sum profits/losses within each price range
+			}
+		});
+
+		// Prepare labels and data arrays for the chart
+		return {
+			labels: buckets.map(bucket => bucket.label),
+			data: buckets.map(bucket => bucket.totalProfit),
+		};
+	},
 		chartOptions() {
 			return {
 				title: {
