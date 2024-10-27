@@ -188,7 +188,7 @@ export default {
 
 .report {
 	width: 100%;
-	display: flex;
+	display: inline-block;
 	align-items: center;
 	justify-content: center;
 	position: relative;
