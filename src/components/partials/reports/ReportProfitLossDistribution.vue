@@ -89,7 +89,7 @@ export default {
 				legend: {
 					orient: "horizontal",
 					left: "center",
-					bottom: 70, // Add some padding at the bottom of the chart for the legend
+					bottom: 60, // Add some padding at the bottom of the chart for the legend
 					textStyle: { color: "#eaeaea" },
 					formatter: (name) => {
 						// Show only the starting number of each range
