@@ -240,7 +240,7 @@ export default {
 	position: absolute;
 	top: 5px;
 	left: 15%;
-	min-width: 180px;
+	min-width: 150px;
 	display: inline-block;
 	width: 150px;
 	gap: 16px;
