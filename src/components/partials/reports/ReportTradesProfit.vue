@@ -215,7 +215,7 @@ export default {
 	padding: 2%;
 	float: left; */
 }
-.daily-trades-profit-chart {
+#daily-trades-profit-chart {
 	height: 80vh !important;
 }
 
