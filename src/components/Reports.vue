@@ -222,7 +222,7 @@ export default {
 
 .report {
 	width: 100%;
-	height: 100%;
+	height: 100px;
 	min-height: 100%;
 	display: inline-block;
 	align-items: center;
