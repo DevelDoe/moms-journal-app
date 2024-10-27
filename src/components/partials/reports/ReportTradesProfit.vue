@@ -196,7 +196,7 @@ export default {
 						},
 						data: profitData.map((value) => ({
 							value: parseFloat(value).toFixed(2),
-							itemStyle: { color: value >= 0 ? "#72BF78" : "#820300" },
+							itemStyle: { color: value >= 0 ? "#72BF78" : "#AF1740" },
 						})),
 					},
 				],
