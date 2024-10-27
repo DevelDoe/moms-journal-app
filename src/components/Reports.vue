@@ -136,8 +136,10 @@ export default {
 	background-color: #1e3e62;
 	border-radius: 7px;
 	padding: 17px;
+	width: 100%;
+	max-width: 221px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	float: right;
+
 }
 
 .date-range-picker label {
