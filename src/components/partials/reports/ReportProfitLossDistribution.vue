@@ -97,7 +97,7 @@ export default {
 						roseType: "radius",
 						data: this.profitByPriceRange.data,
 						label: {
-							color: "#eaeaea",
+							color: "#1E3E62",
 							formatter: "{b} : {c}", // Label format
 						},
 						labelLine: {
