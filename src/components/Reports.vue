@@ -15,7 +15,7 @@
 			<p>Loading trades...</p>
 		</div>
 
-		<div v-else-if="filteredTrades.length === 0" class="no-trades">
+		<div v-else-if="trades && trades.length === 0" class="no-trades">
 			<p>No trades available for the selected date.</p>
 		</div>
 
@@ -25,11 +25,6 @@
 		</div>
 
 		<div v-else>
-			<!-- Summary Section -->
-			<!-- <TradesSummary :totalTrades="totalTrades" :accuracy="accuracy" :profitToLossRatio="profitToLossRatio" :totalProfitLoss="totalProfitLoss" /> -->
-
-			<!-- WebSocket Analyze Component -->
-			<!-- <AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" /> -->
 
 			<ReportCumulativeProfit :trades="trades" />
 
@@ -37,29 +32,6 @@
 
 			<ReportProfitLossDistribution :trades="trades" />
 
-			<!-- Trades by Hour Chart Partial -->
-			<!-- <ReportTradesByHour
-				v-if="tradesByHourChartData.labels.length > 0 && tradesByHourChartData.data.length > 0"
-				:labels="tradesByHourChartData.labels"
-				:data="tradesByHourChartData.data"
-			/> -->
-
-			<!-- Trades by Minute Chart Partial -->
-			<!-- <ReportTradesByMinuteChart
-				v-if="tradesByMinuteChartData.labels.length > 0 && tradesByMinuteChartData.data.length > 0"
-				:labels="tradesByMinuteChartData.labels"
-				:data="tradesByMinuteChartData.data"
-			/> -->
-
-			<!-- Profit by Whole Dollar Range Chart -->
-			<!-- <ReportProfitByPriceRange
-				v-if="profitByWholeDollarRangeChartData.labels.length > 0 && profitByWholeDollarRangeChartData.data.length > 0"
-				:labels="profitByWholeDollarRangeChartData.labels"
-				:data="profitByWholeDollarRangeChartData.data"
-			/> -->
-
-			<!-- Trades List Partial -->
-			<!-- <TradesList :trades="filteredTrades" :totalProfitLoss="totalProfitLoss" /> -->
 		</div>
 	</div>
 </template>
