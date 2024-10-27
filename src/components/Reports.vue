@@ -17,11 +17,15 @@
 			<div class="header">
 				<div class="page-title">Reports</div>
 				<div class="date-range-picker">
-					<label>Start Date:</label>
-					<input type="date" v-model="startDate" />
-					<label>End Date:</label>
-					<input type="date" v-model="endDate" />
-				</div>
+	<div class="date-input">
+		<label>Start Date:</label>
+		<input type="date" v-model="startDate" />
+	</div>
+	<div class="date-input">
+		<label>End Date:</label>
+		<input type="date" v-model="endDate" />
+	</div>
+</div>
 			</div>
 			<div class="content">
 				<ReportCumulativeProfit :trades="trades" />
@@ -130,38 +134,40 @@ export default {
 	font-size: 4rem;
 }
 .date-range-picker {
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	background-color: #1e3e62;
-	border-radius: 7px;
-	padding: 17px;
+	display: flex;
+	align-items: flex-end;
+	gap: 16px; /* Add spacing between the date inputs */
+	background-color: #f5f5f5;
+	border-radius: 8px;
+	padding: 16px;
 	width: 100%;
-	max-width: 221px;
+	max-width: 600px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	display: inline;
+	font-family: Arial, sans-serif;
 }
 
-.date-range-picker label {
+.date-input {
+	display: flex;
+	flex-direction: column;
+}
+
+.date-input label {
 	margin-bottom: 4px;
 	font-weight: bold;
-	color: #eaeaea;
+	color: #333;
 }
 
-.date-range-picker input[type="date"] {
-	display: inline;
-	width: 100%;
+.date-input input[type="date"] {
 	padding: 8px;
-	margin-bottom: 12px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
-	font-size: 20px;
+	font-size: 16px;
 	color: #333;
-	background-color: #ffffff;
-	font-family: "Montserrat", sans-serif !important;
+	background-color: #fff;
+	width: 180px; /* Fixed width to keep both inputs aligned */
 }
 
-.date-range-picker input[type="date"]:focus {
+.date-input input[type="date"]:focus {
 	border-color: #007bff;
 	box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 	outline: none;
