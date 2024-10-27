@@ -133,9 +133,6 @@ export default {
 	float: left;
 	min-width: 200px;
 }
-.date-range-picker{
-	float:right;
-}
 .date-range-picker {
 	display: flex;
     flex-direction: column;
