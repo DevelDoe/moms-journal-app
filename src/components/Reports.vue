@@ -138,15 +138,14 @@ export default {
 }
 .date-range-picker {
 	display: flex;
-	flex-direction: column;
-	align-items: start;
-	background-color: #f5f5f5;
-	border-radius: 8px;
-	padding: 16px;
-	width: 100%;
-	max-width: 400px;
-	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	font-family: Arial, sans-serif;
+    flex-direction: column;
+    align-items: start;
+    background-color: #f5f5f5;
+    border-radius: 7px;
+    padding: 17px;
+    width: 100%;
+    max-width: 221px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .date-range-picker label {
