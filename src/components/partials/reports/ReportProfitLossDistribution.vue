@@ -79,8 +79,12 @@ export default {
 					},
 				},
 				tooltip: {
-					trigger: "item",
-					formatter: "{b}: {c} ({d}%)",
+					tooltip: {
+					trigger: "axis",
+					axisPointer: {
+						type: "line",
+					},
+				},
 				},
 				legend: {
 					orient: "horizontal",
