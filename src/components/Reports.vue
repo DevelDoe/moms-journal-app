@@ -65,6 +65,16 @@ export default {
 		ReportProfitLossDistribution,
 		ReportProfitsByTime,
 	},
+	async mounted() {
+		// Calculate the start and end of the current month
+		const today = new Date();
+		const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split("T")[0];
+		const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split("T")[0];
+
+		// Fetch trades for the current month by default
+		await this.fetchTradesByDateRange(currentMonthStart, currentMonthEnd);
+		this.isLoading = false;
+	},
 	methods: {
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
