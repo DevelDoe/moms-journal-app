@@ -102,7 +102,7 @@ export default {
 							lineStyle: {
 								color: "rgba(255, 255, 255, 0.3)",
 							},
-							smooth: 0.1,
+							smooth: 0.01,
 							length: 100,
 							length2: 200,
 						},
