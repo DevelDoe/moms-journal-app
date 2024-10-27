@@ -137,7 +137,7 @@ export default {
 	float:right;
 }
 .date-range-picker {
-	display: inline;
+	display: inline-block;
     flex-direction: column;
     align-items: start;
     background-color: #1e3e62;
