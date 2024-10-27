@@ -9,7 +9,7 @@
 				</div>
 			</span>
 		</div>
-		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="cumulative-profit-chart" ref="fullHeightElement"></v-chart>
+		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="cumulative-profit-chart" class="full-height-content" ref="fullHeightElement"></v-chart>
 	</div>
 </template>
 
