@@ -1,5 +1,5 @@
 <template>
-	<div id="trades" @wheel.passive="handleScroll">
+	<div id="trades">
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading Reports...</p>
 		</div>
@@ -27,14 +27,9 @@
 			</div>
 
 			<div class="content">
-				<div
-					class="report"
-					v-for="(report, index) in reports"
-					:key="index"
-					ref="reportRefs"
-					:style="{ height: `${viewportHeight}px` }"
-				>
+				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
 					<component :is="report" :trades="trades" />
+					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)">Next</button>
 				</div>
 			</div>
 		</div>
@@ -42,8 +37,6 @@
 </template>
 
 <script>
-import { markRaw } from 'vue';
-
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
 import ReportProfitLossDistribution from "./partials/reports/ReportProfitLossDistribution.vue";
 import ReportProfitsByTime from "./partials/reports/ReportProfitsByTime.vue";
@@ -57,8 +50,13 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight,
-			reports: [ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
+			viewportHeight: window.innerHeight - 0,
+			reports: [
+				ReportCumulativeProfit,
+				ReportProfitLossDistribution,
+				ReportTradesProfit,
+				ReportProfitsByTime,
+			],
 		};
 	},
 	components: {
@@ -74,28 +72,6 @@ export default {
 				nextReport.scrollIntoView({ behavior: "smooth" });
 			}
 		},
-		scrollToPreviousReport(index) {
-			const previousReport = this.$refs.reportRefs[index - 1];
-			if (previousReport) {
-				previousReport.scrollIntoView({ behavior: "smooth" });
-			}
-		},
-		handleScroll: throttle(function (event) {
-			const activeReport = this.$refs.reportRefs.find((report) => {
-				const rect = report.getBoundingClientRect();
-				return rect.top >= 0 && rect.bottom <= window.innerHeight;
-			});
-
-			if (!activeReport) return;
-
-			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
-
-			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
-				this.scrollToNextReport(currentIndex);
-			} else if (event.deltaY < 0 && currentIndex > 0) {
-				this.scrollToPreviousReport(currentIndex);
-			}
-		}, 500), // Throttle to trigger once every 500ms
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				// Ensure dates are either null or in "YYYY-MM-DD" format
@@ -144,11 +120,9 @@ export default {
 	mounted() {
 		this.fetchTradesByDateRange();
 		window.addEventListener("resize", this.updateViewportHeight);
-		window.addEventListener("wheel", this.handleScroll); // Listen for wheel events on the window
 	},
 	beforeUnmount() {
 		window.removeEventListener("resize", this.updateViewportHeight);
-		window.removeEventListener("wheel", this.handleScroll); // Remove the listener when component is unmounted
 	},
 };
 </script>
@@ -218,5 +192,23 @@ export default {
 	align-items: center;
 	justify-content: center;
 	position: relative;
+}
+button {
+	position: absolute;
+	bottom: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #1e3e62;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 1rem;
+	transition: background-color 0.3s ease;
+}
+
+button:hover {
+	background-color: #007bff;
 }
 </style>
