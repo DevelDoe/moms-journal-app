@@ -58,6 +58,7 @@ export default {
 		ReportCumulativeProfit,
 		ReportTradesProfit,
 		ReportProfitLossDistribution,
+		ReportProfitsByTime,
 	},
 	async mounted() {
 		// Calculate the start and end of the current month
