@@ -126,7 +126,7 @@ export default {
 	padding: 20px;
 }
 .header{
-	font-size: 3rem;
+	font-size: 4rem;
 }
 
 .no-trades {
