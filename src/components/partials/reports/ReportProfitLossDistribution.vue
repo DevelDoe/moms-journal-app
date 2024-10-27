@@ -73,7 +73,7 @@ export default {
 					text: "Profit by Stock Price Range",
 					left: "center",
 					textStyle: {
-						color: "#1E3E62",
+						color: "#ffffff",
 						fontSize: 18,
 						fontWeight: "bold",
 					},
