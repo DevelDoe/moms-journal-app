@@ -27,7 +27,13 @@
 			</div>
 
 			<div class="content">
-				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
+				<div
+					class="report"
+					v-for="(report, index) in reports"
+					:key="index"
+					ref="reportRefs"
+					:style="{ height: `${viewportHeight}px` }"
+				>
 					<component :is="report" :trades="trades" />
 				</div>
 			</div>
@@ -50,7 +56,12 @@ export default {
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
 			viewportHeight: window.innerHeight - 0,
-			reports: [ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
+			reports: [
+				ReportCumulativeProfit,
+				ReportProfitLossDistribution,
+				ReportTradesProfit,
+				ReportProfitsByTime,
+			],
 		};
 	},
 	components: {
@@ -73,24 +84,26 @@ export default {
 			}
 		},
 		handleScroll(event) {
-			const activeReport = this.$refs.reportRefs.find((report) => {
-				const rect = report.getBoundingClientRect();
-				return rect.top >= 0 && rect.bottom <= window.innerHeight;
-			});
+        const activeReport = this.$refs.reportRefs.find((report) => {
+            const rect = report.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        });
 
-			if (!activeReport) return;
+        if (!activeReport) return;
 
-			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
+        const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
 
-			// Scroll down: trigger next report if at the last visible section
-			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
-				this.scrollToNextReport(currentIndex);
-			}
-			// Scroll up: trigger previous report if at the first visible section
-			else if (event.deltaY < 0 && currentIndex > 0) {
-				this.scrollToPreviousReport(currentIndex);
-			}
-		},
+        // Scroll down: trigger next report if at the last visible section
+        if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
+            event.preventDefault(); // Only prevent default if we are moving to the next report
+            this.scrollToNextReport(currentIndex);
+        }
+        // Scroll up: trigger previous report if at the first visible section
+        else if (event.deltaY < 0 && currentIndex > 0) {
+            event.preventDefault(); // Only prevent default if we are moving to the previous report
+            this.scrollToPreviousReport(currentIndex);
+        }
+    },
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				// Ensure dates are either null or in "YYYY-MM-DD" format
