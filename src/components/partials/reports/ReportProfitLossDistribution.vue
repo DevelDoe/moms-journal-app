@@ -47,26 +47,26 @@ export default {
 	},
 	computed: {
 		profitByPriceRange() {
-			if (this.trades.length === 0) return { data: [] };
+        if (this.trades.length === 0) return { data: [] };
 
-			// Initialize buckets for non-zero trades
-			const buckets = this.trades.reduce((acc, trade) => {
-				const bucketLabel = `$${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
-				if (!acc[bucketLabel]) acc[bucketLabel] = 0;
-				acc[bucketLabel] += trade.profitLoss;
-				return acc;
-			}, {});
+        // Initialize buckets for non-zero trades
+        const buckets = this.trades.reduce((acc, trade) => {
+            const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+            if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+            acc[bucketLabel] += trade.profitLoss;
+            return acc;
+        }, {});
 
-			// Filter out empty buckets and prepare data for the chart
-			return {
-				data: Object.keys(buckets)
-					.filter((label) => buckets[label] !== 0) // Exclude zero profit/loss buckets
-					.map((label) => ({
-						value: parseFloat(buckets[label].toFixed(2)),
-						name: label,
-					})),
-			};
-		},
+        // Filter out empty buckets and prepare data for the chart
+        return {
+            data: Object.keys(buckets)
+                .filter((label) => buckets[label] !== 0) // Exclude zero profit/loss buckets
+                .map((label) => ({
+                    value: parseFloat(buckets[label].toFixed(2)),
+                    name: label.split('-')[0], // Only show the start of the range in legend and chart
+                })),
+        };
+    },
 		chartOptions() {
 			return {
 				title: {
