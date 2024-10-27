@@ -89,7 +89,7 @@ export default {
 					textStyle: { color: "#eaeaea" },
 				},
 				grid: {
-					left: "6%",
+					left: "116%",
 					right: "6%",
 					bottom: "16%",
 					top: "20%",
