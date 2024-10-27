@@ -47,6 +47,24 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
+		formatDate(date) {
+			const d = new Date(date);
+			switch (this.granularity) {
+				case "hourly":
+					return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`; // Show only time
+				case "daily":
+					return d.toLocaleDateString();
+				case "weekly":
+					const weekStart = new Date(d.setDate(d.getDate() - d.getDay()));
+					return `${weekStart.toLocaleDateString()} (Week)`;
+				case "monthly":
+					return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+				case "yearly":
+					return d.getFullYear().toString();
+				default:
+					return d.toLocaleDateString();
+			}
+		},
 	},
 	computed: {
 		chartOptions() {
