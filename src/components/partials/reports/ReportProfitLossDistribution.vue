@@ -108,6 +108,7 @@ export default {
 							smooth: 0.2,
 							length: 100,
 							length2: 200,
+							color: "#1E3E62",
 						},
 						itemStyle: {
 							// Dynamic gradient for each segment based on value
