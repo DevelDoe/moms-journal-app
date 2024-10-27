@@ -222,14 +222,13 @@ export default {
 }
 .granularity-picker {
 	display: inline-block;
-	width: 150px;
-	gap: 16px;
-	background-color: #1e3e62;
-	border-radius: 8px;
-	padding: 0;
-	
-	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	margin-left: 10%;
+    width: 150px;
+    gap: 16px;
+    background-color: #1e3e62;
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2%;
 }
 
 .granularity-input {
