@@ -17,15 +17,15 @@
 			<div class="header">
 				<div class="page-title">Reports</div>
 				<div class="date-range-picker">
-	<div class="date-input">
-		<label>Start Date:</label>
-		<input type="date" v-model="startDate" />
-	</div>
-	<div class="date-input">
-		<label>End Date:</label>
-		<input type="date" v-model="endDate" />
-	</div>
-</div>
+					<div class="date-input">
+						<label>Start Date:</label>
+						<input type="date" v-model="startDate" />
+					</div>
+					<div class="date-input">
+						<label>End Date:</label>
+						<input type="date" v-model="endDate" />
+					</div>
+				</div>
 			</div>
 			<div class="content">
 				<ReportCumulativeProfit :trades="trades" />
@@ -129,6 +129,7 @@ export default {
 	display: flex;
 	height: 100%;
 	width: 100%;
+	margin-bottom: 26px;
 }
 .page-title {
 	font-size: 4rem;
