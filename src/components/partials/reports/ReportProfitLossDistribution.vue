@@ -87,9 +87,13 @@ export default {
 					},
 				},
 				tooltip: {
-					trigger: "item",
-					formatter: "{b}: {c} ({d}%)",
-				},
+    trigger: "item",
+    formatter: function (params) {
+        // Check if the value is negative and add a '-' if it is
+        const value = params.data.value < 0 ? `-${Math.abs(params.data.value)}` : params.data.value;
+        return `${params.name}: ${value} (${params.percent}%)`;
+    },
+},
 				legend: {
 					orient: "horizontal",
 					left: "center",
