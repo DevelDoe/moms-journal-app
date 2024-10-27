@@ -83,11 +83,18 @@ export default {
 					formatter: "{b}: {c} ({d}%)",
 				},
 				legend: {
-        orient: 'horizontal',
-        left: 'center',
-        bottom: 0, // Add some padding at the bottom of the chart for the legend
-        textStyle: { color: "#eaeaea" },
-    },
+					orient: "horizontal",
+					left: "center",
+					bottom: 0, // Add some padding at the bottom of the chart for the legend
+					textStyle: { color: "#eaeaea" },
+				},
+				grid: {
+					left: "6%",
+					right: "6%",
+					bottom: "6%",
+					top: "20%",
+					containLabel: false,
+				},
 				series: [
 					{
 						name: "Profit/Loss",
