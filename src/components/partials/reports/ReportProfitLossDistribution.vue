@@ -47,26 +47,26 @@ export default {
 	},
 	computed: {
 		profitByPriceRange() {
-        if (this.trades.length === 0) return { data: [] };
+			if (this.trades.length === 0) return { data: [] };
 
-        // Initialize buckets for non-zero trades
-        const buckets = this.trades.reduce((acc, trade) => {
-            const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
-            if (!acc[bucketLabel]) acc[bucketLabel] = 0;
-            acc[bucketLabel] += trade.profitLoss;
-            return acc;
-        }, {});
+			// Initialize buckets for non-zero trades
+			const buckets = this.trades.reduce((acc, trade) => {
+				const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+				if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+				acc[bucketLabel] += trade.profitLoss;
+				return acc;
+			}, {});
 
-        // Filter out empty buckets and prepare data for the chart
-        return {
-            data: Object.keys(buckets)
-                .filter((label) => buckets[label] !== 0) // Exclude zero profit/loss buckets
-                .map((label) => ({
-                    value: parseFloat(buckets[label].toFixed(2)),
-                    name: label.split('-')[0], // Only show the start of the range in legend and chart
-                })),
-        };
-    },
+			// Filter out empty buckets and prepare data for the chart
+			return {
+				data: Object.keys(buckets)
+					.filter((label) => buckets[label] !== 0) // Exclude zero profit/loss buckets
+					.map((label) => ({
+						value: parseFloat(buckets[label].toFixed(2)),
+						name: label.split("-")[0], // Only show the start of the range in legend and chart
+					})),
+			};
+		},
 		chartOptions() {
 			return {
 				title: {
@@ -79,38 +79,23 @@ export default {
 					},
 				},
 				tooltip: {
-					tooltip: {
-					trigger: "axis",
-					axisPointer: {
-						type: "line",
-					},
-				},
+					trigger: "item",
+					formatter: "{b}: {c} ({d}%)",
 				},
 				legend: {
 					orient: "horizontal",
 					left: "center",
-					bottom: 20, // Add some padding at the bottom of the chart for the legend
+					bottom: 20,
 					textStyle: { color: "#eaeaea" },
-					formatter: (name) => {
-						// Show only the starting number of each range
-						return name.split("-")[0];
-					},
 				},
-
 				series: [
 					{
 						name: "Profit/Loss",
 						type: "pie",
-						radius: ["0%", "50%"],
+						radius: ["20%", "55%"],
 						center: ["50%", "50%"],
 						roseType: "radius",
-						data: this.profitByPriceRange.data.map((item) => {
-							// Modify the label to show only the starting value of each bucket
-							return {
-								...item,
-								name: item.name.split("-")[0], // Show only the starting value
-							};
-						}),
+						data: this.profitByPriceRange.data,
 						label: {
 							color: "#1E3E62",
 							fontSize: 14,
@@ -122,23 +107,12 @@ export default {
 							},
 							smooth: 0.2,
 							length: 20,
-							length2: 100,
+							length2: 20,
 						},
 						itemStyle: {
-							// Dynamic gradient for each segment based on value
 							color: (params) => {
-								const colors = ["#740938", "#740938", "#740938"];
-								return {
-									type: "radiant",
-									x: 0,
-									y: 0,
-									x2: 1,
-									y2: 1,
-									colorStops: [
-										{ offset: 0, color: colors[params.dataIndex % colors.length] },
-										{ offset: 1, color: "#740938" },
-									],
-								};
+								const colors = ["#740938", "#da70d6", "#ff7f50", "#32cd32"];
+								return colors[params.dataIndex % colors.length];
 							},
 							shadowBlur: 100,
 							shadowColor: "rgba(0, 0, 0, 0.5)",
@@ -160,7 +134,6 @@ export default {
 
 	height: 100vh !important;
 }
-
 
 .chart-header {
 	display: flex;
