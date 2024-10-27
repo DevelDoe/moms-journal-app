@@ -96,10 +96,9 @@ export default {
 
 			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
 				this.scrollToNextReport(currentIndex);
-				event.preventDefault(); // Prevent the default scrolling behavior
+				
 			} else if (event.deltaY < 0 && currentIndex > 0) {
 				this.scrollToPreviousReport(currentIndex);
-				event.preventDefault(); // Prevent the default scrolling behavior
 			}
 		},
 		async fetchTradesByDateRange(start = null, end = null) {
