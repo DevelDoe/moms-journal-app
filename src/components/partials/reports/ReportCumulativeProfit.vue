@@ -236,7 +236,7 @@ export default {
 	
 }
 #cumulative-profit-chart {
-	margin-bottom: 10vh;
+	margin-bottom: 15vh;
 	margin-top: 5vh;
 	height: 80vh !important;
 }
