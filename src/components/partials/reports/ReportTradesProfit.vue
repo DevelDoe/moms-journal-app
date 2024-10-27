@@ -212,6 +212,7 @@ export default {
 .daily-trades-profit-chart {
 	margin-top: 20px;
 	max-width: 50%;
+	float: left;
 }
 
 .chart-header {
