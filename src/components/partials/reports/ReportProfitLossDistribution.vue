@@ -85,14 +85,14 @@ export default {
 				legend: {
         orient: 'horizontal',
         left: 'center',
-        bottom: 10, // Add some padding at the bottom of the chart for the legend
+        bottom: 0, // Add some padding at the bottom of the chart for the legend
         textStyle: { color: "#eaeaea" },
     },
 				series: [
 					{
 						name: "Profit/Loss",
 						type: "pie",
-						radius: ["20%", "60%"],
+						radius: ["0%", "60%"],
 						center: ["50%", "50%"],
 						roseType: "radius",
 						data: this.profitByPriceRange.data,
