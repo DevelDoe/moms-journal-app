@@ -133,7 +133,6 @@ export default {
 	position: absolute;
 	top: 20px;
 	right: 20px;
-	align-items: start;
 	background-color: #1e3e62;
 	border-radius: 7px;
 	padding: 17px;
