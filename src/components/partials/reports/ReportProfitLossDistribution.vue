@@ -128,7 +128,13 @@ export default {
 					axisLine: { show: false }, // Hide axis line if desired
 					axisLabel: { color: "#1E3E62",fontSize: 16,}, // Set axis label color
 					axisTick: { show: false }, // Hide ticks if desired
-					splitLine: { show: false }, // Hide grid lines if desired
+					splitLine: {
+						lineStyle: {
+							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
+							width: 1, // Thickness of the lines
+							type: "solid", // Options: 'solid', 'dashed', 'dotted'
+						},
+					},
 				},
 				series: [
 					{

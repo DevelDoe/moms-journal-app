@@ -168,7 +168,7 @@ export default {
 					},
 				},
 				yAxis: {
-					ype: "category", // This sets the axis to categorical mode, allowing for labeled points
+					type: "category", // This sets the axis to categorical mode, allowing for labeled points
 					data: labels, // Custom labels (e.g., dates, categories) provided by `labels` array
 					axisLine: { show: false }, // Hide axis line if desired
 					axisLabel: { color: "#1E3E62",fontSize: 16,}, // Set axis label color
