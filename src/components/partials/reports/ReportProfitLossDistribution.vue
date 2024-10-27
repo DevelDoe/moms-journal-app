@@ -136,7 +136,7 @@ export default {
 									y2: 1,
 									colorStops: [
 										{ offset: 0, color: colors[params.dataIndex % colors.length] },
-										{ offset: 10, color: "rgba(0,0,0,0.01)" },
+										{ offset: 5, color: "rgba(0,0,0,0.01)" },
 									],
 								};
 							},
