@@ -134,7 +134,6 @@ export default {
 .page-title{
 	font-size: 4rem;
 	float: left;
-	min-width: 200px;
 }
 .date-range-picker {
 	display: flex;
