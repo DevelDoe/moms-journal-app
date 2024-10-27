@@ -85,7 +85,7 @@ export default {
 				legend: {
         orient: 'horizontal',
         left: 'center',
-        bottom: 100, // Add some padding at the bottom of the chart for the legend
+        bottom: 10, // Add some padding at the bottom of the chart for the legend
         textStyle: { color: "#eaeaea" },
     },
 				series: [
