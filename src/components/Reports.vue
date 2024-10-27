@@ -1,5 +1,5 @@
 <template>
-	<div id="trades">
+	<div id="trades" @wheel="handleScroll">
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading Reports...</p>
 		</div>
@@ -34,11 +34,13 @@
 					ref="reportRefs"
 					:style="{ height: `${viewportHeight}px` }"
 				>
+					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">
+						Back
+					</button>
 					<component :is="report" :trades="trades" />
-					<div class="nav-buttons">
-						<button v-if="index > 0" @click="scrollToPreviousReport(index)">Back</button>
-						<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)">Next</button>
-					</div>
+					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button">
+						Next
+					</button>
 				</div>
 			</div>
 		</div>
