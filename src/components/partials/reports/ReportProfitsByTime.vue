@@ -11,7 +11,6 @@
 		</div>
 		<div class="granularity-picker">
 			<div class="granularity-input">
-				<label for="granularity">Granularity:</label>
 				<select id="granularity" v-model="selectedGranularity">
 					<option value="hourly">Hourly</option>
 					<option value="minute">Minute</option>
