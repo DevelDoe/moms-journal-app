@@ -3,11 +3,13 @@
 	<div class="trades">
 		<h1>Reports</h1>
 
-		<!-- Date Picker for Filtering -->
-		<!-- <div class="date-filter">
-			<label for="filter-date">Filter by Date:</label>
-			<input type="date" id="filter-date" v-model="filterDate" @change="filterTradesByDate" />
-		</div> -->
+		<div class="date-range-picker">
+			<label>Start Date:</label>
+			<input type="date" v-model="startDate" />
+			<label>End Date:</label>
+			<input type="date" v-model="endDate" />
+			<button @click="fetchTradesByDateRange">Fetch Trades</button>
+		</div>
 
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading trades...</p>
@@ -289,7 +291,6 @@ export default {
 			};
 		},
 		// Calculate Profit/Loss Distribution for histogram buckets
-		
 	},
 	methods: {
 		// Fetch trades from Vuex store
