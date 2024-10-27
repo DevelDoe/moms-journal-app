@@ -105,7 +105,7 @@ export default {
 					type: "value",
 					position: "bottom",
 					splitLine: { lineStyle: { type: "dashed" } },
-					name: "Total Profit/Loss",
+					name: "Profit/Loss",
 				},
 				yAxis: {
 					type: "category",
