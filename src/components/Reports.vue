@@ -27,13 +27,7 @@
 			</div>
 
 			<div class="content">
-				<div
-					class="report"
-					v-for="(report, index) in reports"
-					:key="index"
-					ref="reportRefs"
-					:style="{ height: `${viewportHeight}px` }"
-				>
+				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
 					<component :is="report" :trades="trades" />
 				</div>
 			</div>
@@ -56,12 +50,7 @@ export default {
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
 			viewportHeight: window.innerHeight - 0,
-			reports: [
-				ReportCumulativeProfit,
-				ReportProfitLossDistribution,
-				ReportTradesProfit,
-				ReportProfitsByTime,
-			],
+			reports: [ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
 		};
 	},
 	components: {
@@ -93,9 +82,14 @@ export default {
 
 			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
 
+			// Scroll down: trigger next report if at the last visible section
 			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
+				event.preventDefault(); // Only prevent default if we are moving to the next report
 				this.scrollToNextReport(currentIndex);
-			} else if (event.deltaY < 0 && currentIndex > 0) {
+			}
+			// Scroll up: trigger previous report if at the first visible section
+			else if (event.deltaY < 0 && currentIndex > 0) {
+				event.preventDefault(); // Only prevent default if we are moving to the previous report
 				this.scrollToPreviousReport(currentIndex);
 			}
 		},
