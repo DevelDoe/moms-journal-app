@@ -8,7 +8,7 @@
 					are concentrated, offering insights into risk and reward at various price points.
 				</div>
 			</span>
-			<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
+			<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="price-range-chart"></v-chart>
 		</div>
 	</div>
 </template>
@@ -140,6 +140,9 @@ export default {
 </script>
 
 <style scoped>
+.price-range-chart{
+	min-height: 600px;
+}
 .profit-loss-histogram {
 	margin-top: 20px;
 	/* width: 48%; */
