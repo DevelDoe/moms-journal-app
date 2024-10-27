@@ -222,7 +222,7 @@ export default {
 }
 .granularity-picker {
 	display: inline-block;
-	width: 200px;
+	width: 150px;
 	gap: 16px;
 	background-color: #1e3e62;
 	border-radius: 8px;
@@ -250,7 +250,7 @@ export default {
 	font-size: 16px;
     color: #ffffff;
     background-color: #1e3e62;
-	width: 100px;
+	width: 150px;
 }
 
 .granularity-input select:focus {
