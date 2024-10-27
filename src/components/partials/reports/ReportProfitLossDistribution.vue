@@ -49,7 +49,7 @@ export default {
     profitByPriceRange() {
         if (this.trades.length === 0) return { data: [] };
 
-        // Aggregate trades into non-zero buckets only
+        // Aggregate trades by price range with only non-zero buckets
         const buckets = this.trades.reduce((acc, trade) => {
             const bucketLabel = `$${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
             if (!acc[bucketLabel]) acc[bucketLabel] = 0;
@@ -57,10 +57,10 @@ export default {
             return acc;
         }, {});
 
-        // Filter out zero or near-zero values (e.g., < 0.01) for a clean chart
+        // Filter out buckets with zero or near-zero values
         return {
             data: Object.keys(buckets)
-                .filter((label) => Math.abs(buckets[label]) > 0.01) // Exclude zero or very small buckets
+                .filter((label) => Math.abs(buckets[label]) > 0.01) // Exclude zero or almost-zero values
                 .map((label) => ({
                     value: parseFloat(buckets[label].toFixed(2)),
                     name: label,
@@ -96,7 +96,7 @@ export default {
                     radius: ["0%", "50%"],
                     center: ["50%", "50%"],
                     roseType: "radius",
-                    data: this.profitByPriceRange.data,
+                    data: this.profitByPriceRange.data, // Filtered data with non-zero buckets
                     label: {
                         color: "#1E3E62",
                         fontSize: 14,
@@ -126,6 +126,7 @@ export default {
         };
     },
 },
+
 
 
 
