@@ -218,6 +218,7 @@ export default {
 #daily-trades-profit-chart {
 	height: 80vh !important;
 	padding-top: 10vh;
+	padding-bottom: 10vh;
 }
 
 .chart-header {
