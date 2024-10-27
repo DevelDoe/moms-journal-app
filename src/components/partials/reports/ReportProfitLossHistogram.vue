@@ -23,13 +23,13 @@ use([CanvasRenderer, BarChart, TitleComponent, TooltipComponent, GridComponent, 
 
 export default {
 	props: {
-		labels: {
+		trades: {
 			type: Array,
 			required: true,
 		},
-		data: {
-			type: Array,
-			required: true,
+		granularity: {
+			type: String,
+			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
 		},
 	},
 	components: {
