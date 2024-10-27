@@ -34,13 +34,7 @@
 					ref="reportRefs"
 					:style="{ height: `${viewportHeight}px` }"
 				>
-					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">
-						Back
-					</button>
 					<component :is="report" :trades="trades" />
-					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button">
-						Next
-					</button>
 				</div>
 			</div>
 		</div>
@@ -90,21 +84,26 @@ export default {
 			}
 		},
 		handleScroll(event) {
-			const activeReport = this.$refs.reportRefs.find((report) => {
-				const rect = report.getBoundingClientRect();
-				return rect.top >= 0 && rect.bottom <= window.innerHeight;
-			});
+        const activeReport = this.$refs.reportRefs.find((report) => {
+            const rect = report.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        });
 
-			if (!activeReport) return;
+        if (!activeReport) return;
 
-			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
+        const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
 
-			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
-				this.scrollToNextReport(currentIndex);
-			} else if (event.deltaY < 0 && currentIndex > 0) {
-				this.scrollToPreviousReport(currentIndex);
-			}
-		},
+        // Scroll down: trigger next report if at the last visible section
+        if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
+            event.preventDefault(); // Only prevent default if we are moving to the next report
+            this.scrollToNextReport(currentIndex);
+        }
+        // Scroll up: trigger previous report if at the first visible section
+        else if (event.deltaY < 0 && currentIndex > 0) {
+            event.preventDefault(); // Only prevent default if we are moving to the previous report
+            this.scrollToPreviousReport(currentIndex);
+        }
+    },
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				// Ensure dates are either null or in "YYYY-MM-DD" format
