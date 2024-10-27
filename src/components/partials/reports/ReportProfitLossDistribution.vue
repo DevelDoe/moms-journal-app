@@ -48,7 +48,7 @@ export default {
 		profitByPriceRange() {
 			if (this.trades.length === 0) return { labels: [], data: [] };
 
-			// Define price ranges (intervals of $1)
+			// Define price ranges in intervals of $1
 			const priceRanges = [
 				{ label: "$0-1", min: 0, max: 1 },
 				{ label: "$1-2", min: 1, max: 2 },
@@ -66,11 +66,11 @@ export default {
 				buckets[range.label] = 0; // Start each bucket with 0 profit
 			});
 
-			// Aggregate profit for each trade within its price range
+			// Aggregate profit for each trade within its price range using `buyPrice`
 			this.trades.forEach((trade) => {
-				const stockPrice = trade.price;
+				const buyPrice = trade.buyPrice;
 				const profitLoss = trade.profitLoss;
-				const bucket = priceRanges.find((range) => stockPrice >= range.min && stockPrice < range.max);
+				const bucket = priceRanges.find((range) => buyPrice >= range.min && buyPrice < range.max);
 				if (bucket) {
 					buckets[bucket.label] += profitLoss; // Sum profits/losses within each price range
 				}
@@ -107,7 +107,7 @@ export default {
 					{
 						name: "Profit/Loss",
 						type: "bar",
-						data: this.profitByPriceRange.data.map((value, index) => ({
+						data: this.profitByPriceRange.data.map((value) => ({
 							value: parseFloat(value.toFixed(2)),
 							itemStyle: {
 								color: value < 0 ? "#e57373" : "#91cc75",
@@ -120,6 +120,7 @@ export default {
 	},
 };
 </script>
+
 
 
 
