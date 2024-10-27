@@ -52,14 +52,14 @@ export default {
 						max: 4, // Adjust max to center 1:1
 						progress: { show: true, width: 10 },
 						axisLine: {
-                    lineStyle: {
-                        width: 6, // Thinner line for a minimal look
-                        color: [
-                            [0.5, '#91cc75'],  // Green for under 1:1 ratio
-                            [1, '#e57373']    // Red for over 1:1 ratio
-                        ]
-                    }
-                },
+							lineStyle: {
+								width: 10,
+								color: [
+									[0.5, "#ffb74d"],
+									[1, "#81c784"],
+								],
+							},
+						},
 						pointer: { width: 6 },
 						title: { show: false },
 						detail: {
