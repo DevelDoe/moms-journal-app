@@ -93,7 +93,7 @@ export default {
 				legend: {
 					orient: "horizontal",
 					left: "center",
-					bottom: 20,
+					top: 20,
 					textStyle: { color: "#eaeaea" },
 					data: [
 						...this.profitAndLossByPriceRange.profitData.map((item) => item.name),
