@@ -51,15 +51,7 @@ export default {
 						min: 0, // Set min lower to center 1:1
 						max: 2, // Adjust max to center 1:1
 						progress: { show: true, width: 10 },
-						axisLine: {
-							lineStyle: {
-								width: 10,
-								color: [
-									[0.5, "#ffb74d"],
-									[1, "#81c784"],
-								],
-							},
-						},
+						
 						pointer: { width: 1 },
 						title: { show: false },
 						detail: {
