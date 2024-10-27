@@ -81,6 +81,12 @@ export default {
 				nextReport.scrollIntoView({ behavior: "smooth" });
 			}
 		},
+		scrollToPreviousReport(index) {
+			const previousReport = this.$refs.reportRefs[index - 1];
+			if (previousReport) {
+				previousReport.scrollIntoView({ behavior: "smooth" });
+			}
+		},
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				// Ensure dates are either null or in "YYYY-MM-DD" format
