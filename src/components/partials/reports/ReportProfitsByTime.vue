@@ -4,19 +4,20 @@
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
 				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart shows the profit and loss of trades aggregated by time intervals. Switch between hourly and minute views to analyze profitable and non-profitable times throughout the day.
+					This chart shows the profit and loss of trades aggregated by time intervals. Switch between hourly and minute views to analyze profitable
+					and non-profitable times throughout the day.
 				</div>
 			</span>
 		</div>
 		<div class="granularity-picker">
-	<div class="granularity-input">
-		<label for="granularity">Granularity:</label>
-		<select id="granularity" v-model="selectedGranularity">
-			<option value="hourly">Hourly</option>
-			<option value="minute">Minute</option>
-		</select>
-	</div>
-</div>
+			<div class="granularity-input">
+				<label for="granularity">Granularity:</label>
+				<select id="granularity" v-model="selectedGranularity">
+					<option value="hourly">Hourly</option>
+					<option value="minute">Minute</option>
+				</select>
+			</div>
+		</div>
 		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
 	</div>
 </template>
@@ -93,6 +94,8 @@ export default {
 			return this.selectedGranularity === "hourly" ? this.aggregateTradesByHour() : this.aggregateTradesByMinute();
 		},
 		chartOptions() {
+			// Find the maximum absolute value in the data to center zero
+			const maxAbsValue = Math.max(Math.abs(Math.min(...this.aggregatedData.data)), Math.max(...this.aggregatedData.data));
 			return {
 				title: {
 					text: `Trades by ${this.selectedGranularity === "hourly" ? "Hour" : "Minute"}`,
@@ -139,8 +142,10 @@ export default {
 				yAxis: {
 					type: "value",
 					name: "Profit/Loss",
+					min: -maxAbsValue,  // Set min to -maxAbsValue to center zero
+					max: maxAbsValue,   // Set max to maxAbsValue
 					axisLine: { show: false }, // Hide axis line if desired
-					axisLabel: { color: "#1E3E62",fontSize: 16,}, // Set axis label color
+					axisLabel: { color: "#1E3E62", fontSize: 16 }, // Set axis label color
 					axisTick: { show: false }, // Hide ticks if desired
 					splitLine: {
 						lineStyle: {
