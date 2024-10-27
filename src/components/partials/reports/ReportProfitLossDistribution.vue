@@ -88,7 +88,7 @@ export default {
 				},
 				tooltip: {
 					trigger: "item",
-					formatter: "({d}%)",
+					formatter: "{d}%",
 				},
 				legend: {
 					orient: "horizontal",
