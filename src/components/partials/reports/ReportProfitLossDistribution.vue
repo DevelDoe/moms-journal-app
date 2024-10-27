@@ -84,7 +84,7 @@ export default {
 		chartOptions() {
 			return {
 				title: {
-					text: "Profit by Stock Price Range",
+					text: "Profit by Stock Price Range (${this.granularity})",
 				},
 				tooltip: {
 					trigger: "axis",
