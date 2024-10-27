@@ -45,7 +45,7 @@ export default {
 			this.isTooltipVisible = false;
 		},
 	},
-	computed: {
+computed: {
     profitByPriceRange() {
         if (this.trades.length === 0) return { data: [] };
 
@@ -69,19 +69,8 @@ export default {
     },
     chartOptions() {
         return {
-            title: {
-                text: "Profit by Price Range",
-                left: "left",
-                textStyle: {
-                    color: "#eaeaea",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                },
-            },
-            tooltip: {
-                trigger: "item",
-                formatter: "{b}: {c} ({d}%)",
-            },
+            title: { ... },
+            tooltip: { ... },
             legend: {
                 orient: "horizontal",
                 left: "center",
@@ -97,27 +86,9 @@ export default {
                     center: ["50%", "50%"],
                     roseType: "radius",
                     data: this.profitByPriceRange.data,
-                    label: {
-                        color: "#1E3E62",
-                        fontSize: 14,
-                        formatter: "{b}", // Label format
-                    },
-                    labelLine: {
-                        lineStyle: {
-                            color: "#162e49",
-                        },
-                        smooth: 0.2,
-                        length: 20,
-                        length2: 100,
-                    },
-                    itemStyle: {
-                        color: (params) => {
-                            const colors = ["#740938", "#ff5733", "#4a90e2", "#50b65f", "#f1c40f", "#d35400"];
-                            return colors[params.dataIndex % colors.length];
-                        },
-                        shadowBlur: 100,
-                        shadowColor: "rgba(0, 0, 0, 0.5)",
-                    },
+                    label: { ... },
+                    labelLine: { ... },
+                    itemStyle: { ... },
                     animationType: "scale",
                     animationEasing: "elasticOut",
                     animationDelay: (idx) => Math.random() * 200,
@@ -126,7 +97,6 @@ export default {
         };
     },
 },
-
 
 
 };
