@@ -46,33 +46,33 @@ export default {
 			return `${ratio}:1`;
 		},
 		profitToLossGaugeOptions() {
-	return {
-		series: [
-			{
-				type: "gauge",
-				startAngle: 180,
-				endAngle: 0,
-				min: 0,      // Set min lower to center 1:1
-				max: 2,      // Adjust max to center 1:1
-				progress: { show: true, width: 10 },
-				axisLine: {
-					lineStyle: {
-						width: 10,
-						color: [[0.5, "#ffb74d"], [1, "#81c784"]],
+			return {
+				series: [
+					{
+						type: "gauge",
+						startAngle: 180,
+						endAngle: 0,
+						min: 0,
+						max: 5,
+						progress: { show: true, width: 10 },
+						axisLine: {
+							lineStyle: {
+								width: 10,
+								color: [[0.3, "#e57373"], [0.7, "#ffb74d"], [1, "#81c784"]],
+							},
+						},
+						pointer: { width: 6 },
+						title: { show: false },
+						detail: {
+							formatter: () => this.profitToLossRatio,
+							fontSize: 20,
+							color: "#eaeaea",
+						},
+						data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
 					},
-				},
-				pointer: { width: 6 },
-				title: { show: false },
-				detail: {
-					formatter: () => this.profitToLossRatio,
-					fontSize: 20,
-					color: "#eaeaea",
-				},
-				data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
-			},
-		],
-	};
-},
+				],
+			};
+		},
 		accuracyGaugeOptions() {
 			return {
 				series: [
