@@ -143,7 +143,7 @@ export default {
 <style scoped>
 #price-range-chart{
 	min-height: 700px;
-	padding-bottom: 40px;
+	margin-bottom: 40px;
 }
 .profit-loss-histogram {
 
