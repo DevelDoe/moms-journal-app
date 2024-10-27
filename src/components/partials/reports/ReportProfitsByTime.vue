@@ -1,11 +1,13 @@
 <template>
 	<div class="trades-by-hour-chart">
 		<div class="chart-header">
-			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">?
-          <div v-if="isTooltipVisible" class="tooltip-text">
-            This chart shows the profit and loss of trades aggregated by the minute. Each bar represents the profit or loss made during a specific minute of the day, allowing you to identify profitable and non-profitable times.
-          </div>
-        </span>
+			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
+				>?
+				<div v-if="isTooltipVisible" class="tooltip-text">
+					This chart shows the profit and loss of trades aggregated by the minute. Each bar represents the profit or loss made during a specific
+					minute of the day, allowing you to identify profitable and non-profitable times.
+				</div>
+			</span>
 
 			<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
 		</div>
@@ -22,24 +24,23 @@ import VChart from "vue-echarts";
 use([CanvasRenderer, BarChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
 
 export default {
-  data() {
-		return {
-			isTooltipVisible: false,
-		};
-	},
 	props: {
-		labels: {
+		trades: {
 			type: Array,
 			required: true,
 		},
-		data: {
-			type: Array,
-			required: true,
-			isTooltipVisible: false,
+		granularity: {
+			type: String,
+			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
 		},
 	},
 	components: {
 		VChart,
+	},
+	data() {
+		return {
+			isTooltipVisible: false,
+		};
 	},
 	methods: {
 		showTooltip() {
@@ -49,6 +50,7 @@ export default {
 			this.isTooltipVisible = false;
 		},
 	},
+
 	computed: {
 		chartOptions() {
 			return {
