@@ -4,8 +4,7 @@
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
 				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart will allow you to see how your profit is growing (or shrinking) and the number of trades over a given time period, showing you
-					periods of consistent growth, major drawdowns, and trading frequency compared to profits and losses.
+					Cumulative profits and trades
 				</div>
 			</span>
 		</div>
