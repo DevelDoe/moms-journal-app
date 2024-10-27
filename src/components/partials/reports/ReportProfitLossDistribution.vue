@@ -159,7 +159,7 @@ export default {
 	min-height: 700px;
 	margin-bottom: 10vh;
 	margin-top: 3vh;
-	height: 80vh !important;
+	height: 90vh !important;
 }
 
 
