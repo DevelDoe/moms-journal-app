@@ -100,7 +100,7 @@ export default {
 		// TradesList,
 		ReportCumulativeProfit,
 		ReportTradesProfit,
-		ReportProfitLossHistogram,
+		ReportProfitLossDistribution,
 		// ReportProfitByPriceRange,
 		// ReportTradesByHour,
 		// ReportTradesByMinute,
