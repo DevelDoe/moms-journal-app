@@ -34,12 +34,8 @@ export default {
 			return totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(2) : 0;
 		},
 		profitToLossRatio() {
-			const totalProfit = this.trades
-				.filter((trade) => trade.profitLoss > 0)
-				.reduce((acc, trade) => acc + trade.profitLoss, 0);
-			const totalLoss = Math.abs(
-				this.trades.filter((trade) => trade.profitLoss < 0).reduce((acc, trade) => acc + trade.profitLoss, 0)
-			);
+			const totalProfit = this.trades.filter((trade) => trade.profitLoss > 0).reduce((acc, trade) => acc + trade.profitLoss, 0);
+			const totalLoss = Math.abs(this.trades.filter((trade) => trade.profitLoss < 0).reduce((acc, trade) => acc + trade.profitLoss, 0));
 
 			// Calculate ratio as "X:Y" format
 			const ratio = totalLoss > 0 ? (totalProfit / totalLoss).toFixed(2) : "1.00";
@@ -52,13 +48,16 @@ export default {
 						type: "gauge",
 						startAngle: 180,
 						endAngle: 0,
-						min: 0,
-						max: 5,
+						min: 0, // Set min lower to center 1:1
+						max: 2, // Adjust max to center 1:1
 						progress: { show: true, width: 10 },
 						axisLine: {
 							lineStyle: {
 								width: 10,
-								color: [[0.3, "#e57373"], [0.7, "#ffb74d"], [1, "#81c784"]],
+								color: [
+									[0.5, "#ffb74d"],
+									[1, "#81c784"],
+								],
 							},
 						},
 						pointer: { width: 6 },
@@ -86,7 +85,11 @@ export default {
 						axisLine: {
 							lineStyle: {
 								width: 10,
-								color: [[0.5, "#e57373"], [0.75, "#ffb74d"], [1, "#81c784"]],
+								color: [
+									[0.5, "#e57373"],
+									[0.75, "#ffb74d"],
+									[1, "#81c784"],
+								],
 							},
 						},
 						pointer: { width: 6 },
