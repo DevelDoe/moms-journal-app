@@ -53,36 +53,49 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
-		// Aggregates trades by hour
+		// Aggregates trades by hour with full interval range from first to last entry
 		aggregateTradesByHour() {
-			const tradesByHour = Array(24).fill(0);
-			this.filteredTrades.forEach((trade) => {
-				const tradeHour = new Date(trade.date).getHours();
-				tradesByHour[tradeHour] += trade.profitLoss;
-			});
-			return {
-				labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-				data: tradesByHour,
-			};
-		},
-		// Aggregates trades by minute
-		aggregateTradesByMinute() {
-			const tradesByMinute = Array(1440).fill(0);
-			this.filteredTrades.forEach((trade) => {
-				const date = new Date(trade.date);
-				const tradeMinute = date.getHours() * 60 + date.getMinutes();
-				tradesByMinute[tradeMinute] += trade.profitLoss;
-			});
-			const labels = Array.from({ length: 1440 }, (_, i) => {
-				const hours = String(Math.floor(i / 60)).padStart(2, "0");
-				const minutes = String(i % 60).padStart(2, "0");
-				return `${hours}:${minutes}`;
-			});
-			return {
-				labels,
-				data: tradesByMinute,
-			};
-		},
+        const tradesByHour = Array(24).fill(0);
+        this.filteredTrades.forEach((trade) => {
+            const tradeHour = new Date(trade.date).getHours();
+            tradesByHour[tradeHour] += trade.profitLoss;
+        });
+
+        // Find the min and max indices with data (could be 0 or non-zero)
+        const minIndex = tradesByHour.findIndex((value, i) => tradesByHour.slice(i).some((val) => val !== undefined));
+        const maxIndex = tradesByHour.length - 1 - [...tradesByHour].reverse().findIndex((value) => value !== undefined);
+
+        return {
+            labels: Array.from({ length: maxIndex - minIndex + 1 }, (_, i) => `${i + minIndex}:00`),
+            data: tradesByHour.slice(minIndex, maxIndex + 1),
+        };
+    },
+
+    // Aggregates trades by minute with full interval range from first to last entry
+    aggregateTradesByMinute() {
+        const tradesByMinute = Array(1440).fill(0);
+        this.filteredTrades.forEach((trade) => {
+            const date = new Date(trade.date);
+            const tradeMinute = date.getHours() * 60 + date.getMinutes();
+            tradesByMinute[tradeMinute] += trade.profitLoss;
+        });
+
+        // Find the min and max indices with data (could be 0 or non-zero)
+        const minIndex = tradesByMinute.findIndex((value, i) => tradesByMinute.slice(i).some((val) => val !== undefined));
+        const maxIndex = tradesByMinute.length - 1 - [...tradesByMinute].reverse().findIndex((value) => value !== undefined);
+
+        const labels = Array.from({ length: maxIndex - minIndex + 1 }, (_, i) => {
+            const totalMinutes = i + minIndex;
+            const hours = String(Math.floor(totalMinutes / 60)).padStart(2, "0");
+            const minutes = String(totalMinutes % 60).padStart(2, "0");
+            return `${hours}:${minutes}`;
+        });
+
+        return {
+            labels,
+            data: tradesByMinute.slice(minIndex, maxIndex + 1),
+        };
+    },
 	},
 	computed: {
 		filteredTrades() {
