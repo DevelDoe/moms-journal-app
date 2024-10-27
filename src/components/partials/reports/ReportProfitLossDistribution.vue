@@ -101,13 +101,6 @@ export default {
 							color: "#1E3E62",
 							formatter: "{b} : {c}", // Label format
 						},
-						grid: {
-					left: "116%",
-					right: "6%",
-					bottom: "16%",
-					top: "20%",
-					containLabel: false,
-				},
 						labelLine: {
 							lineStyle: {
 								color: "rgba(255, 255, 255, 0.3)",
