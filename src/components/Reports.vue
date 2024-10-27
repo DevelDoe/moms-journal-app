@@ -84,7 +84,6 @@ export default {
 			}
 		},
 		handleScroll(event) {
-			
 			const activeReport = this.$refs.reportRefs.find((report) => {
 				const rect = report.getBoundingClientRect();
 				return rect.top >= 0 && rect.bottom <= window.innerHeight;
@@ -96,7 +95,6 @@ export default {
 
 			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
 				this.scrollToNextReport(currentIndex);
-				
 			} else if (event.deltaY < 0 && currentIndex > 0) {
 				this.scrollToPreviousReport(currentIndex);
 			}
