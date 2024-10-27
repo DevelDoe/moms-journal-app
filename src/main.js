@@ -22,6 +22,8 @@ if (token) {
 	store.dispatch('fetchUser');
 }
 
+element.addEventListener('scroll', handleScroll, { passive: true });
+
 const toastOptions = {
 	position: "bottom-right",
 	timeout: 4000,
