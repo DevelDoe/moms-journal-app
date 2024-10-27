@@ -66,6 +66,9 @@ export default {
 					return d.toLocaleDateString();
 			}
 		},
+		resetData() {
+			this.$refs.chart.clear();
+		},
 	},
 	computed: {
 		cumulativeProfitData() {
