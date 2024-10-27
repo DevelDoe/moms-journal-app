@@ -127,7 +127,7 @@ export default {
 }
 .header{
 	display: flexbox;
-	margin-bottom: 40px;
+	margin-bottom: 50px;
 }
 .page-title{
 	font-size: 4rem;
