@@ -33,12 +33,7 @@
 
 			<ReportTradesProfit :trades="filteredTrades" />
 
-			<!-- Profit/Loss Distribution Histogram -->
-			<!-- <ReportProfitLossHistogram
-				v-if="profitLossDistributionChartData.labels.length > 0 && profitLossDistributionChartData.data.length > 0"
-				:labels="profitLossDistributionChartData.labels"
-				:data="profitLossDistributionChartData.data"
-			/> -->
+			<ReportProfitLossHistogram :trades="filteredTrades" />
 
 			<!-- Trades by Hour Chart Partial -->
 			<!-- <ReportTradesByHour
