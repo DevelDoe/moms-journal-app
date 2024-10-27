@@ -126,8 +126,7 @@ export default {
 	padding: 20px;
 }
 .header{
-	display: flexbox;
-	margin-bottom: 50px;
+	display: inline-block;
 }
 .page-title{
 	font-size: 4rem;
