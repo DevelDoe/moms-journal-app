@@ -73,18 +73,6 @@ export default {
 			}
 		},
 		async fetchTradesByDateRange(start = null, end = null) {
-			// Your fetch logic
-		},
-	},
-	mounted() {
-		this.fetchTradesByDateRange();
-		window.addEventListener("resize", this.updateViewportHeight);
-	},
-	beforeUnmount() {
-		window.removeEventListener("resize", this.updateViewportHeight);
-	},
-	methods: {
-		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				// Ensure dates are either null or in "YYYY-MM-DD" format
 				if (start && isNaN(new Date(start).getTime())) {
@@ -121,7 +109,6 @@ export default {
 				}
 			} catch (error) {
 				console.error("Error fetching trades:", error);
-				// Optional: Display an error message to the user
 			} finally {
 				this.isLoading = false;
 			}
@@ -129,6 +116,13 @@ export default {
 		updateViewportHeight() {
 			this.viewportHeight = window.innerHeight;
 		},
+	},
+	mounted() {
+		this.fetchTradesByDateRange();
+		window.addEventListener("resize", this.updateViewportHeight);
+	},
+	beforeUnmount() {
+		window.removeEventListener("resize", this.updateViewportHeight);
 	},
 };
 </script>
