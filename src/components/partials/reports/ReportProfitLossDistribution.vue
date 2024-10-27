@@ -1,7 +1,8 @@
 <template>
 	<div class="profit-loss-histogram">
 		<div class="chart-header">
-			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">?
+			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip"
+				>?
 				<div v-if="isTooltipVisible" class="tooltip-text">
 					The distribution of profit and loss across different price ranges. This rose chart helps you quickly identify where your profits and losses
 					are concentrated, offering insights into risk and reward at various price points.
@@ -84,6 +85,7 @@ export default {
 				legend: {
 					orient: "horizontal",
 					left: "center",
+					top: "bottom", // Position the legend at the bottom
 					textStyle: { color: "#eaeaea" },
 				},
 				series: [
