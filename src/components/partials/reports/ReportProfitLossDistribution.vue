@@ -87,7 +87,7 @@ export default {
         left: 'center',
         bottom: 10, // Add some padding at the bottom of the chart for the legend
         textStyle: { color: "#eaeaea" },
-    }
+    },
 				series: [
 					{
 						name: "Profit/Loss",
