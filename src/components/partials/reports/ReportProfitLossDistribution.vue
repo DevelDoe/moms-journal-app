@@ -124,6 +124,11 @@ export default {
 					type: "category",
 					data: this.profitByPriceRange.labels,
 					name: "Stock Price Range",
+					type: "category", // This sets the axis to categorical mode, allowing for labeled points
+					axisLine: { show: false }, // Hide axis line if desired
+					axisLabel: { color: "#1E3E62",fontSize: 16,}, // Set axis label color
+					axisTick: { show: false }, // Hide ticks if desired
+					splitLine: { show: false }, // Hide grid lines if desired
 				},
 				series: [
 					{
