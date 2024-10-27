@@ -1,5 +1,5 @@
 <template>
-	<div id="trades" @wheel="handleScroll">
+	<div id="trades">
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading Reports...</p>
 		</div>
