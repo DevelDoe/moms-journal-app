@@ -27,6 +27,10 @@ export default {
 			type: Array,
 			required: true,
 		},
+		granularity: {
+			type: String,
+			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
+		},
 	},
 	components: {
 		VChart,
