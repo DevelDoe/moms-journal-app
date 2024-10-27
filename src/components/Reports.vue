@@ -140,7 +140,7 @@ export default {
 	display: flex;
     flex-direction: column;
     align-items: start;
-    background-color: #f5f5f5;
+    background-color: #1e3e62;
     border-radius: 7px;
     padding: 17px;
     width: 100%;
