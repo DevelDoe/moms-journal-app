@@ -163,7 +163,7 @@ export default {
 <style scoped>
 .profit-loss-histogram {
 	margin-top: 20px;
-	max-width: 48%;
+	width: 48%;
 	float: left;
 }
 
