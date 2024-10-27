@@ -239,7 +239,7 @@ export default {
 .granularity-picker {
 	position: absolute;
 	top: 5px;
-	left: 150px;
+	left: 180px;
 	display: inline-block;
 	width: 150px;
 	gap: 16px;
