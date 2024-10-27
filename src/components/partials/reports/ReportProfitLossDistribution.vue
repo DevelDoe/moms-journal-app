@@ -102,7 +102,7 @@ export default {
 						name: "Profit/Loss",
 						type: "pie",
 						radius: ["0%", "60%"],
-						center: ["100%", "50%"],
+						center: ["50%", "50%"],
 						roseType: "radius",
 						data: this.profitByPriceRange.data.map((item) => {
 							// Modify the label to show only the starting value of each bucket
