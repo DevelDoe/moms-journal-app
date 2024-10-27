@@ -104,7 +104,6 @@ export default {
 				tooltip: {
 					trigger: "axis",
 					axisPointer: { type: "shadow" },
-					formatter: (params) => `${params[0].name}: ${params[0].value.toFixed(2)}`,
 				},
 				grid: { top: 80, bottom: 30 },
 				xAxis: {
