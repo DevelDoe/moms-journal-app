@@ -104,7 +104,9 @@ export default {
 				xAxis: {
 					type: "value",
 					position: "bottom",
-					splitLine: { lineStyle: { type: "dashed" } },
+					axisLine: {
+						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
+					},
 					name: "Profit/Loss",
 				},
 				yAxis: {
