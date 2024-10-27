@@ -131,7 +131,7 @@ export default {
 						},
 						animationType: "scale",
 						animationEasing: "elasticOut",
-						animationDelay: (idx) => Math.random() * 200,
+						animationDelay: (idx) => Math.random() * 400,
 					},
 				],
 			};
