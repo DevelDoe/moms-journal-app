@@ -53,36 +53,53 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
-		// Aggregates trades by hour
 		aggregateTradesByHour() {
-			const tradesByHour = Array(24).fill(0);
-			this.filteredTrades.forEach((trade) => {
-				const tradeHour = new Date(trade.date).getHours();
-				tradesByHour[tradeHour] += trade.profitLoss;
-			});
-			return {
-				labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-				data: tradesByHour,
-			};
-		},
-		// Aggregates trades by minute
-		aggregateTradesByMinute() {
-			const tradesByMinute = Array(1440).fill(0);
-			this.filteredTrades.forEach((trade) => {
-				const date = new Date(trade.date);
-				const tradeMinute = date.getHours() * 60 + date.getMinutes();
-				tradesByMinute[tradeMinute] += trade.profitLoss;
-			});
-			const labels = Array.from({ length: 1440 }, (_, i) => {
-				const hours = String(Math.floor(i / 60)).padStart(2, "0");
-				const minutes = String(i % 60).padStart(2, "0");
-				return `${hours}:${minutes}`;
-			});
-			return {
-				labels,
-				data: tradesByMinute,
-			};
-		},
+        const tradesByHour = Array(24).fill(0);
+        let minHour = 23;
+        let maxHour = 0;
+
+        // Aggregate data and track min/max hours with data
+        this.filteredTrades.forEach((trade) => {
+            const tradeHour = new Date(trade.date).getHours();
+            tradesByHour[tradeHour] += trade.profitLoss;
+            if (tradeHour < minHour) minHour = tradeHour;
+            if (tradeHour > maxHour) maxHour = tradeHour;
+        });
+
+        // Generate labels and data for the range with data only
+        return {
+            labels: Array.from({ length: maxHour - minHour + 1 }, (_, i) => `${i + minHour}:00`),
+            data: tradesByHour.slice(minHour, maxHour + 1),
+        };
+    },
+
+    aggregateTradesByMinute() {
+        const tradesByMinute = Array(1440).fill(0);
+        let minMinute = 1439;
+        let maxMinute = 0;
+
+        // Aggregate data and track min/max minutes with data
+        this.filteredTrades.forEach((trade) => {
+            const date = new Date(trade.date);
+            const tradeMinute = date.getHours() * 60 + date.getMinutes();
+            tradesByMinute[tradeMinute] += trade.profitLoss;
+            if (tradeMinute < minMinute) minMinute = tradeMinute;
+            if (tradeMinute > maxMinute) maxMinute = tradeMinute;
+        });
+
+        // Generate labels and data for the range with data only
+        const labels = Array.from({ length: maxMinute - minMinute + 1 }, (_, i) => {
+            const totalMinutes = i + minMinute;
+            const hours = String(Math.floor(totalMinutes / 60)).padStart(2, "0");
+            const minutes = String(totalMinutes % 60).padStart(2, "0");
+            return `${hours}:${minutes}`;
+        });
+
+        return {
+            labels,
+            data: tradesByMinute.slice(minMinute, maxMinute + 1),
+        };
+    },
 	},
 	computed: {
 		filteredTrades() {
