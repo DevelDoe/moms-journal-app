@@ -119,151 +119,151 @@ export default {
 		await this.fetchTradesByDateRange(currentMonthStart, currentMonthEnd);
 		this.isLoading = false;
 	},
-	computed: {
-		// Fetch the summaries from Vuex store
-		summaries() {
-			return this.$store.getters.getSummaries || {};
-		},
-		// Total Profit/Loss (sum of all profits and losses)
-		totalProfitLoss() {
-			return this.filteredTrades.reduce((total, trade) => total + trade.profitLoss, 0);
-		},
-		// Accuracy: percentage of winning trades
-		accuracy() {
-			const totalTrades = this.filteredTrades.length;
-			const wins = this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
-			return totalTrades > 0 ? (wins / totalTrades) * 100 : 0;
-		},
-		// Profit-to-Loss Ratio: total profit divided by total loss
-		profitToLossRatio() {
-			const totalProfit = this.filteredTrades.filter((trade) => trade.profitLoss > 0).reduce((sum, trade) => sum + trade.profitLoss, 0);
-			const totalLoss = this.filteredTrades.filter((trade) => trade.profitLoss < 0).reduce((sum, trade) => sum + Math.abs(trade.profitLoss), 0);
-			if (totalLoss === 0) return "Infinity";
-			return (totalProfit / totalLoss).toFixed(2);
-		},
-		// Number of winning trades
-		wins() {
-			return this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
-		},
-		// Number of losing trades
-		losses() {
-			return this.filteredTrades.filter((trade) => trade.profitLoss < 0).length;
-		},
-		// Total number of trades
-		totalTrades() {
-			return this.filteredTrades.length;
-		},
-		// Your computed properties here (e.g., filteredTrades, tradesByHour)
-		// Calculate trades by hour and determine active hours range
-		tradesByHour() {
-			if (this.filteredTrades.length === 0) {
-				return { minHour: 0, maxHour: 23, tradesByHour: Array(24).fill(0) }; // Default if no trades
-			}
+	// computed: {
+	// 	// Fetch the summaries from Vuex store
+	// 	summaries() {
+	// 		return this.$store.getters.getSummaries || {};
+	// 	},
+	// 	// Total Profit/Loss (sum of all profits and losses)
+	// 	totalProfitLoss() {
+	// 		return this.filteredTrades.reduce((total, trade) => total + trade.profitLoss, 0);
+	// 	},
+	// 	// Accuracy: percentage of winning trades
+	// 	accuracy() {
+	// 		const totalTrades = this.filteredTrades.length;
+	// 		const wins = this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
+	// 		return totalTrades > 0 ? (wins / totalTrades) * 100 : 0;
+	// 	},
+	// 	// Profit-to-Loss Ratio: total profit divided by total loss
+	// 	profitToLossRatio() {
+	// 		const totalProfit = this.filteredTrades.filter((trade) => trade.profitLoss > 0).reduce((sum, trade) => sum + trade.profitLoss, 0);
+	// 		const totalLoss = this.filteredTrades.filter((trade) => trade.profitLoss < 0).reduce((sum, trade) => sum + Math.abs(trade.profitLoss), 0);
+	// 		if (totalLoss === 0) return "Infinity";
+	// 		return (totalProfit / totalLoss).toFixed(2);
+	// 	},
+	// 	// Number of winning trades
+	// 	wins() {
+	// 		return this.filteredTrades.filter((trade) => trade.profitLoss > 0).length;
+	// 	},
+	// 	// Number of losing trades
+	// 	losses() {
+	// 		return this.filteredTrades.filter((trade) => trade.profitLoss < 0).length;
+	// 	},
+	// 	// Total number of trades
+	// 	totalTrades() {
+	// 		return this.filteredTrades.length;
+	// 	},
+	// 	// Your computed properties here (e.g., filteredTrades, tradesByHour)
+	// 	// Calculate trades by hour and determine active hours range
+	// 	tradesByHour() {
+	// 		if (this.filteredTrades.length === 0) {
+	// 			return { minHour: 0, maxHour: 23, tradesByHour: Array(24).fill(0) }; // Default if no trades
+	// 		}
 
-			let minHour = 23;
-			let maxHour = 0;
-			const tradesByHour = Array(24).fill(0); // Initialize 24-hour slots
+	// 		let minHour = 23;
+	// 		let maxHour = 0;
+	// 		const tradesByHour = Array(24).fill(0); // Initialize 24-hour slots
 
-			// Aggregate trades by hour and find min and max hours with activity
-			this.filteredTrades.forEach((trade) => {
-				if (trade && trade.date && trade.profitLoss !== undefined) {
-					const tradeHour = new Date(trade.date).getHours();
-					tradesByHour[tradeHour] += trade.profitLoss;
+	// 		// Aggregate trades by hour and find min and max hours with activity
+	// 		this.filteredTrades.forEach((trade) => {
+	// 			if (trade && trade.date && trade.profitLoss !== undefined) {
+	// 				const tradeHour = new Date(trade.date).getHours();
+	// 				tradesByHour[tradeHour] += trade.profitLoss;
 
-					if (tradeHour < minHour) minHour = tradeHour;
-					if (tradeHour > maxHour) maxHour = tradeHour;
-				}
-			});
+	// 				if (tradeHour < minHour) minHour = tradeHour;
+	// 				if (tradeHour > maxHour) maxHour = tradeHour;
+	// 			}
+	// 		});
 
-			return { minHour, maxHour, tradesByHour };
-		},
-		// Format trades by hour chart data for active hours only
-		tradesByHourChartData() {
-			const { minHour, maxHour, tradesByHour } = this.tradesByHour;
+	// 		return { minHour, maxHour, tradesByHour };
+	// 	},
+	// 	// Format trades by hour chart data for active hours only
+	// 	tradesByHourChartData() {
+	// 		const { minHour, maxHour, tradesByHour } = this.tradesByHour;
 
-			// Extract only active hours and their corresponding data
-			return {
-				labels: Array.from({ length: maxHour - minHour + 1 }, (_, i) => `${i + minHour}:00`),
-				data: tradesByHour.slice(minHour, maxHour + 1),
-			};
-		},
-		// Calculate trades by minute for a detailed view
-		tradesByMinute() {
-			if (this.filteredTrades.length === 0) {
-				return { minMinute: 0, maxMinute: 1439, tradesByMinute: Array(1440).fill(0) }; // Default to full day if no trades
-			}
+	// 		// Extract only active hours and their corresponding data
+	// 		return {
+	// 			labels: Array.from({ length: maxHour - minHour + 1 }, (_, i) => `${i + minHour}:00`),
+	// 			data: tradesByHour.slice(minHour, maxHour + 1),
+	// 		};
+	// 	},
+	// 	// Calculate trades by minute for a detailed view
+	// 	tradesByMinute() {
+	// 		if (this.filteredTrades.length === 0) {
+	// 			return { minMinute: 0, maxMinute: 1439, tradesByMinute: Array(1440).fill(0) }; // Default to full day if no trades
+	// 		}
 
-			let minMinute = 1439;
-			let maxMinute = 0;
-			const tradesByMinute = Array(1440).fill(0); // Initialize array for 1440 minutes
+	// 		let minMinute = 1439;
+	// 		let maxMinute = 0;
+	// 		const tradesByMinute = Array(1440).fill(0); // Initialize array for 1440 minutes
 
-			// Aggregate trades by minute and determine min and max minute with activity
-			this.filteredTrades.forEach((trade) => {
-				if (trade && trade.date && trade.profitLoss !== undefined) {
-					const date = new Date(trade.date);
-					const tradeMinute = date.getHours() * 60 + date.getMinutes(); // Convert to minutes from start of day
-					tradesByMinute[tradeMinute] += trade.profitLoss;
+	// 		// Aggregate trades by minute and determine min and max minute with activity
+	// 		this.filteredTrades.forEach((trade) => {
+	// 			if (trade && trade.date && trade.profitLoss !== undefined) {
+	// 				const date = new Date(trade.date);
+	// 				const tradeMinute = date.getHours() * 60 + date.getMinutes(); // Convert to minutes from start of day
+	// 				tradesByMinute[tradeMinute] += trade.profitLoss;
 
-					if (tradeMinute < minMinute) minMinute = tradeMinute;
-					if (tradeMinute > maxMinute) maxMinute = tradeMinute;
-				}
-			});
+	// 				if (tradeMinute < minMinute) minMinute = tradeMinute;
+	// 				if (tradeMinute > maxMinute) maxMinute = tradeMinute;
+	// 			}
+	// 		});
 
-			return { minMinute, maxMinute, tradesByMinute };
-		},
-		// Format the data to be used in the chart, only for active minute range
-		tradesByMinuteChartData() {
-			const { minMinute, maxMinute, tradesByMinute } = this.tradesByMinute;
+	// 		return { minMinute, maxMinute, tradesByMinute };
+	// 	},
+	// 	// Format the data to be used in the chart, only for active minute range
+	// 	tradesByMinuteChartData() {
+	// 		const { minMinute, maxMinute, tradesByMinute } = this.tradesByMinute;
 
-			// Extract only active minutes and their corresponding data
-			return {
-				labels: Array.from({ length: maxMinute - minMinute + 1 }, (_, i) => {
-					const totalMinutes = i + minMinute;
-					const hours = Math.floor(totalMinutes / 60)
-						.toString()
-						.padStart(2, "0");
-					const minutes = (totalMinutes % 60).toString().padStart(2, "0");
-					return `${hours}:${minutes}`;
-				}),
-				data: tradesByMinute.slice(minMinute, maxMinute + 1),
-			};
-		},
-		profitByWholeDollarRange() {
-			if (this.filteredTrades.length === 0) {
-				return {}; // Return an empty object if there are no trades
-			}
+	// 		// Extract only active minutes and their corresponding data
+	// 		return {
+	// 			labels: Array.from({ length: maxMinute - minMinute + 1 }, (_, i) => {
+	// 				const totalMinutes = i + minMinute;
+	// 				const hours = Math.floor(totalMinutes / 60)
+	// 					.toString()
+	// 					.padStart(2, "0");
+	// 				const minutes = (totalMinutes % 60).toString().padStart(2, "0");
+	// 				return `${hours}:${minutes}`;
+	// 			}),
+	// 			data: tradesByMinute.slice(minMinute, maxMinute + 1),
+	// 		};
+	// 	},
+	// 	profitByWholeDollarRange() {
+	// 		if (this.filteredTrades.length === 0) {
+	// 			return {}; // Return an empty object if there are no trades
+	// 		}
 
-			// Determine the minimum and maximum buy prices
-			const minPrice = Math.floor(Math.min(...this.filteredTrades.map((trade) => trade.buyPrice)));
-			const maxPrice = Math.ceil(Math.max(...this.filteredTrades.map((trade) => trade.buyPrice)));
+	// 		// Determine the minimum and maximum buy prices
+	// 		const minPrice = Math.floor(Math.min(...this.filteredTrades.map((trade) => trade.buyPrice)));
+	// 		const maxPrice = Math.ceil(Math.max(...this.filteredTrades.map((trade) => trade.buyPrice)));
 
-			// Initialize ranges object for every whole dollar value between minPrice and maxPrice
-			const ranges = {};
-			for (let price = minPrice; price <= maxPrice; price++) {
-				ranges[price] = 0; // Initialize profit/loss at 0
-			}
+	// 		// Initialize ranges object for every whole dollar value between minPrice and maxPrice
+	// 		const ranges = {};
+	// 		for (let price = minPrice; price <= maxPrice; price++) {
+	// 			ranges[price] = 0; // Initialize profit/loss at 0
+	// 		}
 
-			// Aggregate profit/loss for each whole dollar price range
-			this.filteredTrades.forEach((trade) => {
-				if (trade && trade.buyPrice !== undefined) {
-					const roundedPrice = Math.floor(trade.buyPrice); // Round down to the nearest whole dollar
-					if (ranges.hasOwnProperty(roundedPrice)) {
-						ranges[roundedPrice] += trade.profitLoss;
-					}
-				}
-			});
+	// 		// Aggregate profit/loss for each whole dollar price range
+	// 		this.filteredTrades.forEach((trade) => {
+	// 			if (trade && trade.buyPrice !== undefined) {
+	// 				const roundedPrice = Math.floor(trade.buyPrice); // Round down to the nearest whole dollar
+	// 				if (ranges.hasOwnProperty(roundedPrice)) {
+	// 					ranges[roundedPrice] += trade.profitLoss;
+	// 				}
+	// 			}
+	// 		});
 
-			return ranges;
-		},
-		profitByWholeDollarRangeChartData() {
-			const rangeData = this.profitByWholeDollarRange;
-			return {
-				labels: Object.keys(rangeData).length > 0 ? Object.keys(rangeData) : [],
-				data: Object.values(rangeData).length > 0 ? Object.values(rangeData) : [],
-			};
-		},
-		// Calculate Profit/Loss Distribution for histogram buckets
-	},
+	// 		return ranges;
+	// 	},
+	// 	profitByWholeDollarRangeChartData() {
+	// 		const rangeData = this.profitByWholeDollarRange;
+	// 		return {
+	// 			labels: Object.keys(rangeData).length > 0 ? Object.keys(rangeData) : [],
+	// 			data: Object.values(rangeData).length > 0 ? Object.values(rangeData) : [],
+	// 		};
+	// 	},
+	// 	// Calculate Profit/Loss Distribution for histogram buckets
+	// },
 	methods: {
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
