@@ -117,7 +117,7 @@ export default {
 					text: `Trades by ${this.selectedGranularity === "hourly" ? "Hour" : "Minute"}`,
 					left: "left", // Position the title in the center
 					textStyle: {
-						color: "#ffffff", // Title text color
+						color: "#1E3E62", // Title text color
 						fontSize: 18, // Font size
 						fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
 					},
