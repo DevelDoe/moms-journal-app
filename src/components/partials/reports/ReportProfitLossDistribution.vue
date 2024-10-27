@@ -106,7 +106,7 @@ export default {
 								color: "#162e49",
 							},
 							smooth: 0.1,
-							length: 100,
+							length: 10,
 							length2: 200,
 							
 						},
