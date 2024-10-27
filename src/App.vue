@@ -73,7 +73,7 @@ export default {
 #view {
 	transition: margin-left 0.3s ease; /* Smooth transition for collapse/expand */
 	margin-left: 20%; /* Default margin to leave space for sidebar */
-	padding: 20px 0 20px 0;
+	padding: 0 20%;
 }
 
 #view.collapsed {
