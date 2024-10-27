@@ -181,12 +181,43 @@ export default {
 	white-space: normal;
 	transition: opacity 0.3s ease-in-out;
 }
-.granularity-selector {
-	margin: 10px 0;
+.granularity-picker {
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
+	gap: 16px;
+	background-color: #1e3e62;
+	border-radius: 8px;
+	padding: 16px;
+	width: 100%;
+	max-width: 408px;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+	margin-left: 10%;
 }
-.granularity-selector label {
-	margin-right: 10px;
+
+.granularity-input {
+	display: flex;
+	flex-direction: column;
+}
+
+.granularity-input label {
+	margin-bottom: 4px;
+	font-weight: bold;
+	color: #eaeaea;
+}
+
+.granularity-input select {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #333;
+	background-color: #fff;
+	width: 180px;
+}
+
+.granularity-input select:focus {
+	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+	outline: none;
 }
 </style>
