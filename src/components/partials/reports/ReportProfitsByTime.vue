@@ -121,6 +121,13 @@ export default {
 				xAxis: {
 					type: "category",
 					data: this.aggregatedData.labels,
+					splitLine: {
+						lineStyle: {
+							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
+							width: 0, // Thickness of the lines
+							type: "solid", // Options: 'solid', 'dashed', 'dotted'
+						},
+					},
 				},
 				yAxis: {
 					type: "value",
