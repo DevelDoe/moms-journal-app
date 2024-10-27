@@ -1,19 +1,6 @@
 <!-- ./src/components/Reports.vue -->
 <template>
 	<div id="trades">
-		<div class="header">
-			<div class="page-title">Reports</div>
-			<div class="date-range-picker">
-			<label>Start Date:</label>
-			<input type="date" v-model="startDate" />
-			<label>End Date:</label>
-			<input type="date" v-model="endDate" />
-		</div>
-		</div>
-		
-
-		
-
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading trades...</p>
 		</div>
@@ -21,19 +8,29 @@
 		<div v-else-if="trades && trades.length === 0" class="no-trades">
 			<p>No trades available for the selected date.</p>
 		</div>
-
 		<!-- Corrupt Data Warning -->
 		<div v-else-if="hasCorruptData" class="corrupt-data-warning">
 			<p>Some trades data is corrupted and could not be displayed. Please contact an administrator.</p>
 		</div>
+	
+		<div class="header">
+			<div class="page-title">Reports</div>
+			<div class="date-range-picker">
+				<label>Start Date:</label>
+				<input type="date" v-model="startDate" />
+				<label>End Date:</label>
+				<input type="date" v-model="endDate" />
+			</div>
+		</div>
 
-		<div v-else>
+		<div class="content" v-else>
 			<ReportCumulativeProfit :trades="trades" />
 
 			<ReportTradesProfit :trades="trades" />
 
 			<ReportProfitLossDistribution :trades="trades" />
 		</div>
+
 	</div>
 </template>
 
@@ -126,25 +123,25 @@ export default {
 #trades {
 	padding: 20px;
 }
-.header{
+.header {
 	display: flex;
 	height: 100%;
 	width: 100%;
 }
-.page-title{
+.page-title {
 	font-size: 4rem;
 	float: left;
 }
 .date-range-picker {
-    flex-direction: column;
-    align-items: start;
-    background-color: #1e3e62;
-    border-radius: 7px;
-    padding: 17px;
-    width: 100%;
-    max-width: 221px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	float:right;
+	flex-direction: column;
+	align-items: start;
+	background-color: #1e3e62;
+	border-radius: 7px;
+	padding: 17px;
+	width: 100%;
+	max-width: 221px;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+	float: right;
 }
 
 .date-range-picker label {
@@ -155,13 +152,13 @@ export default {
 
 .date-range-picker input[type="date"] {
 	width: 100%;
-    padding: 8px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 20px;
-    color: #333;
-    background-color: #ffffff;
+	padding: 8px;
+	margin-bottom: 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 20px;
+	color: #333;
+	background-color: #ffffff;
 	font-family: "Montserrat", sans-serif !important;
 }
 
