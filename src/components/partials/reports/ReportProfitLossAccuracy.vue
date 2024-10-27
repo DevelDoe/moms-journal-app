@@ -49,7 +49,7 @@ export default {
 						startAngle: 180,
 						endAngle: 0,
 						min: 0, // Set min lower to center 1:1
-						max: 2, // Adjust max to center 1:1
+						max: 4, // Adjust max to center 1:1
 						progress: { show: true, width: 10 },
 						axisLine: {
 							lineStyle: {
