@@ -148,7 +148,8 @@ export default {
 					axisLabel: { 
                 color: "#1E3E62", 
                 fontSize: 16,
-               
+                formatter: (value) => value.toFixed(2)  // Limit to 2 decimal places
+            },
 					axisTick: { show: false }, // Hide ticks if desired
 					splitLine: {
 						lineStyle: {
