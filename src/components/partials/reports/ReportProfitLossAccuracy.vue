@@ -62,11 +62,7 @@ export default {
 						},
 						pointer: { width: 1 },
 						title: { show: false },
-						detail: {
-							formatter: () => this.profitToLossRatio,
-							fontSize: 20,
-							color: "#eaeaea",
-						},
+						
 						data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
 					},
 				],
