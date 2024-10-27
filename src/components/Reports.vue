@@ -306,11 +306,14 @@ export default {
 				console.error("Error fetching trades:", error);
 			}
 		},
-		// Call fetchTrades with date range from date picker
-		async fetchTradesByDateRange() {
-			const start = this.startDate ? new Date(this.startDate).toISOString().split("T")[0] : null;
-			const end = this.endDate ? new Date(this.endDate).toISOString().split("T")[0] : null;
-			await this.fetchTrades(start, end);
+
+		// Call fetchTrades with date range from date picker or default to current month
+		async fetchTradesByDateRange(start = null, end = null) {
+			// Use user-specified dates if available, else use component data for startDate and endDate
+			const startDate = start || this.startDate ? new Date(this.startDate).toISOString().split("T")[0] : null;
+			const endDate = end || this.endDate ? new Date(this.endDate).toISOString().split("T")[0] : null;
+
+			await this.fetchTrades(startDate, endDate);
 		},
 		// Fetch summaries from Vuex store
 		async fetchSummaries() {
