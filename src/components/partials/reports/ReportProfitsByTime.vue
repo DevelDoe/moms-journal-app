@@ -250,7 +250,7 @@ export default {
 	font-size: 16px;
     color: #ffffff;
     background-color: #1e3e62;
-	width: 180px;
+	width: 20px;
 }
 
 .granularity-input select:focus {
