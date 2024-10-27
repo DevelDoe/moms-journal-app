@@ -84,57 +84,30 @@ export default {
 				},
 				tooltip: {
 					trigger: "axis",
-					axisPointer: {
-						type: "shadow",
-					},
-					formatter: (params) => {
-						const value = Math.abs(params[0].value).toFixed(2);
-						return `${params[0].name}: ${value}`;
-					},
+					axisPointer: { type: "shadow" },
+					formatter: (params) => `${params[0].name}: ${Math.abs(params[0].value).toFixed(2)}`,
 				},
-				grid: {
-					top: 80,
-					bottom: 30,
-				},
+				grid: { top: 80, bottom: 30 },
 				xAxis: {
 					type: "value",
 					position: "top",
-					splitLine: {
-						lineStyle: {
-							type: "dashed",
-						},
-					},
+					splitLine: { lineStyle: { type: "dashed" } },
 					name: "Number of Trades",
 				},
 				yAxis: {
 					type: "category",
-					axisLine: { show: false },
-					axisLabel: { show: true },
-					axisTick: { show: false },
-					splitLine: { show: false },
-					data: this.labels,
+					data: this.profitLossDistributionData.labels,
 					name: "Profit/Loss Range",
 				},
 				series: [
 					{
 						name: "Number of Trades",
 						type: "bar",
-						data: this.data.map((value, index) => {
-							const isLoss = this.labels[index].includes("-");
-							const adjustedValue = isLoss ? -Math.abs(value) : value;
-
-							return {
-								value: parseFloat(adjustedValue.toFixed(2)),
-								label: {
-									show: false,
-									position: isLoss ? "left" : "right",
-									formatter: "{c}",
-								},
-								itemStyle: {
-									color: isLoss ? "#e57373" : "#91cc75", // Red for negative buckets, blue for positive
-								},
-							};
-						}),
+						data: this.profitLossDistributionData.data.map((value, index) => ({
+							value: Math.sign(value) === -1 ? -Math.abs(value) : value,
+							label: { show: false },
+							itemStyle: { color: value < 0 ? "#e57373" : "#91cc75" },
+						})),
 					},
 				],
 			};
