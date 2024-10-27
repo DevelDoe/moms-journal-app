@@ -120,7 +120,7 @@ export default {
 							lineStyle: {
 								color: "#162e49",
 							},
-							smooth: 0.5,
+							smooth: 1,
 							length: 25,
 							length2: 70,
 						},
