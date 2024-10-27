@@ -27,10 +27,14 @@
 			</div>
 
 			<div class="content">
-				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
-					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">Back</button>
+				<div
+					class="report"
+					v-for="(report, index) in reports"
+					:key="index"
+					ref="reportRefs"
+					:style="{ height: `${viewportHeight}px` }"
+				>
 					<component :is="report" :trades="trades" />
-					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button"></button>
 				</div>
 			</div>
 		</div>
