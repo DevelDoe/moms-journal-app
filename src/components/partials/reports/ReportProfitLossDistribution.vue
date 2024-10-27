@@ -103,7 +103,7 @@ export default {
 								color: "rgba(255, 255, 255, 0.3)",
 							},
 							smooth: 0.2,
-							length: 10,
+							length: 100,
 							length2: 200,
 						},
 						itemStyle: {
