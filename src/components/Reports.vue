@@ -1,3 +1,47 @@
+<!-- ./src/components/Reports.vue -->
+<template>
+	<div id="trades">
+		<div v-if="isLoading" class="loading-message">
+			<p>Loading Reports...</p>
+		</div>
+
+		<div v-else-if="trades && trades.length === 0" class="no-trades">
+			<p>No trades available for the selected date.</p>
+		</div>
+		<!-- Corrupt Data Warning -->
+		<div v-else-if="hasCorruptData" class="corrupt-data-warning">
+			<p>Some trades data is corrupted and could not be displayed. Please contact an administrator.</p>
+		</div>
+
+		<div v-else>
+			<div class="header">
+				<div class="page-title">Reports</div>
+				<div class="date-range-picker">
+					<div class="date-input">
+						<label>Start Date:</label>
+						<input type="date" v-model="startDate" />
+					</div>
+					<div class="date-input">
+						<label>End Date:</label>
+						<input type="date" v-model="endDate" />
+					</div>
+				</div>
+			</div>
+			<div class="content">
+				<div class="report"><ReportCumulativeProfit 		:trades="trades" /></div>
+				<div class="report"><ReportProfitLossDistribution 	:trades="trades" /></div>
+				<div class="report"><ReportTradesProfit 			:trades="trades" /></div>
+				<div class="report"><ReportProfitsByTime 			:trades="trades" /></div>
+				
+				
+				
+				
+			</div>
+		</div>
+	</div>
+</template>
+
+
 <template>
 	<div id="trades">
 		<div v-if="isLoading" class="loading-message">
@@ -27,8 +71,10 @@
 			</div>
 
 			<div class="content">
-				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
-					<component :is="report" :trades="trades" />
+				<div class="report" v-for="(report, index) in reports"<div class="report"><ReportCumulativeProfit 		:trades="trades" /></div>
+				<div class="report"><ReportProfitLossDistribution 	:trades="trades" /></div>
+				<div class="report"><ReportTradesProfit 			:trades="trades" /></div>
+				<div class="report"><ReportProfitsByTime 			:trades="trades" /></div><component :is="report" :trades="trades" />
 					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)">Next</button>
 				</div>
 			</div>
