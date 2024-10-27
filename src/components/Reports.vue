@@ -27,20 +27,10 @@
 			</div>
 
 			<div class="content">
-				<div
-					class="report"
-					v-for="(report, index) in reports"
-					:key="index"
-					ref="reportRefs"
-					:style="{ height: `${viewportHeight}px` }"
-				>
-					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">
-						Back
-					</button>
+				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
+					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">Back</button>
 					<component :is="report" :trades="trades" />
-					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button">
-						Next
-					</button>
+					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button">Next</button>
 				</div>
 			</div>
 		</div>
@@ -62,12 +52,7 @@ export default {
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
 			viewportHeight: window.innerHeight - 170,
-			reports: [
-				ReportCumulativeProfit,
-				ReportProfitLossDistribution,
-				ReportTradesProfit,
-				ReportProfitsByTime,
-			],
+			reports: [ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
 		};
 	},
 	components: {
@@ -87,6 +72,22 @@ export default {
 			const previousReport = this.$refs.reportRefs[index - 1];
 			if (previousReport) {
 				previousReport.scrollIntoView({ behavior: "smooth" });
+			}
+		},
+		handleScroll(event) {
+			const activeReport = this.$refs.reportRefs.find((report) => {
+				const rect = report.getBoundingClientRect();
+				return rect.top >= 0 && rect.bottom <= window.innerHeight;
+			});
+
+			if (!activeReport) return;
+
+			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
+
+			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
+				this.scrollToNextReport(currentIndex);
+			} else if (event.deltaY < 0 && currentIndex > 0) {
+				this.scrollToPreviousReport(currentIndex);
 			}
 		},
 		async fetchTradesByDateRange(start = null, end = null) {
