@@ -119,7 +119,7 @@ export default {
 </script>
 
 <style scoped>
-.trades {
+#trades {
 	padding: 20px;
 }
 
