@@ -96,7 +96,7 @@ export default {
 					axisPointer: { type: "shadow" },
 				},
 				grid: {
-					left: "0%", // Add some padding on both sides for centering
+					left: "10%", // Add some padding on both sides for centering
 					right: "0%",
 					bottom: "0%",
 					containLabel: true,
