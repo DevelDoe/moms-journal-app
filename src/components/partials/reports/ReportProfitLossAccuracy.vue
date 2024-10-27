@@ -60,6 +60,14 @@ export default {
 								],
 							},
 						},
+						axisTick: {
+        distance: -30,
+        length: 8,
+        lineStyle: {
+          color: '#fff',
+          width: 2
+        }
+      },
 						pointer: { width: 1 },
 						title: { show: false },
 						detail: {
