@@ -127,6 +127,7 @@ export default {
 					axisLine: {
 						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
 					},
+					axisLine: { show: false }, // Hide axis line if desired
 					axisLabel: {
 						color: "#1E3E62", // Color of the x-axis labels
 						fontSize: 10, // Size of the font for the labels
