@@ -139,9 +139,9 @@ export default {
 <style scoped>
 .profit-loss-histogram {
 	margin-top: 20px;
-	width: 48%;
-	padding: 2%;
-	float: left;
+	/* width: 48%; */
+	/* padding: 2%; */
+	/* float: left; */
 }
 
 .chart-header {
