@@ -46,93 +46,87 @@ export default {
 		},
 	},
 	computed: {
-		profitByPriceRange() {
+    profitByPriceRange() {
         if (this.trades.length === 0) return { data: [] };
 
-        // Initialize an empty object to hold aggregated profit/loss values for each price bucket
         const buckets = this.trades.reduce((acc, trade) => {
             const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
-            
-            // Only add to the bucket if there is a non-zero profit/loss value
-            if (trade.profitLoss !== 0) {
-                if (!acc[bucketLabel]) acc[bucketLabel] = 0;
-                acc[bucketLabel] += trade.profitLoss;
-            }
+
+            if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+            acc[bucketLabel] += trade.profitLoss;
+
             return acc;
         }, {});
 
-        // Filter out empty buckets and prepare the final data for the chart
-        const finalData = Object.entries(buckets)
-            .filter(([, value]) => value !== 0) // Exclude zero-value buckets
-            .map(([label, value]) => ({
-                value: parseFloat(value.toFixed(2)),
-                name: label.split("-")[0], // Show only the starting value in the label
-            }));
-
-        // Log the final data that will be passed to the chart
-        console.log("Filtered Buckets (For Chart):", finalData);
-
-        return { data: finalData };
+        return {
+            data: Object.entries(buckets)
+                .map(([label, value]) => ({
+                    value: parseFloat(value.toFixed(2)),
+                    name: label.split("-")[0],
+                    isPositive: value > 0, // Store whether it's positive or negative for coloring
+                })),
+        };
     },
-		chartOptions() {
-			return {
-				title: {
-					text: "Profit by Price Range",
-					left: "left",
-					textStyle: {
-						color: "#eaeaea",
-						fontSize: 18,
-						fontWeight: "bold",
-					},
-				},
-				tooltip: {
-					trigger: "item",
-					formatter: "{b}: {c} ({d}%)",
-				},
-				legend: {
-					orient: "horizontal",
-					left: "center",
-					bottom: 20,
-					textStyle: { color: "#eaeaea" },
-					data: this.profitByPriceRange.data.map((item) => item.name), // Only include non-zero buckets
-				},
-				series: [
-					{
-						name: "Profit/Loss",
-						type: "pie",
-						radius: ["20%", "55%"],
-						center: ["50%", "50%"],
-						roseType: "radius",
-						data: this.profitByPriceRange.data, // Filtered data
-						label: {
-							color: "#1E3E62",
-							fontSize: 14,
-							formatter: "{b}", // Only show the start of the bucket
-						},
-						labelLine: {
-							lineStyle: {
-								color: "#162e49",
-							},
-							smooth: 0.2,
-							length: 20,
-							length2: 20,
-						},
-						itemStyle: {
-							color: (params) => {
-								const colors = ["#740938", "#da70d6", "#ff7f50", "#32cd32"];
-								return colors[params.dataIndex % colors.length];
-							},
-							shadowBlur: 100,
-							shadowColor: "rgba(0, 0, 0, 0.5)",
-						},
-						animationType: "scale",
-						animationEasing: "elasticOut",
-						animationDelay: (idx) => Math.random() * 200,
-					},
-				],
-			};
-		},
-	},
+    chartOptions() {
+        return {
+            title: {
+                text: "Profit/Loss by Price Range",
+                left: "left",
+                textStyle: {
+                    color: "#eaeaea",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                },
+            },
+            tooltip: {
+                trigger: "item",
+                formatter: "{b}: {c} ({d}%)",
+            },
+            legend: {
+                orient: "horizontal",
+                left: "center",
+                bottom: 20,
+                textStyle: { color: "#eaeaea" },
+                data: this.profitByPriceRange.data.map(item => item.name),
+            },
+            series: [
+                {
+                    name: "Profit/Loss",
+                    type: "pie",
+                    radius: ["20%", "55%"],
+                    center: ["50%", "50%"],
+                    roseType: "radius",
+                    data: this.profitByPriceRange.data,
+                    label: {
+                        color: "#1E3E62",
+                        fontSize: 14,
+                        formatter: "{b}",
+                    },
+                    labelLine: {
+                        lineStyle: {
+                            color: "#162e49",
+                        },
+                        smooth: 0.2,
+                        length: 20,
+                        length2: 20,
+                    },
+                    itemStyle: {
+                        color: (params) => {
+                            // Color green if positive, red if negative
+                            return params.data.isPositive ? "#32cd32" : "#ff7f50";
+                        },
+                        shadowBlur: 100,
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                    animationType: "scale",
+                    animationEasing: "elasticOut",
+                    animationDelay: (idx) => Math.random() * 200,
+                },
+            ],
+        };
+    },
+},
+
 };
 </script>
 
