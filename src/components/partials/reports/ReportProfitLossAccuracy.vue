@@ -55,7 +55,7 @@ export default {
 							lineStyle: {
 								width: 10,
 								color: [
-									[0.5, "#ffb74d"],
+									[0.5, "#740938"],
 									[1, "#81c784"],
 								],
 							},
