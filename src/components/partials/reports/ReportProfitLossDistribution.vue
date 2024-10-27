@@ -95,13 +95,6 @@ export default {
 					trigger: "axis",
 					axisPointer: { type: "shadow" },
 				},
-				legend: {
-					orient: "horizontal",
-					left: "center",
-					top: "0%",
-					textStyle: { color: "#eaeaea" },
-					icon: "circle",
-				},
 				grid: { top: 80, bottom: 30 },
 				xAxis: {
 					type: "value",
