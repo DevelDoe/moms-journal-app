@@ -45,50 +45,82 @@ export default {
 			this.isTooltipVisible = false;
 		},
 	},
-computed: {
+	computed: {
     profitByPriceRange() {
         if (this.trades.length === 0) return { data: [] };
 
-        // Aggregate trades into non-zero buckets only
+        // Filter trades with non-zero profit/loss and populate only relevant buckets
         const buckets = this.trades.reduce((acc, trade) => {
-            const bucketLabel = `$${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
-            if (!acc[bucketLabel]) acc[bucketLabel] = 0;
-            acc[bucketLabel] += trade.profitLoss;
+            const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+
+            // Create or add to the bucket if there is an actual profit/loss value
+            if (trade.profitLoss !== 0) {
+                if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+                acc[bucketLabel] += trade.profitLoss;
+            }
             return acc;
         }, {});
 
-        // Filter out zero or near-zero values (e.g., < 0.01) for a clean chart
+        // Filter out buckets with zero values after aggregation to eliminate empty labels
         return {
-            data: Object.keys(buckets)
-                .filter((label) => Math.abs(buckets[label]) > 0.01) // Exclude zero or very small buckets
-                .map((label) => ({
-                    value: parseFloat(buckets[label].toFixed(2)),
-                    name: label,
+            data: Object.entries(buckets)
+                .filter(([, value]) => value !== 0) // Exclude zero-value buckets
+                .map(([label, value]) => ({
+                    value: parseFloat(value.toFixed(2)),
+                    name: label.split('-')[0], // Show only the starting value in the label
                 })),
         };
     },
     chartOptions() {
         return {
-            title: { ... },
-            tooltip: { ... },
+            title: {
+                text: "Profit by Price Range",
+                left: "left",
+                textStyle: {
+                    color: "#eaeaea",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                },
+            },
+            tooltip: {
+                trigger: "item",
+                formatter: "{b}: {c} ({d}%)",
+            },
             legend: {
                 orient: "horizontal",
                 left: "center",
                 bottom: 20,
                 textStyle: { color: "#eaeaea" },
-                formatter: (name) => name.split("-")[0], // Show only the start value
             },
             series: [
                 {
                     name: "Profit/Loss",
                     type: "pie",
-                    radius: ["0%", "50%"],
+                    radius: ["20%", "55%"],
                     center: ["50%", "50%"],
                     roseType: "radius",
                     data: this.profitByPriceRange.data,
-                    label: { ... },
-                    labelLine: { ... },
-                    itemStyle: { ... },
+                    label: {
+                        color: "#1E3E62",
+                        fontSize: 14,
+                        formatter: "{b}", // Show only the bucket start in labels
+                    },
+                    labelLine: {
+                        lineStyle: {
+                            color: "#162e49",
+                        },
+                        smooth: 0.2,
+                        length: 20,
+                        length2: 20,
+                    },
+                    itemStyle: {
+                        color: (params) => {
+                            const colors = ["#740938", "#da70d6", "#ff7f50", "#32cd32"];
+                            return colors[params.dataIndex % colors.length];
+                        },
+                        shadowBlur: 100,
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
+                    },
                     animationType: "scale",
                     animationEasing: "elasticOut",
                     animationDelay: (idx) => Math.random() * 200,
@@ -97,7 +129,6 @@ computed: {
         };
     },
 },
-
 
 };
 </script>
