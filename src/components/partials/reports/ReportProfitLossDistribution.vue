@@ -85,7 +85,7 @@ export default {
 				legend: {
 					orient: "horizontal",
 					left: "center",
-					bottom: "10%",  // Position the legend at the bottom
+					bottom: "-10%",  // Position the legend at the bottom
 					textStyle: { color: "#eaeaea" },
 				},
 				series: [
