@@ -87,13 +87,9 @@ export default {
 					},
 				},
 				tooltip: {
-    trigger: "item",
-    formatter: function (params) {
-        const prefix = params.data.originalValue < 0 ? "Loss" : "Profit";
-        const value = Math.abs(params.data.originalValue);
-        return `${params.name}: ${prefix} ${value} (${params.percent}%)`;
-    },
-},
+					trigger: "item",
+					formatter: "{b}: {c} ({d}%)",
+				},
 				legend: {
 					orient: "horizontal",
 					left: "center",
