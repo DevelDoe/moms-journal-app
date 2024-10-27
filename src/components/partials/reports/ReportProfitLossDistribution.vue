@@ -12,7 +12,7 @@
 	</div>
 </template>
 
-<<script>
+<script>
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { BarChart } from "echarts/charts";
@@ -26,10 +26,6 @@ export default {
 		trades: {
 			type: Array,
 			required: true,
-		},
-		granularity: {
-			type: String,
-			default: "daily", // Options: 'hourly', 'daily'
 		},
 	},
 	components: {
@@ -47,70 +43,76 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
-		formatLabel(date) {
-			const d = new Date(date);
-			return this.granularity === "hourly"
-				? `${d.getHours().toString().padStart(2, "0")}:00`
-				: d.toLocaleDateString(); // Show full date for daily or broader granularity
-		},
 	},
 	computed: {
-		profitLossDistribution() {
+		profitByPriceRange() {
 			if (this.trades.length === 0) return { labels: [], data: [] };
 
-			const bucketRanges = [
-				{ label: "Below -$987", min: -Infinity, max: -987 },
-				// (remaining ranges here)
-				{ label: "Above $987", min: 987, max: Infinity },
+			// Define price ranges (intervals of $1)
+			const priceRanges = [
+				{ label: "$0-1", min: 0, max: 1 },
+				{ label: "$1-2", min: 1, max: 2 },
+				{ label: "$2-3", min: 2, max: 3 },
+				{ label: "$3-4", min: 3, max: 4 },
+				{ label: "$4-5", min: 4, max: 5 },
+				// Add more ranges as needed
+				{ label: "$9-10", min: 9, max: 10 },
+				{ label: "Above $10", min: 10, max: Infinity },
 			];
 
-			const groupedData = {};
+			// Initialize the buckets with zero profit
+			const buckets = {};
+			priceRanges.forEach((range) => {
+				buckets[range.label] = 0; // Start each bucket with 0 profit
+			});
 
+			// Aggregate profit for each trade within its price range
 			this.trades.forEach((trade) => {
-				const label = this.formatLabel(trade.date);
-				if (!groupedData[label]) groupedData[label] = [];
-				groupedData[label].push(trade);
+				const stockPrice = trade.price;
+				const profitLoss = trade.profitLoss;
+				const bucket = priceRanges.find((range) => stockPrice >= range.min && stockPrice < range.max);
+				if (bucket) {
+					buckets[bucket.label] += profitLoss; // Sum profits/losses within each price range
+				}
 			});
 
-			const labels = [];
-			const data = [];
-
-			Object.keys(groupedData).forEach((label) => {
-				const trades = groupedData[label];
-				const profitLossCount = bucketRanges.reduce((acc, range) => {
-					acc[range.label] = 0;
-					return acc;
-				}, {});
-
-				trades.forEach((trade) => {
-					const profitLoss = trade.profitLoss;
-					const bucket = bucketRanges.find((range) => profitLoss >= range.min && profitLoss < range.max);
-					if (bucket) profitLossCount[bucket.label]++;
-				});
-
-				labels.push(label);
-				data.push(Object.values(profitLossCount).reduce((a, b) => a + b, 0));
-			});
-
-			return { labels, data };
+			return {
+				labels: Object.keys(buckets),
+				data: Object.values(buckets),
+			};
 		},
 		chartOptions() {
 			return {
-				title: { text: "Profit/Loss Distribution" },
-				tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+				title: {
+					text: "Profit by Stock Price Range",
+				},
+				tooltip: {
+					trigger: "axis",
+					axisPointer: { type: "shadow" },
+					formatter: (params) => `${params[0].name}: ${params[0].value.toFixed(2)}`,
+				},
 				grid: { top: 80, bottom: 30 },
-				xAxis: { type: "value", position: "top", splitLine: { lineStyle: { type: "dashed" } } },
-				yAxis: { type: "category", data: this.profitLossDistribution.labels },
+				xAxis: {
+					type: "value",
+					position: "top",
+					splitLine: { lineStyle: { type: "dashed" } },
+					name: "Total Profit/Loss",
+				},
+				yAxis: {
+					type: "category",
+					data: this.profitByPriceRange.labels,
+					name: "Stock Price Range",
+				},
 				series: [
 					{
-						name: "Number of Trades",
+						name: "Profit/Loss",
 						type: "bar",
-						data: this.profitLossDistribution.data,
-						itemStyle: {
-							color: (params) => this.profitLossDistribution.labels[params.dataIndex].includes("-")
-								? "#e57373"
-								: "#91cc75",
-						},
+						data: this.profitByPriceRange.data.map((value, index) => ({
+							value: parseFloat(value.toFixed(2)),
+							itemStyle: {
+								color: value < 0 ? "#e57373" : "#91cc75",
+							},
+						})),
 					},
 				],
 			};
@@ -118,6 +120,7 @@ export default {
 	},
 };
 </script>
+
 
 
 
