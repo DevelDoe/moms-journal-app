@@ -12,7 +12,7 @@
 		</div>
 
 		<div v-else>
-			<div class="header">
+			<!-- <div class="header">
 				<div class="page-title">Reports</div>
 				<div class="date-range-picker">
 					<div class="date-input">
@@ -24,7 +24,7 @@
 						<input type="date" v-model="endDate" />
 					</div>
 				</div>
-			</div>
+			</div> -->
 
 			<div class="content">
 				<div
@@ -61,7 +61,7 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight - 170,
+			viewportHeight: window.innerHeight,
 			reports: [
 				ReportCumulativeProfit,
 				ReportProfitLossDistribution,
