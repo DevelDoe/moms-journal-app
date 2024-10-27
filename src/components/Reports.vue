@@ -66,7 +66,7 @@ export default {
 		ReportProfitsByTime,
 	},
 	methods: {
-		crollToNextReport(index) {
+		scrollToNextReport(index) {
 			const nextReport = this.$refs.reportRefs[index + 1];
 			if (nextReport) {
 				nextReport.scrollIntoView({ behavior: "smooth" });
