@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import throttle from "lodash/throttle";
+import { markRaw } from 'vue';
+
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
 import ReportProfitLossDistribution from "./partials/reports/ReportProfitLossDistribution.vue";
 import ReportProfitsByTime from "./partials/reports/ReportProfitsByTime.vue";
