@@ -30,7 +30,7 @@
 				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
 					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">Back</button>
 					<component :is="report" :trades="trades" />
-				
+					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button"></button>
 				</div>
 			</div>
 		</div>
@@ -51,7 +51,7 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight,
+			viewportHeight: window.innerHeight - 170,
 			reports: [ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
 		};
 	},
