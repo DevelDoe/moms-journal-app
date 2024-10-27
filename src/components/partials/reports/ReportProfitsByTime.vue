@@ -226,7 +226,7 @@ export default {
 	gap: 16px;
 	background-color: #1e3e62;
 	border-radius: 8px;
-	padding: 16px;
+	padding: 0;
 	width: 100%;
 	max-width: 408px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
