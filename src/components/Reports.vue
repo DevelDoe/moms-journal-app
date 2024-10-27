@@ -149,6 +149,7 @@ export default {
 }
 
 .date-range-picker input[type="date"] {
+	display: inline;
 	width: 100%;
 	padding: 8px;
 	margin-bottom: 12px;
