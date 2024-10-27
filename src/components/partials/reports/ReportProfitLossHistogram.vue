@@ -1,4 +1,4 @@
-<!-- ./src/components/partials/charts/ProfitLossHistogram.vue -->
+<!-- ./src/components/partials/reports/ReportProfitLossDistribution.vue -->
 <template>
 	<div class="profit-loss-histogram">
 		<div class="chart-header">
@@ -23,13 +23,13 @@ use([CanvasRenderer, BarChart, TitleComponent, TooltipComponent, GridComponent, 
 
 export default {
 	props: {
-		trades: {
+		labels: {
 			type: Array,
 			required: true,
 		},
-		granularity: {
-			type: String,
-			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
+		data: {
+			type: Array,
+			required: true,
 		},
 	},
 	components: {
@@ -47,26 +47,74 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
-		formatDate(date) {
-			const d = new Date(date);
-			switch (this.granularity) {
-				case "hourly":
-					return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`; // Show only time
-				case "daily":
-					return d.toLocaleDateString();
-				case "weekly":
-					const weekStart = new Date(d.setDate(d.getDate() - d.getDay()));
-					return `${weekStart.toLocaleDateString()} (Week)`;
-				case "monthly":
-					return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-				case "yearly":
-					return d.getFullYear().toString();
-				default:
-					return d.toLocaleDateString();
-			}
-		},
 	},
 	computed: {
+		profitLossDistribution() {
+			if (this.filteredTrades.length === 0) {
+				return {}; // No trades, no distribution data
+			}
+
+			// Define the specific bucket ranges to cover both losses and profits using expanded Fibonacci numbers
+			const bucketRanges = [
+				{ label: "Below -$987", min: -Infinity, max: -987 },
+				{ label: "-$987 to -$610", min: -987, max: -610 },
+				{ label: "-$610 to -$377", min: -610, max: -377 },
+				{ label: "-$377 to -$233", min: -377, max: -233 },
+				{ label: "-$233 to -$144", min: -233, max: -144 },
+				{ label: "-$144 to -$89", min: -144, max: -89 },
+				{ label: "-$89 to -$55", min: -89, max: -55 },
+				{ label: "-$55 to -$34", min: -55, max: -34 },
+				{ label: "-$34 to -$21", min: -34, max: -21 },
+				{ label: "-$21 to -$13", min: -21, max: -13 },
+				{ label: "-$13 to -$8", min: -13, max: -8 },
+				{ label: "-$8 to -$5", min: -8, max: -5 },
+				{ label: "-$5 to -$3", min: -5, max: -3 },
+				{ label: "-$3 to -$2", min: -3, max: -2 },
+				{ label: "-$2 to $0", min: -2, max: 0 },
+				{ label: "$0 to $2", min: 0, max: 2 },
+				{ label: "$2 to $3", min: 2, max: 3 },
+				{ label: "$3 to $5", min: 3, max: 5 },
+				{ label: "$5 to $8", min: 5, max: 8 },
+				{ label: "$8 to $13", min: 8, max: 13 },
+				{ label: "$13 to $21", min: 13, max: 21 },
+				{ label: "$21 to $34", min: 21, max: 34 },
+				{ label: "$34 to $55", min: 34, max: 55 },
+				{ label: "$55 to $89", min: 55, max: 89 },
+				{ label: "$89 to $144", min: 89, max: 144 },
+				{ label: "$144 to $233", min: 144, max: 233 },
+				{ label: "$233 to $377", min: 233, max: 377 },
+				{ label: "$377 to $610", min: 377, max: 610 },
+				{ label: "$610 to $987", min: 610, max: 987 },
+				{ label: "Above $987", min: 987, max: Infinity },
+			];
+
+			// Initialize the buckets
+			const buckets = {};
+			bucketRanges.forEach((range) => {
+				buckets[range.label] = 0; // Start each bucket with a count of 0
+			});
+
+			// Count the trades in each bucket
+			this.filteredTrades.forEach((trade) => {
+				if (trade && trade.profitLoss !== undefined) {
+					const profitLoss = trade.profitLoss;
+					// Find the correct bucket for each trade
+					const bucket = bucketRanges.find((range) => profitLoss >= range.min && profitLoss < range.max);
+					if (bucket) {
+						buckets[bucket.label]++;
+					}
+				}
+			});
+
+			return buckets;
+		},
+		profitLossDistributionChartData() {
+			const distribution = this.profitLossDistribution;
+			return {
+				labels: Object.keys(distribution),
+				data: Object.values(distribution),
+			};
+		},
 		chartOptions() {
 			return {
 				title: {
