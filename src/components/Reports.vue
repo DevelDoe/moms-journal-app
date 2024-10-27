@@ -25,13 +25,11 @@
 		</div>
 
 		<div v-else>
-
 			<ReportCumulativeProfit :trades="trades" />
 
 			<ReportTradesProfit :trades="trades" />
 
 			<ReportProfitLossDistribution :trades="trades" />
-
 		</div>
 	</div>
 </template>
@@ -47,8 +45,8 @@ export default {
 			isLoading: true,
 			hasCorruptData: false,
 			startDate: "", // Start date for fetching
-			endDate: "",   // End date for fetching
-			trades: [],    // Fetched trades directly from backend
+			endDate: "", // End date for fetching
+			trades: [], // Fetched trades directly from backend
 		};
 	},
 	components: {
@@ -69,19 +67,42 @@ export default {
 	methods: {
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
+				// Ensure dates are either null or in "YYYY-MM-DD" format
+				if (start && isNaN(new Date(start).getTime())) {
+					console.error("Invalid start date format:", start);
+					return;
+				}
+				if (end && isNaN(new Date(end).getTime())) {
+					console.error("Invalid end date format:", end);
+					return;
+				}
+
 				this.isLoading = true;
+
+				// Dispatch action to fetch trades with the date range
 				await this.$store.dispatch("fetchTrades", { start, end });
-				
-				// Directly assign the fetched trades without filtering
+
+				// Assign fetched trades to the component's data
 				this.trades = this.$store.getters.getTrades || [];
-				
+
 				// Check for corrupt data directly in the trades array
 				this.hasCorruptData = this.trades.some(
-					trade => !trade || !trade.symbol || trade.buyPrice === undefined ||
-						trade.sellPrice === undefined || trade.profitLoss === undefined || !trade.date
+					(trade) =>
+						!trade ||
+						!trade.symbol ||
+						trade.buyPrice === undefined ||
+						trade.sellPrice === undefined ||
+						trade.profitLoss === undefined ||
+						!trade.date ||
+						isNaN(new Date(trade.date).getTime()) // Validate date format
 				);
+
+				if (this.hasCorruptData) {
+					console.warn("Corrupt trade data found in response.");
+				}
 			} catch (error) {
 				console.error("Error fetching trades:", error);
+				// Optional: Display an error message to the user
 			} finally {
 				this.isLoading = false;
 			}
@@ -93,11 +114,10 @@ export default {
 		},
 		endDate(newVal) {
 			if (newVal && this.startDate) this.fetchTradesByDateRange(this.startDate, newVal);
-		}
+		},
 	},
 };
 </script>
-
 
 <style scoped>
 .trades {
