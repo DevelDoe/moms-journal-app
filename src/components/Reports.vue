@@ -142,9 +142,11 @@ export default {
 	mounted() {
 		this.fetchTradesByDateRange();
 		window.addEventListener("resize", this.updateViewportHeight);
+		window.addEventListener("wheel", this.handleScroll); // Listen for wheel events on the window
 	},
 	beforeUnmount() {
 		window.removeEventListener("resize", this.updateViewportHeight);
+		window.removeEventListener("wheel", this.handleScroll); // Remove the listener when component is unmounted
 	},
 };
 </script>
