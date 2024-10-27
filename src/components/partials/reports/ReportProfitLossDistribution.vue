@@ -121,7 +121,7 @@ export default {
 								color: "#162e49",
 							},
 							smooth: 0.01,
-							length: 5,
+							length: 10,
 							length2: 9,
 						},
 						itemStyle: {
