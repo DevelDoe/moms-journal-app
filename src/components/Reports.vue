@@ -317,13 +317,14 @@ export default {
 		},
 	},
 	watch: {
-		trades: {
-			immediate: true,
-			handler(newTrades) {
-				this.tradesLoaded = newTrades.length > 0; // Set tradesLoaded based on new trades
-			},
-		},
-	},
+    trades: {
+        immediate: true,
+        handler(newTrades) {
+            // Only proceed if newTrades is defined and is an array
+            this.tradesLoaded = Array.isArray(newTrades) && newTrades.length > 0;
+        },
+    },
+},
 };
 </script>
 
