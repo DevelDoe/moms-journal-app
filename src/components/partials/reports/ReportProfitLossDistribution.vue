@@ -114,7 +114,7 @@ export default {
 						label: {
 							color: "#1E3E62",
 							fontSize: 24,
-							formatter: "{b} : {c}", // Label format
+							formatter: "{b}", // Label format
 						},
 						labelLine: {
 							lineStyle: {
