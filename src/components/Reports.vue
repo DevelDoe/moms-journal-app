@@ -51,7 +51,7 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight - 170,
+			viewportHeight: window.innerHeight,
 			reports: [ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
 		};
 	},
@@ -156,7 +156,7 @@ export default {
 }
 
 .header {
-	display: flex;
+	display: inline-block;
 	height: 100%;
 	width: 100%;
 	margin-bottom: 26px;
@@ -206,27 +206,9 @@ export default {
 
 .report {
 	width: 100%;
-	display: inline-block;
+	display: flex;
 	align-items: center;
 	justify-content: center;
 	position: relative;
-}
-button {
-	position: absolute;
-	bottom: 10px;
-	left: 50%;
-	transform: translateX(-50%);
-	background-color: #1e3e62;
-	color: white;
-	border: none;
-	padding: 10px 20px;
-	border-radius: 8px;
-	cursor: pointer;
-	font-size: 1rem;
-	transition: background-color 0.3s ease;
-}
-
-button:hover {
-	background-color: #007bff;
 }
 </style>
