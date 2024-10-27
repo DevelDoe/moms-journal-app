@@ -28,11 +28,10 @@
 				</div>
 			</div>
 			<div class="content">
-				<ReportCumulativeProfit :trades="trades" />
-				<ReportTradesProfit :trades="trades" />
-				<ReportProfitLossDistribution :trades="trades" />
-				<ReportProfitsByTime :trades="trades />
-				<ReportTrades />
+				<ReportCumulativeProfit 				:trades="trades" />
+				<ReportTradesProfit 					:trades="trades" />
+				<ReportProfitLossDistribution 			:trades="trades" />
+				<ReportProfitsByTime 					:trades="trades" />
 			</div>
 		</div>
 	</div>
@@ -40,9 +39,9 @@
 
 <script>
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
-import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
 import ReportProfitLossDistribution from "./partials/reports/ReportProfitLossDistribution.vue";
 import ReportProfitsByTime from "./partials/reports/ReportProfitsByTime.vue";
+import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
 
 export default {
 	data() {
