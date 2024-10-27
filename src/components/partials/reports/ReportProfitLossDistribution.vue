@@ -80,11 +80,11 @@ export default {
 				},
 				tooltip: {
 					tooltip: {
-						trigger: "axis",
-						axisPointer: {
-							type: "line",
-						},
+					trigger: "axis",
+					axisPointer: {
+						type: "line",
 					},
+				},
 				},
 				legend: {
 					orient: "horizontal",
@@ -105,16 +105,16 @@ export default {
 						center: ["50%", "50%"],
 						roseType: "radius",
 						data: this.profitByPriceRange.data.map((item) => {
-							// Modify the label to show only the starting value without the $ sign
+							// Modify the label to show only the starting value of each bucket
 							return {
 								...item,
-								name: item.name.replace("$", "").split("-")[0], // Remove $ and show only the starting value
+								name: item.name.split("-")[0], // Show only the starting value
 							};
 						}),
 						label: {
 							color: "#1E3E62",
 							fontSize: 24,
-							formatter: "{b}", // Label format
+							formatter: "{b} : {c}", // Label format
 						},
 						labelLine: {
 							lineStyle: {
