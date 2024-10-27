@@ -21,7 +21,7 @@ import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from
 import VChart from "vue-echarts";
 
 use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
-
+import { nextTick } from 'vue';
 export default {
 	props: {
 		trades: {
