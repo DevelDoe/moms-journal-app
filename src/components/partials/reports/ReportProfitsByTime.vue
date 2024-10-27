@@ -94,6 +94,17 @@ export default {
 			return {
 				title: {
 					text: `Trades by ${this.selectedGranularity === "hourly" ? "Hour" : "Minute"}`,
+					left: "left", // Position the title in the center
+					textStyle: {
+						color: "#ffffff", // Title text color
+						fontSize: 18, // Font size
+						fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
+					},
+					subtext: "", // Add a subtitle if needed
+					subtextStyle: {
+						color: "#aaa", // Subtitle color
+						fontSize: 14,
+					},
 				},
 				tooltip: {
 					trigger: "axis",
