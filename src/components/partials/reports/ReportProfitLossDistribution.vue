@@ -95,7 +95,12 @@ export default {
 					trigger: "axis",
 					axisPointer: { type: "shadow" },
 				},
-				grid: { top: 80, bottom: 30 },
+				grid: {
+					left: "1%", // Add some padding on both sides for centering
+					right: "1%",
+					bottom: "1%",
+					containLabel: true,
+				},
 				xAxis: {
 					type: "value",
 					position: "top",
