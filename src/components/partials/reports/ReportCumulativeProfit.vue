@@ -229,6 +229,18 @@ export default {
 			};
 		},
 	},
+	watch: {
+		trades: {
+			handler() {
+				this.resetData();
+			},
+			deep: true,
+			immediate: true,
+		},
+		granularity() {
+			this.resetData();
+		},
+	},
 };
 </script>
 
