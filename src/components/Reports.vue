@@ -69,11 +69,11 @@ import TradesList from "./partials/TradesList.vue"; // Import the new TradesList
 
 import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vue";
 import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
+import ReportProfitLossHistogram from "./partials/reports/ReportProfitLossHistogram.vue"; // Import the ProfitLossHistogram component
 
 import ReportProfitByPriceRange from "./partials/reports/ReportProfitByPriceRange.vue"; // Import the new ProfitByPriceRangeChart component
 import ReportTradesByHour from "./partials/reports/ReportTradesByHour.vue"; // Import the new TradesByHourChart component
 import ReportTradesByMinute from "./partials/reports/ReportTradesByMinute.vue"; // Import the TradesByMinuteChart component
-import ReportProfitLossHistogram from "./partials/reports/ReportProfitLossHistogram.vue"; // Import the ProfitLossHistogram component
 
 import axios from "axios"; // Make sure axios is imported
 import { use } from "echarts/core";
@@ -100,10 +100,10 @@ export default {
 		// TradesList,
 		ReportCumulativeProfit,
 		ReportTradesProfit,
+		ReportProfitLossHistogram,
 		// ReportProfitByPriceRange,
 		// ReportTradesByHour,
 		// ReportTradesByMinute,
-		// ReportProfitLossHistogram,
 	},
 	async mounted() {
 		// Fetch trades and historical trades when the component is mounted
