@@ -141,7 +141,7 @@ export default {
 	border-radius: 8px;
 	padding: 16px;
 	width: 100%;
-	max-width: 422px;
+	max-width: 208px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
