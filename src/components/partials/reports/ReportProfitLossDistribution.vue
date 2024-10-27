@@ -39,7 +39,7 @@ export default {
 				case "hourly":
 					return `${d.toLocaleDateString()} ${d.getHours()}:00`;
 				case "daily":
-					return d.toLocaleDateString();
+					return d.toLocaleDateString(); // Date only, no time
 				case "weekly":
 					const startOfWeek = new Date(d.setDate(d.getDate() - d.getDay()));
 					return `Week of ${startOfWeek.toLocaleDateString()}`;
@@ -131,8 +131,7 @@ export default {
 						type: "bar",
 						data: this.profitLossDistribution.data,
 						itemStyle: {
-							color: (params) =>
-								this.profitLossDistribution.labels[params.dataIndex].includes("-") ? "#e57373" : "#91cc75",
+							color: (params) => (this.profitLossDistribution.labels[params.dataIndex].includes("-") ? "#e57373" : "#91cc75"),
 						},
 					},
 				],
