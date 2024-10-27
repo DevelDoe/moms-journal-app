@@ -12,25 +12,23 @@
 		<div v-else-if="hasCorruptData" class="corrupt-data-warning">
 			<p>Some trades data is corrupted and could not be displayed. Please contact an administrator.</p>
 		</div>
-	
-		<div class="header">
-			<div class="page-title">Reports</div>
-			<div class="date-range-picker">
-				<label>Start Date:</label>
-				<input type="date" v-model="startDate" />
-				<label>End Date:</label>
-				<input type="date" v-model="endDate" />
+
+		<div v-else>
+			<div class="header">
+				<div class="page-title">Reports</div>
+				<div class="date-range-picker">
+					<label>Start Date:</label>
+					<input type="date" v-model="startDate" />
+					<label>End Date:</label>
+					<input type="date" v-model="endDate" />
+				</div>
+			</div>
+			<div class="content">
+				<ReportCumulativeProfit :trades="trades" />
+				<ReportTradesProfit :trades="trades" />
+				<ReportProfitLossDistribution :trades="trades" />
 			</div>
 		</div>
-
-		<div class="content" v-else>
-			<ReportCumulativeProfit :trades="trades" />
-
-			<ReportTradesProfit :trades="trades" />
-
-			<ReportProfitLossDistribution :trades="trades" />
-		</div>
-
 	</div>
 </template>
 
