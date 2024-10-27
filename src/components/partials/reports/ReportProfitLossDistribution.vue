@@ -101,7 +101,7 @@ export default {
 					{
 						name: "Profit/Loss",
 						type: "pie",
-						radius: ["20%", "50%"],
+						radius: ["0%", "50%"],
 						center: ["50%", "50%"],
 						roseType: "radius",
 						data: this.profitByPriceRange.data.map((item) => {
