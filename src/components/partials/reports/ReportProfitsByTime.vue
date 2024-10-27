@@ -1,5 +1,5 @@
 <template>
-	<div class="trades-by-time-chart">
+	<div class="trades-by-time">
 		<div class="chart-header">
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
@@ -17,7 +17,7 @@
 				</select>
 			</div>
 		</div>
-		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px"></v-chart>
+		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="trades-by-time-chart"></v-chart>
 	</div>
 </template>
 
@@ -176,11 +176,13 @@ export default {
 </script>
 
 <style scoped>
-.trades-by-time-chart {
+.trades-by-time {
 	display: inline-block;
 	margin-top: 20px;
 	width: 100%;
-	
+}
+.trades-by-time-chart {
+	height: 80vh !important;
 }
 .chart-header {
 	display: flex;
