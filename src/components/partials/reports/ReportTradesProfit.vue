@@ -212,7 +212,7 @@ export default {
 
 #daily-trades-profit-chart {
 
-	height: 90vh !important;
+	height: 100vh !important;
 }
 
 .chart-header {
