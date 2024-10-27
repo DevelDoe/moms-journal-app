@@ -150,7 +150,7 @@ export default {
 						fontSize: 16,
 						formatter: (value) => value.toFixed(2), // Limit to 2 decimal places
 					},
-					axisTick: { show: true }, // Hide ticks if desired
+					axisTick: { show: false }, // Hide ticks if desired
 					splitLine: {
 						lineStyle: {
 							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
