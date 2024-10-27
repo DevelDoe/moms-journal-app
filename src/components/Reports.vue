@@ -93,6 +93,8 @@ export default {
 			isLoading: true, // Loading state
 			tradesLoaded: false, // Ensure trades are loaded before filtering
 			hasCorruptData: false,
+			startDate: "", // Start date for filtering
+        	endDate: "", // End date for filtering
 		};
 	},
 	components: {
