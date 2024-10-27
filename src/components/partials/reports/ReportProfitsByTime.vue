@@ -129,7 +129,7 @@ export default {
 				},
 				tooltip: {
 					trigger: "axis",
-					axisPointer: { type: "shadow" },
+					axisPointer: { type: "none" },
 				},
 				grid: {
 					left: "1%", // Add some padding on both sides for centering
