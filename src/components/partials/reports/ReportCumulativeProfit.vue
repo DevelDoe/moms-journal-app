@@ -49,6 +49,12 @@ export default {
 		window.removeEventListener("resize", this.setFullHeight);
 	},
 	methods: {
+		setFullHeight() {
+        const element = this.$refs.fullHeightElement;
+        if (element) {
+            element.style.height = `${window.innerHeight}px`;
+        }
+    }
 		showTooltip() {
 			this.isTooltipVisible = true;
 		},
