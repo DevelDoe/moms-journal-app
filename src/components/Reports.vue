@@ -3,15 +3,16 @@
 	<div id="trades">
 		<div class="header">
 			<div class="page-title">Reports</div>
-		</div>
-		
-
-		<div class="date-range-picker">
+			<div class="date-range-picker">
 			<label>Start Date:</label>
 			<input type="date" v-model="startDate" />
 			<label>End Date:</label>
 			<input type="date" v-model="endDate" />
 		</div>
+		</div>
+		
+
+		
 
 		<div v-if="isLoading" class="loading-message">
 			<p>Loading trades...</p>
