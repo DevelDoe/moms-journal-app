@@ -163,7 +163,7 @@ export default {
 <style scoped>
 #trades {
 	height: 100%;
-	min-height: 100%;
+	min-height: 1000px;
 }
 .no-trades {
 	font-size: 1.2em;
