@@ -107,7 +107,7 @@ export default {
 							},
 							smooth: 0.1,
 							length: 10,
-							length2: 200,
+							length2: 20,
 							
 						},
 						itemStyle: {
