@@ -126,10 +126,12 @@ export default {
 	padding: 20px;
 }
 .header{
-	
+	display: flexbox;
 }
 .page-title{
 	font-size: 4rem;
+	float: left;
+	min-width: 200px;
 }
 
 .no-trades {
