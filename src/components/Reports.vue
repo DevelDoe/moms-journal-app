@@ -146,6 +146,7 @@ export default {
     width: 100%;
     max-width: 221px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+	float:right;
 }
 
 .date-range-picker label {
