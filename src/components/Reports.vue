@@ -78,7 +78,7 @@ export default {
 				previousReport.scrollIntoView({ behavior: "smooth" });
 			}
 		},
-		handleScroll(event) {
+		handleScroll: throttle(function (event) {
 			const activeReport = this.$refs.reportRefs.find((report) => {
 				const rect = report.getBoundingClientRect();
 				return rect.top >= 0 && rect.bottom <= window.innerHeight;
@@ -93,6 +93,12 @@ export default {
 			} else if (event.deltaY < 0 && currentIndex > 0) {
 				this.scrollToPreviousReport(currentIndex);
 			}
+		}, 500), // Throttle to trigger once every 500ms
+		async fetchTradesByDateRange(start = null, end = null) {
+			// Your fetch logic
+		},
+		updateViewportHeight() {
+			this.viewportHeight = window.innerHeight;
 		},
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
@@ -134,9 +140,6 @@ export default {
 			} finally {
 				this.isLoading = false;
 			}
-		},
-		updateViewportHeight() {
-			this.viewportHeight = window.innerHeight;
 		},
 	},
 	mounted() {
