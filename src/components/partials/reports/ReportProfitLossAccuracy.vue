@@ -60,7 +60,6 @@ export default {
 								],
 							},
 						},
-						
 						pointer: { width: 1 },
 						title: { show: false },
 						detail: {
