@@ -110,9 +110,7 @@ export default {
 				},
 				tooltip: {
 					trigger: "axis",
-					axisPointer: {
-						type: "shadow",
-					},
+					axisPointer: { type: "shadow" },
 				},
 				xAxis: {
 					type: "category",
