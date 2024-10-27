@@ -98,8 +98,8 @@ export default {
 		};
 	},
 	components: {
-		AnalyzeTrades,
-		TradesSummary,
+		// AnalyzeTrades,
+		// TradesSummary,
 		VChart,
 		// TradesList,
 		ReportCumulativeProfit,
