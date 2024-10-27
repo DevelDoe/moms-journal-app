@@ -103,7 +103,7 @@ export default {
 				},
 				xAxis: {
 					type: "value",
-					position: "center",
+					position: "top",
 					splitLine: { lineStyle: { type: "dashed" } },
 					name: "Total Profit/Loss",
 				},
