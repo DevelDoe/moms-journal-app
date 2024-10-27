@@ -137,7 +137,7 @@ export default {
 	display: flex;
 	align-items: flex-end;
 	gap: 16px; /* Add spacing between the date inputs */
-	background-color: #f5f5f5;
+	background-color: #1e3e62;
 	border-radius: 8px;
 	padding: 16px;
 	width: 100%;
