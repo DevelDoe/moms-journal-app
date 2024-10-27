@@ -154,7 +154,7 @@ export default {
 .date-input label {
 	margin-bottom: 4px;
 	font-weight: bold;
-	color: #eseses;
+	color: #eaeaea;
 }
 
 .date-input input[type="date"] {
