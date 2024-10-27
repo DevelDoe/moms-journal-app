@@ -46,31 +46,24 @@ export default {
 	},
 	computed: {
 		profitByPriceRange() {
-			if (this.trades.length === 0) return { labels: [], data: [] };
+			if (this.trades.length === 0) return { data: [] };
 
-			// Extract unique dollar-based bucket values from `buyPrice`
-			const uniqueBuckets = [
-				...new Set(this.trades.map((trade) => Math.floor(trade.buyPrice))),
-			].sort((a, b) => a - b); // Sort in ascending order
-
-			// Initialize buckets with zero profit for each unique dollar value
-			const buckets = uniqueBuckets.reduce((acc, dollar) => {
-				acc[`$${dollar}-${dollar + 1}`] = 0;
+			// Initialize buckets for non-zero trades
+			const buckets = this.trades.reduce((acc, trade) => {
+				const bucketLabel = `$${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+				if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+				acc[bucketLabel] += trade.profitLoss;
 				return acc;
 			}, {});
 
-			// Aggregate profit for each trade within its dollar range
-			this.trades.forEach((trade) => {
-				const dollarBucket = `$${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
-				buckets[dollarBucket] += trade.profitLoss;
-			});
-
-			// Prepare data array for the pie chart
+			// Filter out empty buckets and prepare data for the chart
 			return {
-				data: Object.keys(buckets).map((label) => ({
-					value: parseFloat(buckets[label].toFixed(2)),
-					name: label,
-				})),
+				data: Object.keys(buckets)
+					.filter((label) => buckets[label] !== 0) // Exclude zero profit/loss buckets
+					.map((label) => ({
+						value: parseFloat(buckets[label].toFixed(2)),
+						name: label,
+					})),
 			};
 		},
 		chartOptions() {
@@ -97,9 +90,9 @@ export default {
 					{
 						name: "Profit/Loss",
 						type: "pie",
-						radius: ["20%", "60%"], // Adjust inner and outer radius for rose effect
+						radius: ["20%", "60%"],
 						center: ["50%", "50%"],
-						roseType: "radius", // Enables rose chart style
+						roseType: "radius",
 						data: this.profitByPriceRange.data,
 						label: {
 							color: "#eaeaea",
@@ -114,15 +107,27 @@ export default {
 							length2: 20,
 						},
 						itemStyle: {
-							color: "#c23531",
+							// Dynamic gradient for each segment based on value
+							color: (params) => {
+								const colors = ["#ff7f50", "#87ceeb", "#da70d6", "#32cd32", "#6495ed", "#ff69b4"];
+								return {
+									type: "linear",
+									x: 0,
+									y: 0,
+									x2: 1,
+									y2: 1,
+									colorStops: [
+										{ offset: 0, color: colors[params.dataIndex % colors.length] },
+										{ offset: 1, color: "#333" },
+									],
+								};
+							},
 							shadowBlur: 200,
 							shadowColor: "rgba(0, 0, 0, 0.5)",
 						},
 						animationType: "scale",
 						animationEasing: "elasticOut",
-						animationDelay: function (idx) {
-							return Math.random() * 200;
-						},
+						animationDelay: (idx) => Math.random() * 200,
 					},
 				],
 			};
@@ -133,7 +138,10 @@ export default {
 
 <style scoped>
 .profit-loss-histogram {
-
+	margin-top: 20px;
+	width: 48%;
+	padding: 2%;
+	float: left;
 }
 
 .chart-header {
