@@ -4,7 +4,8 @@
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
 				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart visualizes cumulative profit or loss alongside the trade count over a selected time period. It provides insights into periods of sustained growth, significant drawdowns, and trading frequency, offering a clearer perspective on performance trends and trading activity.
+					This chart visualizes cumulative profit or loss alongside the trade count over a selected time period. It provides insights into periods of
+					sustained growth, significant drawdowns, and trading frequency, offering a clearer perspective on performance trends and trading activity.
 				</div>
 			</span>
 		</div>
@@ -39,6 +40,13 @@ export default {
 		return {
 			isTooltipVisible: false,
 		};
+	},
+	mounted() {
+		this.setFullHeight();
+		window.addEventListener("resize", this.setFullHeight);
+	},
+	beforeUnmount() {
+		window.removeEventListener("resize", this.setFullHeight);
 	},
 	methods: {
 		showTooltip() {
