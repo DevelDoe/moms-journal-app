@@ -136,6 +136,41 @@ export default {
 .date-range-picker{
 	float:right;
 }
+.date-range-picker {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	background-color: #f5f5f5;
+	border-radius: 8px;
+	padding: 16px;
+	width: 100%;
+	max-width: 400px;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+	font-family: Arial, sans-serif;
+}
+
+.date-range-picker label {
+	margin-bottom: 4px;
+	font-weight: bold;
+	color: #333;
+}
+
+.date-range-picker input[type="date"] {
+	width: 100%;
+	padding: 8px;
+	margin-bottom: 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #333;
+	background-color: #fff;
+}
+
+.date-range-picker input[type="date"]:focus {
+	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+	outline: none;
+}
 .no-trades {
 	font-size: 1.2em;
 	color: #666;
