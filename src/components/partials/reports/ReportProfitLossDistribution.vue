@@ -53,9 +53,6 @@ export default {
         const buckets = this.trades.reduce((acc, trade) => {
             const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
             
-            // Log each trade's buyPrice and profitLoss to inspect data aggregation
-            console.log(`Trade - Buy Price: ${trade.buyPrice}, Profit/Loss: ${trade.profitLoss}`);
-
             // Only add to the bucket if there is a non-zero profit/loss value
             if (trade.profitLoss !== 0) {
                 if (!acc[bucketLabel]) acc[bucketLabel] = 0;
@@ -63,9 +60,6 @@ export default {
             }
             return acc;
         }, {});
-
-        // Log the buckets after aggregation
-        console.log("Aggregated Buckets (Before Filtering):", buckets);
 
         // Filter out empty buckets and prepare the final data for the chart
         const finalData = Object.entries(buckets)
