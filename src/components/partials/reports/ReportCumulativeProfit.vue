@@ -1,5 +1,5 @@
 <template>
-	<div id="cumulative-profit-chart">
+	<div id="cumulative-profit">
 		<div class="chart-header">
 			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
 				?
