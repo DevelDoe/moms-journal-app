@@ -2,7 +2,7 @@
 <template>
 	<div id="trades">
 		<div v-if="isLoading" class="loading-message">
-			<p>Loading trades...</p>
+			<p>Loading Reports...</p>
 		</div>
 
 		<div v-else-if="trades && trades.length === 0" class="no-trades">
