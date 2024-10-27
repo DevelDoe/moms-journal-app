@@ -118,7 +118,7 @@ export default {
 						},
 						itemStyle: {
 							color: (params) => {
-								const colors = ["#D2FF72", "#73EC8Bs", "#54C392", "#72BF78"];
+								const colors = ["#D2FF72", "#73EC8Bs", "#A0D683", "#72BF78"];
 								return colors[params.dataIndex % colors.length];
 							},
 							shadowBlur: 100,
