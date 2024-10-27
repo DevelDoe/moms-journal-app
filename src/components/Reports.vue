@@ -31,11 +31,11 @@
 			<!-- WebSocket Analyze Component -->
 			<!-- <AnalyzeTrades v-if="filteredTrades && historicalTrades" :todayTrades="filteredTrades" :historicalTrades="historicalTrades" /> -->
 
-			<ReportCumulativeProfit :trades="fetchTradesByDateRange" />
+			<ReportCumulativeProfit :trades="trades" />
 
-			<ReportTradesProfit :trades="fetchTradesByDateRange" />
+			<ReportTradesProfit :trades="trades" />
 
-			<ReportProfitLossDistribution :trades="fetchTradesByDateRange" />
+			<ReportProfitLossDistribution :trades="trades" />
 
 			<!-- Trades by Hour Chart Partial -->
 			<!-- <ReportTradesByHour
@@ -95,6 +95,7 @@ export default {
 			hasCorruptData: false,
 			startDate: "", // Start date for filtering
 			endDate: "", // End date for filtering
+			trades: [],
 		};
 	},
 	components: {
