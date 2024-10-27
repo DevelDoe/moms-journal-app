@@ -182,7 +182,7 @@ export default {
 						stack: "Total",
 						data: tradeCountData.map((value) => ({
 							value: parseFloat(value).toFixed(2),
-							itemStyle: { color: value >= 0 ? "#FF9800" : "#A0D683" },
+							itemStyle: { color: value >= 0 ? "#FF9800" : "#FEFF9F" },
 						})),
 					},
 					{
