@@ -27,20 +27,10 @@
 			</div> -->
 
 			<div class="content">
-				<div
-					class="report"
-					v-for="(report, index) in reports"
-					:key="index"
-					ref="reportRefs"
-					:style="{ height: `${viewportHeight}px` }"
-				>
-					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">
-						Back
-					</button>
+				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
+					<button v-if="index > 0" @click="scrollToPreviousReport(index)" class="back-button">Back</button>
 					<component :is="report" :trades="trades" />
-					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button">
-						Next
-					</button>
+					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)" class="next-button">Next</button>
 				</div>
 			</div>
 		</div>
@@ -54,7 +44,6 @@ import ReportProfitsByTime from "./partials/reports/ReportProfitsByTime.vue";
 import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
 import ReportProfitLossAccuracy from "./partials/reports/ReportProfitLossAccuracy.vue";
 
-
 export default {
 	data() {
 		return {
@@ -63,15 +52,8 @@ export default {
 			startDate: "", // Start date for fetching
 			endDate: "", // End date for fetching
 			trades: [], // Fetched trades directly from backend
-			viewportHeight: window.innerHeight ,
-			reports: [
-				ReportCumulativeProfit,
-				ReportProfitLossDistribution,
-				ReportTradesProfit,
-				ReportProfitsByTime,
-				ReportProfitLossAccuracy, 
-
-			],
+			viewportHeight: window.innerHeight,
+			reports: [ReportProfitLossAccuracy, ReportCumulativeProfit, ReportProfitLossDistribution, ReportTradesProfit, ReportProfitsByTime],
 		};
 	},
 	components: {
@@ -79,7 +61,7 @@ export default {
 		ReportTradesProfit,
 		ReportProfitLossDistribution,
 		ReportProfitsByTime,
-		ReportProfitLossAccuracy
+		ReportProfitLossAccuracy,
 	},
 	methods: {
 		scrollToNextReport(index) {
