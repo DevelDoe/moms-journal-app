@@ -194,7 +194,9 @@ export default {
 </script>
 
 <style scoped>
-
+#trades-by-time{
+	height: 20vh;
+}
 #trades-by-time-chart {
 	height: 100vh !important;
 }
