@@ -67,7 +67,14 @@ export default {
 							fontSize: 20,
 							color: "#eaeaea",
 						},
-						data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
+						data: [
+							{
+								value: (() => {
+									const [profit, loss] = this.profitToLossRatio.split(":").map(Number);
+									return profit / loss;
+								})(),
+							},
+						],
 					},
 				],
 			};
