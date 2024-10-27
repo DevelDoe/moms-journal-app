@@ -221,7 +221,8 @@ export default {
 	transition: opacity 0.3s ease-in-out;
 }
 .granularity-picker {
-
+	display: inline-block;
+	width: 200px;
 	gap: 16px;
 	background-color: #1e3e62;
 	border-radius: 8px;
