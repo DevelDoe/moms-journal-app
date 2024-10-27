@@ -112,6 +112,12 @@ export default {
 					trigger: "axis",
 					axisPointer: { type: "shadow" },
 				},
+				grid: {
+					left: "1%", // Add some padding on both sides for centering
+					right: "0%",
+					bottom: "0%",
+					containLabel: true,
+				},
 				xAxis: {
 					type: "category",
 					data: this.aggregatedData.labels,
