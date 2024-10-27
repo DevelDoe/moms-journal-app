@@ -156,13 +156,13 @@ export default {
 
 .date-range-picker input[type="date"] {
 	width: 100%;
-	padding: 8px;
-	margin-bottom: 12px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	font-size: 16px;
-	color: #333;
-	background-color: #fff;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px;
+    color: #333;
+    background-color: #ffffff;
 }
 
 .date-range-picker input[type="date"]:focus {
