@@ -27,10 +27,10 @@
 			</div>
 
 			<div class="content">
-				<div class="report" v-for="(report, index) in reports" :key="index" ref="reportRefs" :style="{ height: `${viewportHeight}px` }">
-					<component :is="report" :trades="trades" />
-					<button v-if="index < reports.length - 1" @click="scrollToNextReport(index)">Next</button>
-				</div>
+				<div class="report"><ReportCumulativeProfit 		:trades="trades" /></div>
+				<div class="report"><ReportProfitLossDistribution 	:trades="trades" /></div>
+				<div class="report"><ReportTradesProfit 			:trades="trades" /></div>
+				<div class="report"><ReportProfitsByTime 			:trades="trades" /></div>
 			</div>
 		</div>
 	</div>
