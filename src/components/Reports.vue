@@ -162,7 +162,7 @@ export default {
 
 <style scoped>
 #trades {
-	padding: 20px;
+	padding: 0;
 }
 .no-trades {
 	font-size: 1.2em;
