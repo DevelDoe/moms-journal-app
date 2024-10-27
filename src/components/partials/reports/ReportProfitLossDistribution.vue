@@ -81,7 +81,7 @@ export default {
 					text: "Profit and Loss by Price Range",
 					left: "left",
 					textStyle: {
-						color: "#eaeaea",
+						color: "#1E3E62",
 						fontSize: 18,
 						fontWeight: "bold",
 					},
