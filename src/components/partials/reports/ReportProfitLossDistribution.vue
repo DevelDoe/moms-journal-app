@@ -52,40 +52,27 @@ export default {
 		profitByPriceRange() {
 		if (this.trades.length === 0) return { labels: [], data: [] };
 
-		// Calculate min and max buyPrice
-		const prices = this.trades.map(trade => trade.buyPrice);
-		const minPrice = Math.min(...prices);
-		const maxPrice = Math.max(...prices);
+		// Extract unique dollar-based bucket values from `buyPrice`
+		const uniqueBuckets = [
+			...new Set(this.trades.map(trade => Math.floor(trade.buyPrice))),
+		].sort((a, b) => a - b); // Sort in ascending order
 
-		// Define number of buckets and calculate interval size
-		const bucketCount = 10; // Number of dynamic intervals
-		const intervalSize = (maxPrice - minPrice) / bucketCount;
+		// Initialize buckets with zero profit for each unique dollar value
+		const buckets = uniqueBuckets.reduce((acc, dollar) => {
+			acc[`$${dollar}-${dollar + 1}`] = 0;
+			return acc;
+		}, {});
 
-		// Create dynamic bucket ranges
-		const buckets = Array.from({ length: bucketCount }, (_, i) => {
-			const min = minPrice + i * intervalSize;
-			const max = min + intervalSize;
-			return {
-				label: `$${min.toFixed(2)} - $${max.toFixed(2)}`,
-				min,
-				max,
-				totalProfit: 0, // Initialize profit for each bucket
-			};
-		});
-
-		// Aggregate profit for each trade within its price range
+		// Aggregate profit for each trade within its dollar range
 		this.trades.forEach((trade) => {
-			const profitLoss = trade.profitLoss;
-			const bucket = buckets.find((range) => trade.buyPrice >= range.min && trade.buyPrice < range.max);
-			if (bucket) {
-				bucket.totalProfit += profitLoss; // Sum profits/losses within each price range
-			}
+			const dollarBucket = `$${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+			buckets[dollarBucket] += trade.profitLoss;
 		});
 
 		// Prepare labels and data arrays for the chart
 		return {
-			labels: buckets.map(bucket => bucket.label),
-			data: buckets.map(bucket => bucket.totalProfit),
+			labels: Object.keys(buckets),
+			data: Object.values(buckets),
 		};
 	},
 		chartOptions() {
