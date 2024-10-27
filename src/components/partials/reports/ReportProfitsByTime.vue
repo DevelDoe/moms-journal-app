@@ -181,7 +181,7 @@ export default {
 	margin-top: 20px;
 	width: 100%;
 }
-.trades-by-time-chart {
+#trades-by-time-chart {
 	height: 80vh !important;
 }
 .chart-header {
