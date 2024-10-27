@@ -68,6 +68,14 @@ export default {
           width: 2
         }
       },
+	  splitLine: {
+        distance: -30,
+        length: 30,
+        lineStyle: {
+          color: '#fff',
+          width: 4
+        }
+      },
 						pointer: { width: 1 },
 						title: { show: false },
 						detail: {
