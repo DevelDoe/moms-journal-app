@@ -91,7 +91,7 @@ export default {
 				grid: {
 					left: "6%",
 					right: "6%",
-					bottom: "6%",
+					bottom: "16%",
 					top: "20%",
 					containLabel: false,
 				},
