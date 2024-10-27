@@ -148,6 +148,8 @@ export default {
 						})),
 					},
 				],
+				animationDuration: 1000,
+				animationEasing: "exponentialIn",
 			};
 		},
 	},
