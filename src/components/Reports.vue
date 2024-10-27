@@ -138,7 +138,7 @@ export default {
 }
 
 .header {
-	display: inline-block;
+	display: flex;
 	height: 100%;
 	width: 100%;
 	margin-bottom: 26px;
