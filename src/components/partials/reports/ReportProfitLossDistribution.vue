@@ -140,7 +140,7 @@ export default {
 									],
 								};
 							},
-							shadowBlur: 500,
+							shadowBlur: 1000,
 							shadowColor: "rgba(0, 0, 0, 0.5)",
 						},
 						animationType: "scale",
