@@ -40,7 +40,10 @@ export default {
 			const totalLoss = Math.abs(
 				this.trades.filter((trade) => trade.profitLoss < 0).reduce((acc, trade) => acc + trade.profitLoss, 0)
 			);
-			return totalLoss > 0 ? ((totalProfit / totalLoss) * 100).toFixed(2) : 0;
+
+			// Calculate ratio as "X:Y" format
+			const ratio = totalLoss > 0 ? (totalProfit / totalLoss).toFixed(2) : "1.00";
+			return `${ratio}:1`;
 		},
 		profitToLossGaugeOptions() {
 			return {
@@ -50,7 +53,7 @@ export default {
 						startAngle: 180,
 						endAngle: 0,
 						min: 0,
-						max: 300,
+						max: 5,
 						progress: { show: true, width: 10 },
 						axisLine: {
 							lineStyle: {
@@ -60,8 +63,12 @@ export default {
 						},
 						pointer: { width: 6 },
 						title: { show: false },
-						detail: { valueAnimation: true, formatter: "{value}%", fontSize: 20 },
-						data: [{ value: this.profitToLossRatio }],
+						detail: {
+							formatter: () => this.profitToLossRatio,
+							fontSize: 20,
+							color: "#eaeaea",
+						},
+						data: [{ value: parseFloat(this.profitToLossRatio.split(":")[0]) }],
 					},
 				],
 			};
