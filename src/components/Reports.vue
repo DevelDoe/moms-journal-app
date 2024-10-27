@@ -206,9 +206,27 @@ export default {
 
 .report {
 	width: 100%;
-	display: flex;
+	display: inline-block;
 	align-items: center;
 	justify-content: center;
 	position: relative;
+}
+button {
+	position: absolute;
+	bottom: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #1e3e62;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 1rem;
+	transition: background-color 0.3s ease;
+}
+
+button:hover {
+	background-color: #007bff;
 }
 </style>
