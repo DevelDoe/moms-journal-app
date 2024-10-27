@@ -1,7 +1,10 @@
 <!-- ./src/components/Reports.vue -->
 <template>
 	<div id="trades">
-		<h1>Reports</h1>
+		<div class="header">
+			<div class="page-title">Reports</div>
+		</div>
+		
 
 		<div id="date-range-picker">
 			<label>Start Date:</label>
