@@ -200,7 +200,7 @@ export default {
 }
 #trades-by-time-chart {
 	margin-bottom: 10vh;
-	margin-top: 3vh;
+	margin-top: 10vh;
 	height: 80vh !important;
 }
 .chart-header {
