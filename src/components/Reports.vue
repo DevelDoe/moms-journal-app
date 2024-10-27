@@ -66,10 +66,32 @@ export default {
 		ReportProfitsByTime,
 	},
 	methods: {
-		scrollToNextReport(index) {
+		crollToNextReport(index) {
 			const nextReport = this.$refs.reportRefs[index + 1];
 			if (nextReport) {
 				nextReport.scrollIntoView({ behavior: "smooth" });
+			}
+		},
+		scrollToPreviousReport(index) {
+			const previousReport = this.$refs.reportRefs[index - 1];
+			if (previousReport) {
+				previousReport.scrollIntoView({ behavior: "smooth" });
+			}
+		},
+		handleScroll(event) {
+			const activeReport = this.$refs.reportRefs.find((report) => {
+				const rect = report.getBoundingClientRect();
+				return rect.top >= 0 && rect.bottom <= window.innerHeight;
+			});
+
+			if (!activeReport) return;
+
+			const currentIndex = this.$refs.reportRefs.indexOf(activeReport);
+
+			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
+				this.scrollToNextReport(currentIndex);
+			} else if (event.deltaY < 0 && currentIndex > 0) {
+				this.scrollToPreviousReport(currentIndex);
 			}
 		},
 		async fetchTradesByDateRange(start = null, end = null) {
