@@ -229,6 +229,7 @@ export default {
     padding: 0;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 2%;
+	border: 1px solid #007bff;
 }
 
 .granularity-input {
