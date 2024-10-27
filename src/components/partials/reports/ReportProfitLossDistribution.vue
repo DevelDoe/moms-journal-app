@@ -122,7 +122,7 @@ export default {
 							},
 							smooth: 0.1,
 							length: 30,
-							length2: 60,
+							length2: 90,
 						},
 						itemStyle: {
 							// Dynamic gradient for each segment based on value
