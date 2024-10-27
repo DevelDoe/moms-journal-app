@@ -160,8 +160,7 @@ export default {
 	margin-bottom: 40px;
 	height: 80vh !important;
 }
-.profit-loss-histogram {
-}
+
 
 .chart-header {
 	display: flex;
