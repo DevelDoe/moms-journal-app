@@ -51,18 +51,6 @@ export default {
 		hideTooltip() {
 			this.isTooltipVisible = false;
 		},
-	},
-	computed: {
-		filteredTrades() {
-			return this.trades.filter((trade) => trade && trade.date && trade.profitLoss !== undefined);
-		},
-		// Aggregates trades by hour or minute based on selected granularity
-		aggregatedData() {
-			if (this.selectedGranularity === "hourly") {
-				return this.aggregateTradesByHour();
-			}
-			return this.aggregateTradesByMinute();
-		},
 		// Aggregates trades by hour
 		aggregateTradesByHour() {
 			const tradesByHour = Array(24).fill(0);
@@ -92,6 +80,15 @@ export default {
 				labels,
 				data: tradesByMinute,
 			};
+		},
+	},
+	computed: {
+		filteredTrades() {
+			return this.trades.filter((trade) => trade && trade.date && trade.profitLoss !== undefined);
+		},
+		// Selects the appropriate data aggregation method based on selectedGranularity
+		aggregatedData() {
+			return this.selectedGranularity === "hourly" ? this.aggregateTradesByHour() : this.aggregateTradesByMinute();
 		},
 		chartOptions() {
 			return {
