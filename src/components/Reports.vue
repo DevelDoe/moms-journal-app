@@ -134,7 +134,9 @@ export default {
 	float: left;
 	min-width: 200px;
 }
-
+.date-range-picker{
+	float:right;
+}
 .no-trades {
 	font-size: 1.2em;
 	color: #666;
