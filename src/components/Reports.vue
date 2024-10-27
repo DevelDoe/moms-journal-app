@@ -84,12 +84,10 @@ export default {
 
 			// Scroll down: trigger next report if at the last visible section
 			if (event.deltaY > 0 && currentIndex < this.reports.length - 1) {
-				event.preventDefault(); // Only prevent default if we are moving to the next report
 				this.scrollToNextReport(currentIndex);
 			}
 			// Scroll up: trigger previous report if at the first visible section
 			else if (event.deltaY < 0 && currentIndex > 0) {
-				event.preventDefault(); // Only prevent default if we are moving to the previous report
 				this.scrollToPreviousReport(currentIndex);
 			}
 		},
