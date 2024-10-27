@@ -28,10 +28,14 @@
 				</div>
 			</div>
 			<div class="content">
-				<ReportCumulativeProfit 		:trades="trades" />
-				<ReportProfitLossDistribution 	:trades="trades" />
-				<ReportTradesProfit 			:trades="trades" />
-				<ReportProfitsByTime 			:trades="trades" />
+				<div class="report"><ReportCumulativeProfit 		:trades="trades" /></div>
+				<div class="report"><ReportProfitLossDistribution 	:trades="trades" /></div>
+				<div class="report"><ReportTradesProfit 			:trades="trades" /></div>
+				<div class="report"><ReportProfitsByTime 			:trades="trades" /></div>
+				
+				
+				
+				
 			</div>
 		</div>
 	</div>
