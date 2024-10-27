@@ -245,7 +245,6 @@ export default {
 
 .granularity-input select {
 	padding: 8px;
-	border: 1px solid #ccc;
 	border-radius: 4px;
 	font-size: 16px;
     color: #ffffff;
