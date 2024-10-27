@@ -50,11 +50,11 @@ export default {
 	},
 	methods: {
 		setFullHeight() {
-        const element = this.$refs.fullHeightElement;
-        if (element) {
-            element.style.height = `${window.innerHeight}px`;
-        }
-    }
+			const element = this.$refs.fullHeightElement;
+			if (element) {
+				element.style.height = `${window.innerHeight}px`;
+			}
+		},
 		showTooltip() {
 			this.isTooltipVisible = true;
 		},
