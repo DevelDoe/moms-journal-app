@@ -132,6 +132,12 @@ export default {
 #trades {
 	padding: 20px;
 }
+.no-trades {
+	font-size: 1.2em;
+	color: #666;
+	margin-top: 20px;
+}
+
 .header {
 	display: flex;
 	height: 100%;
@@ -180,9 +186,7 @@ export default {
 	box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 	outline: none;
 }
-.no-trades {
-	font-size: 1.2em;
-	color: #666;
-	margin-top: 20px;
+.report{
+	min-height: 500px;
 }
 </style>
