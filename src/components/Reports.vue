@@ -120,39 +120,6 @@ export default {
 		this.isLoading = false;
 	},
 	computed: {
-		trades() {
-			const tradesData = this.$store.getters.getTrades;
-			return tradesData && Array.isArray(tradesData) ? tradesData : [];
-		},
-		filteredTrades() {
-			this.hasCorruptData = false; // Reset corrupt data flag
-
-			// Shallow unwrap each trade object using spread syntax
-			const tradesArray = this.trades.map((trade) => ({ ...trade }));
-
-			const validTrades = tradesArray.filter((trade) => {
-				const isValid =
-					trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
-
-				if (!isValid) {
-					this.hasCorruptData = true; // Mark if there's corrupt data
-					return false;
-				}
-				return isValid;
-			});
-
-			// If no filter date is selected, return all valid trades
-			if (!this.filterDate) {
-				return validTrades;
-			}
-
-			// Filter trades by selected date if a date is set
-			const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
-			return validTrades.filter((trade) => {
-				const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
-				return formattedFilterDate === formattedTradeDate;
-			});
-		},
 		// Fetch the summaries from Vuex store
 		summaries() {
 			return this.$store.getters.getSummaries || {};
@@ -298,22 +265,35 @@ export default {
 		// Calculate Profit/Loss Distribution for histogram buckets
 	},
 	methods: {
-		// Fetch trades from Vuex store with optional date range filtering
-		async fetchTrades(start = null, end = null) {
+		async fetchTradesByDateRange(start = null, end = null) {
 			try {
 				await this.$store.dispatch("fetchTrades", { start, end });
+
+				// After fetching, you can validate or filter the data here if needed
+				this.hasCorruptData = false;
+
+				const tradesData = this.$store.getters.getTrades || [];
+				this.filteredTrades = tradesData.filter((trade) => {
+					const isValid =
+						trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
+
+					if (!isValid) {
+						this.hasCorruptData = true; // Mark if there's corrupt data
+						return false;
+					}
+
+					// Additional filter by `filterDate` if it's set
+					if (this.filterDate) {
+						const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
+						const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
+						return formattedFilterDate === formattedTradeDate;
+					}
+
+					return true;
+				});
 			} catch (error) {
 				console.error("Error fetching trades:", error);
 			}
-		},
-
-		// Call fetchTrades with date range from date picker or default to current month
-		async fetchTradesByDateRange(start = null, end = null) {
-			// Use user-specified dates if available, else use component data for startDate and endDate
-			const startDate = start || this.startDate ? new Date(this.startDate).toISOString().split("T")[0] : null;
-			const endDate = end || this.endDate ? new Date(this.endDate).toISOString().split("T")[0] : null;
-
-			await this.fetchTrades(startDate, endDate);
 		},
 		// Fetch summaries from Vuex store
 		async fetchSummaries() {
