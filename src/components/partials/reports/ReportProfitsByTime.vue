@@ -193,11 +193,7 @@ export default {
 </script>
 
 <style scoped>
-.trades-by-time {
-	display: inline-block;
-	margin-top: 20px;
-	width: 100%;
-}
+
 #trades-by-time-chart {
 
 	height: 90vh !important;
