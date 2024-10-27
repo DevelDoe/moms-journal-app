@@ -77,10 +77,10 @@ export default {
 						fontWeight: "bold",
 					},
 				},
-				// tooltip: {
-				// 	trigger: "item",
-				// 	formatter: "{b}: {c} ({d}%)",
-				// },
+				tooltip: {
+					trigger: "item",
+					formatter: "{b}: {c} ({d}%)",
+				},
 				legend: {
 					orient: "vertical",
 					left: "left",
