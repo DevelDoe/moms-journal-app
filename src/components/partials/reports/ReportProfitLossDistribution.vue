@@ -85,13 +85,12 @@ export default {
 				formatter: "{b}: {c} ({d}%)",
 			},
 			legend: {
-				orient: "horizontal",
-				left: "center",
-				bottom: 20,
-				data: this.profitByPriceRange.data.map(item => item.name), // Only include non-zero buckets
-
-				textStyle: { color: "#eaeaea" },
-			},
+                orient: "horizontal",
+                left: "center",
+                bottom: 20,
+                textStyle: { color: "#eaeaea" },
+                data: this.profitByPriceRange.data.map(item => item.name), // Only include non-zero buckets
+            },
 			series: [
 				{
 					name: "Profit/Loss",
