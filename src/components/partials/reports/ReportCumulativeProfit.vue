@@ -232,6 +232,9 @@ export default {
 </script>
 
 <style scoped>
+#cumulative-profit {
+	margin-top: 20px;
+}
 #cumulative-profit-chart {
 	margin-top: 20px;
 }
