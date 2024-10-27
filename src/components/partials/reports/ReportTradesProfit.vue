@@ -138,7 +138,7 @@ export default {
 					orient: "horizontal",
 					left: "center",
 					top: "0%",
-					textStyle: { color: "#eaeaea" },
+					textStyle: { color: "#FEFF9F" },
 					icon: "circle",
 				},
 				grid: {
