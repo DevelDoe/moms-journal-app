@@ -268,53 +268,42 @@ export default {
 	methods: {
 		async fetchTradesByDateRange(start = null, end = null) {
 			try {
+				this.isLoading = true;
 				await this.$store.dispatch("fetchTrades", { start, end });
-
-				// After fetching, you can validate or filter the data here if needed
-				this.hasCorruptData = false;
-
-				const tradesData = this.$store.getters.getTrades || [];
-				this.filteredTrades = tradesData.filter((trade) => {
-					const isValid =
-						trade && trade.symbol && trade.buyPrice !== undefined && trade.sellPrice !== undefined && trade.profitLoss !== undefined && trade.date;
-
-					if (!isValid) {
-						this.hasCorruptData = true; // Mark if there's corrupt data
-						return false;
-					}
-
-					// Additional filter by `filterDate` if it's set
-					if (this.filterDate) {
-						const formattedFilterDate = new Date(this.filterDate).toISOString().split("T")[0];
-						const formattedTradeDate = new Date(trade.date).toISOString().split("T")[0];
-						return formattedFilterDate === formattedTradeDate;
-					}
-
-					return true;
-				});
+				
+				// Directly assign the fetched trades without filtering
+				this.trades = this.$store.getters.getTrades || [];
+				
+				// Check for corrupt data directly in the trades array
+				this.hasCorruptData = this.trades.some(
+					trade => !trade || !trade.symbol || trade.buyPrice === undefined ||
+						trade.sellPrice === undefined || trade.profitLoss === undefined || !trade.date
+				);
 			} catch (error) {
 				console.error("Error fetching trades:", error);
+			} finally {
+				this.isLoading = false;
 			}
 		},
 		// Fetch summaries from Vuex store
-		async fetchSummaries() {
-			try {
-				await this.$store.dispatch("fetchAllSummaries");
-			} catch (error) {
-				console.error("Error fetching summaries:", error);
-			}
-		},
-		async fetchHistoricalTrades() {
-			const token = localStorage.getItem("token");
-			try {
-				const response = await axios.get("http://localhost:5000/api/orders/historical", {
-					headers: { Authorization: `Bearer ${token}` },
-				});
-				this.historicalTrades = response.data || []; // Assign historical trades to the data property
-			} catch (error) {
-				console.error("Error fetching historical trades:", error);
-			}
-		},
+		// async fetchSummaries() {
+		// 	try {
+		// 		await this.$store.dispatch("fetchAllSummaries");
+		// 	} catch (error) {
+		// 		console.error("Error fetching summaries:", error);
+		// 	}
+		// },
+		// async fetchHistoricalTrades() {
+		// 	const token = localStorage.getItem("token");
+		// 	try {
+		// 		const response = await axios.get("http://localhost:5000/api/orders/historical", {
+		// 			headers: { Authorization: `Bearer ${token}` },
+		// 		});
+		// 		this.historicalTrades = response.data || []; // Assign historical trades to the data property
+		// 	} catch (error) {
+		// 		console.error("Error fetching historical trades:", error);
+		// 	}
+		// },
 	},
 	watch: {
 		trades: {
