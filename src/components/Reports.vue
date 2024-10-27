@@ -162,6 +162,7 @@ export default {
 
 <style scoped>
 #trades {
+	height: 100%;
 	padding: 0;
 }
 .no-trades {
