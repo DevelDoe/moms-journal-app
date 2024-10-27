@@ -81,11 +81,11 @@ export default {
 					trigger: "item",
 					formatter: "{b}: {c} ({d}%)",
 				},
-				// legend: {
-				// 	orient: "vertical",
-				// 	left: "left",
-				// 	textStyle: { color: "#eaeaea" },
-				// },
+				legend: {
+					orient: "horizontal",
+					left: "left",
+					textStyle: { color: "#eaeaea" },
+				},
 				series: [
 					{
 						name: "Profit/Loss",
