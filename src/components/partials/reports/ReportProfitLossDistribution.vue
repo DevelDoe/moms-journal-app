@@ -45,7 +45,125 @@ export default {
 			this.isTooltipVisible = false;
 		},
 	},
- 
+	computed: {
+    profitAndLossByPriceRange() {
+        if (this.trades.length === 0) return { profitData: [], lossData: [] };
+
+        // Aggregate trades into profit and loss buckets
+        const buckets = this.trades.reduce((acc, trade) => {
+            const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+            if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+            acc[bucketLabel] += trade.profitLoss;
+            return acc;
+        }, {});
+
+        // Separate positive (profit) and negative (loss) buckets
+        const profitData = [];
+        const lossData = [];
+
+        Object.entries(buckets).forEach(([label, value]) => {
+            const formattedData = {
+                value: Math.abs(parseFloat(value.toFixed(2))), // Use absolute value for display
+                name: label.split("-")[0], // Show only the starting value
+            };
+            if (value > 0) {
+                profitData.push(formattedData);
+            } else if (value < 0) {
+                lossData.push(formattedData);
+            }
+        });
+
+        return { profitData, lossData };
+    },
+    chartOptions() {
+        return {
+            title: {
+                text: "Profit and Loss by Price Range",
+                left: "left",
+                textStyle: {
+                    color: "#eaeaea",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                },
+            },
+            tooltip: {
+                trigger: "item",
+                formatter: "{b}: {c} ({d}%)",
+            },
+            legend: {
+                orient: "horizontal",
+                left: "center",
+                bottom: 20,
+                textStyle: { color: "#eaeaea" },
+                data: [
+                    ...this.profitAndLossByPriceRange.profitData.map(item => item.name),
+                    ...this.profitAndLossByPriceRange.lossData.map(item => item.name),
+                ],
+            },
+            series: [
+                // Profit Series (right half)
+                {
+                    name: "Profit",
+                    type: "pie",
+                    radius: ["20%", "55%"],
+                    center: ["50%", "50%"],
+                    startAngle: 90, // Start from the top
+                    endAngle: 270, // End at the bottom
+                    data: this.profitAndLossByPriceRange.profitData,
+                    label: {
+                        color: "#32cd32",
+                        fontSize: 14,
+                        formatter: "{b}", // Show only the bucket start in labels
+                    },
+                    itemStyle: {
+                        color: (params) => {
+                            const colors = ["#32cd32", "#7fffd4", "#98fb98", "#00fa9a"];
+                            return colors[params.dataIndex % colors.length];
+                        },
+                        shadowBlur: 100,
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                    labelLine: {
+                        show: true,
+                        smooth: 0.2,
+                        length: 20,
+                        length2: 20,
+                    },
+                },
+                // Loss Series (left half)
+                {
+                    name: "Loss",
+                    type: "pie",
+                    radius: ["20%", "55%"],
+                    center: ["50%", "50%"],
+                    startAngle: 270, // Start at the bottom
+                    endAngle: 450, // End at the top
+                    data: this.profitAndLossByPriceRange.lossData,
+                    label: {
+                        color: "#ff6347",
+                        fontSize: 14,
+                        formatter: "{b}", // Show only the bucket start in labels
+                    },
+                    itemStyle: {
+                        color: (params) => {
+                            const colors = ["#ff6347", "#ff4500", "#ff7f50", "#dc143c"];
+                            return colors[params.dataIndex % colors.length];
+                        },
+                        shadowBlur: 100,
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                    labelLine: {
+                        show: true,
+                        smooth: 0.2,
+                        length: 20,
+                        length2: 20,
+                    },
+                },
+            ],
+        };
+    },
+},
+
 };
 </script>
 
