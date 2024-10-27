@@ -164,6 +164,7 @@ export default {
 #trades {
 	height: 100%;
 	padding: 0;
+	min-height: 100%;
 }
 .no-trades {
 	font-size: 1.2em;
