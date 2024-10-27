@@ -144,7 +144,7 @@ export default {
 					name: "Profit/Loss",
 					min: -maxAbsValue, // Set min to -maxAbsValue to center zero
 					max: maxAbsValue, // Set max to maxAbsValue
-					axisLine: { show: true }, // Hide axis line if desired
+					axisLine: { show: false }, // Hide axis line if desired
 					axisLabel: {
 						color: "#1E3E62",
 						fontSize: 16,
