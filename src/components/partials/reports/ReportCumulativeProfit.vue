@@ -236,7 +236,7 @@ export default {
 	margin-top: 20px;
 }
 #cumulative-profit-chart {
-	height: 100%;
+	height: 700px;
 }
 .chart-header {
 	display: flex;
