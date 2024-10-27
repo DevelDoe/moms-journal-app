@@ -233,7 +233,7 @@ export default {
 
 <style scoped>
 #cumulative-profit {
-	margin-top: 20px;
+	
 }
 #cumulative-profit-chart {
 	height: 80vh !important;
