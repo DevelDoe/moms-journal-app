@@ -209,7 +209,7 @@ export default {
 						name: "Profits",
 						type: "line",
 						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
-						itemStyle: { color: "#5F8670" },
+						itemStyle: { color: "#72BF78" },
 						smooth: true,
 						lineStyle: { width: 3 },
 					},
