@@ -202,6 +202,7 @@ export default {
 	margin-bottom: 10px;
 	position: relative;
 	padding-left: 20px;
+	position: relative;
 }
 .tooltip-icon {
 	position: absolute;
