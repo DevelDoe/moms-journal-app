@@ -71,7 +71,7 @@ export default {
 			return {
 				title: {
 					text: "Profit by Price Range",
-					left: "center",
+					left: "left",
 					textStyle: {
 						color: "#eaeaea",
 						fontSize: 18,
