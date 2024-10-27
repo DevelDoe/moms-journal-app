@@ -249,8 +249,8 @@ export default {
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	font-size: 16px;
-	color: #333;
-	background-color: #fff;
+    color: #ffffff;
+    background-color: #1e3e62;
 	width: 180px;
 }
 
