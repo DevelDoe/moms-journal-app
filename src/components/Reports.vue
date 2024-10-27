@@ -52,6 +52,8 @@ import ReportCumulativeProfit from "./partials/reports/ReportCumulativeProfit.vu
 import ReportProfitLossDistribution from "./partials/reports/ReportProfitLossDistribution.vue";
 import ReportProfitsByTime from "./partials/reports/ReportProfitsByTime.vue";
 import ReportTradesProfit from "./partials/reports/ReportTradesProfit.vue";
+import ReportProfitLossAccuracy from "./partials/reports/ReportProfitLossAccuracy.vue";
+
 
 export default {
 	data() {
@@ -67,6 +69,8 @@ export default {
 				ReportProfitLossDistribution,
 				ReportTradesProfit,
 				ReportProfitsByTime,
+				ReportProfitLossAccuracy, 
+
 			],
 		};
 	},
@@ -75,6 +79,7 @@ export default {
 		ReportTradesProfit,
 		ReportProfitLossDistribution,
 		ReportProfitsByTime,
+		ReportProfitLossAccuracy
 	},
 	methods: {
 		scrollToNextReport(index) {
