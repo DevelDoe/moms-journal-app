@@ -88,6 +88,8 @@ export default {
 				orient: "horizontal",
 				left: "center",
 				bottom: 20,
+				data: this.profitByPriceRange.data.map(item => item.name), // Only include non-zero buckets
+
 				textStyle: { color: "#eaeaea" },
 			},
 			series: [
