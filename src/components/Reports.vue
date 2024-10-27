@@ -129,6 +129,7 @@ export default {
 .header{
 	display: flex;
 	height: 100%;
+	width: 100%;
 }
 .page-title{
 	font-size: 4rem;
