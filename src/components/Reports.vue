@@ -8,7 +8,6 @@
 			<input type="date" v-model="startDate" />
 			<label>End Date:</label>
 			<input type="date" v-model="endDate" />
-			<button @click="fetchTradesByDateRange">Fetch Trades</button>
 		</div>
 
 		<div v-if="isLoading" class="loading-message">
