@@ -46,88 +46,86 @@ export default {
 		},
 	},
 	computed: {
-    profitByPriceRange() {
-        if (this.trades.length === 0) return { data: [] };
+	profitByPriceRange() {
+		if (this.trades.length === 0) return { data: [] };
 
-        // Filter trades with non-zero profit/loss and populate only relevant buckets
-        const buckets = this.trades.reduce((acc, trade) => {
-            const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+		// Aggregate only non-zero profit/loss trades into relevant price buckets
+		const buckets = this.trades.reduce((acc, trade) => {
+			const bucketLabel = `${Math.floor(trade.buyPrice)}-${Math.floor(trade.buyPrice) + 1}`;
+			if (trade.profitLoss !== 0) {
+				if (!acc[bucketLabel]) acc[bucketLabel] = 0;
+				acc[bucketLabel] += trade.profitLoss;
+			}
+			return acc;
+		}, {});
 
-            // Create or add to the bucket if there is an actual profit/loss value
-            if (trade.profitLoss !== 0) {
-                if (!acc[bucketLabel]) acc[bucketLabel] = 0;
-                acc[bucketLabel] += trade.profitLoss;
-            }
-            return acc;
-        }, {});
-
-        // Filter out buckets with zero values after aggregation to eliminate empty labels
-        return {
-            data: Object.entries(buckets)
-                .filter(([, value]) => value !== 0) // Exclude zero-value buckets
-                .map(([label, value]) => ({
-                    value: parseFloat(value.toFixed(2)),
-                    name: label.split('-')[0], // Show only the starting value in the label
-                })),
-        };
-    },
-    chartOptions() {
-        return {
-            title: {
-                text: "Profit by Price Range",
-                left: "left",
-                textStyle: {
-                    color: "#eaeaea",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                },
-            },
-            tooltip: {
-                trigger: "item",
-                formatter: "{b}: {c} ({d}%)",
-            },
-            legend: {
-                orient: "horizontal",
-                left: "center",
-                bottom: 20,
-                textStyle: { color: "#eaeaea" },
-            },
-            series: [
-                {
-                    name: "Profit/Loss",
-                    type: "pie",
-                    radius: ["20%", "55%"],
-                    center: ["50%", "50%"],
-                    roseType: "radius",
-                    data: this.profitByPriceRange.data,
-                    label: {
-                        color: "#1E3E62",
-                        fontSize: 14,
-                        formatter: "{b}", // Show only the bucket start in labels
-                    },
-                    labelLine: {
-                        lineStyle: {
-                            color: "#162e49",
-                        },
-                        smooth: 0.2,
-                        length: 20,
-                        length2: 20,
-                    },
-                    itemStyle: {
-                        color: (params) => {
-                            const colors = ["#740938", "#da70d6", "#ff7f50", "#32cd32"];
-                            return colors[params.dataIndex % colors.length];
-                        },
-                        shadowBlur: 100,
-                        shadowColor: "rgba(0, 0, 0, 0.5)",
-                    },
-                    animationType: "scale",
-                    animationEasing: "elasticOut",
-                    animationDelay: (idx) => Math.random() * 200,
-                },
-            ],
-        };
-    },
+		// Filter out zero-value buckets and format for chart
+		return {
+			data: Object.entries(buckets)
+				.filter(([, value]) => value !== 0) // Exclude zero-value buckets
+				.map(([label, value]) => ({
+					value: parseFloat(value.toFixed(2)),
+					name: label.split("-")[0], // Show only the starting value in the label
+				})),
+		};
+	},
+	chartOptions() {
+		return {
+			title: {
+				text: "Profit by Price Range",
+				left: "left",
+				textStyle: {
+					color: "#eaeaea",
+					fontSize: 18,
+					fontWeight: "bold",
+				},
+			},
+			tooltip: {
+				trigger: "item",
+				formatter: "{b}: {c} ({d}%)",
+			},
+			legend: {
+				orient: "horizontal",
+				left: "center",
+				bottom: 20,
+				textStyle: { color: "#eaeaea" },
+			},
+			series: [
+				{
+					name: "Profit/Loss",
+					type: "pie",
+					radius: ["20%", "55%"],
+					center: ["50%", "50%"],
+					roseType: "radius",
+					data: this.profitByPriceRange.data, // Filtered data
+					label: {
+						color: "#1E3E62",
+						fontSize: 14,
+						formatter: "{b}", // Only show the start of the bucket
+					},
+					labelLine: {
+						lineStyle: {
+							color: "#162e49",
+						},
+						smooth: 0.2,
+						length: 20,
+						length2: 20,
+					},
+					itemStyle: {
+						color: (params) => {
+							const colors = ["#740938", "#da70d6", "#ff7f50", "#32cd32"];
+							return colors[params.dataIndex % colors.length];
+						},
+						shadowBlur: 100,
+						shadowColor: "rgba(0, 0, 0, 0.5)",
+					},
+					animationType: "scale",
+					animationEasing: "elasticOut",
+					animationDelay: (idx) => Math.random() * 200,
+				},
+			],
+		};
+	},
 },
 
 };
