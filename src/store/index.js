@@ -1,16 +1,19 @@
 // ./src/store/index.js
+
 import { createStore } from "vuex";
 import axios from "axios";
 import { useToast } from "vue-toastification";
 import debounce from "lodash/debounce";
+import moment from "moment";
 
 const toast = useToast();
 
+// Set global Axios configuration
+axios.defaults.baseURL = "http://localhost:5000/api"; // Global base URL
+axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token") || ""}`;
+
 const debouncedSuccessToast = debounce((message) => toast.success(message), 2000, { leading: true, trailing: false });
-const debouncedErrorToast = debounce((message) => toast.error(message), 2000, {
-	leading: true,
-	trailing: false,
-});
+const debouncedErrorToast = debounce((message) => toast.error(message), 2000, { leading: true, trailing: false });
 
 export default createStore({
 	state: {
@@ -19,6 +22,8 @@ export default createStore({
 		orders: [],
 		trades: [],
 		summaries: [],
+		startDate: moment().startOf("month").format("YYYY-MM-DD"),
+		endDate: moment().endOf("month").format("YYYY-MM-DD"),
 	},
 	mutations: {
 		setUser(state, userData) {
@@ -31,8 +36,10 @@ export default createStore({
 			state.token = token;
 			if (token) {
 				localStorage.setItem("token", token);
+				axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token globally
 			} else {
 				localStorage.removeItem("token");
+				delete axios.defaults.headers.common["Authorization"]; // Remove token from global headers
 			}
 		},
 		clearState(state) {
@@ -41,10 +48,11 @@ export default createStore({
 			state.orders = [];
 			state.trades = [];
 			localStorage.removeItem("token");
+			delete axios.defaults.headers.common["Authorization"];
 		},
 		addOrder(state, order) {
 			if (!state.orders) {
-				state.orders = []; // Ensure orders array exists
+				state.orders = [];
 			}
 			state.orders.push(order);
 		},
@@ -57,20 +65,37 @@ export default createStore({
 		setSummaries(state, summaries) {
 			state.summaries = summaries;
 		},
+		setStartDate(state, date) {
+			state.startDate = date;
+		},
+		setEndDate(state, date) {
+			state.endDate = date;
+		},
 	},
 	actions: {
+		updateDateRange({ commit }, { start, end }) {
+			commit("setStartDate", start);
+			commit("setEndDate", end);
+		},
+		setDefaultDates({ commit }) {
+			const currentMonthStart = moment().startOf("month").format("YYYY-MM-DD");
+			const currentDate = moment().format("YYYY-MM-DD");
+			commit("setStartDate", currentMonthStart);
+			commit("setEndDate", currentDate);
+		},
 		async loginAction({ commit, dispatch }, { email, password }) {
 			try {
-				// Make the login request
-				const response = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+				const response = await axios.post("/auth/login", { email, password });
 				const { token, user } = response.data;
 
-				// Set the token and user data in Vuex
 				commit("setToken", token);
 				commit("setUser", user);
+
+				await dispatch("setDefaultDates");
+				await dispatch("fetchTrades"); // Fetch trades once after login
+
 				debouncedSuccessToast("Logged in successfully!");
 
-				await dispatch("fetchOrders");
 				return true;
 			} catch (error) {
 				const message = error.response?.data?.msg || "Login failed. Please try again.";
@@ -80,14 +105,8 @@ export default createStore({
 		},
 		async fetchUser({ commit, state }) {
 			if (state.token) {
-				// Set the axios header for authorization
-				axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
-
 				try {
-					// Use the /profile endpoint to fetch user information
-					const response = await axios.get("http://localhost:5000/api/user/profile");
-
-					// Commit the user information to Vuex
+					const response = await axios.get("/user/profile");
 					commit("setUser", response.data);
 					debouncedSuccessToast(`Welcome back, ${response.data.name}`);
 				} catch (error) {
@@ -104,11 +123,9 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async updateUser({ commit, state }, updatedUserData) {
+		async updateUser({ commit }, updatedUserData) {
 			try {
-				const response = await axios.put("/api/auth/update-profile", updatedUserData, {
-					headers: { Authorization: `Bearer ${state.token}` },
-				});
+				const response = await axios.put("/auth/update-profile", updatedUserData);
 				commit("setUser", response.data);
 				debouncedSuccessToast("Profile updated successfully!");
 			} catch (error) {
@@ -116,102 +133,82 @@ export default createStore({
 				debouncedErrorToast(message);
 			}
 		},
-		async createMultipleOrders({ commit, dispatch, state }, { orders }) {
+		async addAccount({ commit }, accountData) {
 			try {
-				console.log("Starting createMultipleOrders action...");
-
-				const response = await axios.post(
-					"http://localhost:5000/api/orders",
-					{ orders },
-					{
-						headers: { Authorization: `Bearer ${state.token}` },
-					}
-				);
+				const response = await axios.post("/user/account", accountData);
+				commit("setUser", response.data);
+				debouncedSuccessToast("Account added successfully!");
+			} catch (error) {
+				const message = error.response?.data?.msg || "Failed to add account.";
+				debouncedErrorToast(message);
+			}
+		},
+		async createMultipleOrders({ commit, dispatch }, { orders }) {
+			try {
+				const response = await axios.post("/orders", { orders });
 
 				if (response.status === 201) {
-					console.log("Orders uploaded successfully.");
-
-					// Call fetch actions and add logging
-					await dispatch("fetchOrders").then(() => console.log("fetchOrders completed"));
-					await dispatch("fetchTrades").then(() => console.log("fetchTrades completed"));
-					await dispatch("fetchAllSummaries").then(() => console.log("fetchAllSummaries completed"));
+					await dispatch("fetchOrders");
+					await dispatch("fetchTrades");
+					await dispatch("fetchAllSummaries");
 				}
 
-				// Returns the trade for the orders uploaded
-				return response.data.trades;
-
 				debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
+				return response.data.trades;
 			} catch (error) {
 				const message = error.response?.data?.error || "Error uploading orders.";
 				debouncedErrorToast(message);
-				console.error("Error in createMultipleOrders:", error);
 			}
 		},
 
-		async fetchOrders({ commit, state }) {
+		async fetchOrders({ commit }) {
 			try {
-				console.log("Fetching orders...");
-				const response = await axios.get("http://localhost:5000/api/orders", {
-					headers: { Authorization: `Bearer ${state.token}` },
-				});
+				const response = await axios.get("/orders");
 				commit("setOrders", response.data);
 			} catch (error) {
 				console.error("Error fetching orders:", error);
 			}
 		},
 
-		async fetchTrades({ commit, state }, { start = null, end = null } = {}) {
+		updateDateRange({ commit, dispatch }, { start, end }) {
+			commit("setStartDate", start);
+			commit("setEndDate", end);
+			dispatch("fetchTrades"); // Fetch trades after date update
+		},
+
+		async fetchTrades({ commit, state }) {
 			try {
-				console.log("Fetching trades...");
-
-				// Build query parameters with start and end dates if they are provided
-				const params = {};
-				if (start) params.start = start;
-				if (end) params.end = end;
-
-				// Send request to the server with query parameters
-				const response = await axios.get("http://localhost:5000/api/trades", {
-					headers: { Authorization: `Bearer ${state.token}` },
-					params, // Pass the date range parameters in the request
+				const { startDate, endDate } = state;
+				const response = await axios.get("/trades", {
+					params: { start: startDate, end: endDate },
 				});
-
-				// Commit the fetched trades to the Vuex store
 				commit("setTrades", response.data);
 			} catch (error) {
 				console.error("Error fetching trades:", error);
 			}
 		},
 
-		async fetchAllSummaries({ commit, state }) {
+		async fetchAllSummaries({ commit }) {
 			try {
-				console.log("Fetching summaries...");
-				const response = await axios.get("http://localhost:5000/api/trades/summaries", {
-					headers: { Authorization: `Bearer ${state.token}` },
-				});
+				const response = await axios.get("/trades/summaries");
 				commit("setSummaries", response.data);
 			} catch (error) {
 				console.error("Error fetching summaries:", error);
 			}
 		},
-		async fetchFilteredSummaries({ commit, state }, { minProfit, maxProfit, minTrades, maxTrades, date }) {
+		async fetchFilteredSummaries({ commit }, { minProfit, maxProfit, minTrades, maxTrades, date }) {
 			try {
-				const response = await axios.get("http://localhost:5000/api/trades/summaries/filter", {
-					headers: { Authorization: `Bearer ${state.token}` },
+				const response = await axios.get("/trades/summaries/filter", {
 					params: { minProfit, maxProfit, minTrades, maxTrades, date },
 				});
-				commit("setSummaries", response.data); // Store filtered summaries in Vuex
+				commit("setSummaries", response.data);
 			} catch (error) {
 				console.error("Error fetching filtered summaries:", error);
 			}
 		},
 		logout({ commit }, router) {
-			// Clear the state
 			commit("clearState");
-
-			// Show success toast
 			debouncedSuccessToast("Logged out successfully!");
-
-			// Use the router to navigate to the home page if it is passed in correctly
 			if (router) {
 				router.push("/");
 			}
@@ -223,5 +220,7 @@ export default createStore({
 		getOrders: (state) => state.orders,
 		getTrades: (state) => state.trades,
 		getSummaries: (state) => state.summaries,
+		getStartDate: (state) => state.startDate,
+		getEndDate: (state) => state.endDate,
 	},
 });

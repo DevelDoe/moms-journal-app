@@ -1,145 +1,182 @@
 <template>
 	<div style="width: 100%">
-		<nav :class="{ collapsed: isCollapsed }" id="sidebar">
-			<!-- Toggle Button with Icon -->
-			<button @click="toggleSidebar" class="toggle-btn">
-				<img :src="toggleIcon" alt="Toggle Sidebar" />
-			</button>
-			<ul v-if="!isCollapsed">
-				<!-- Sidebar links here -->
-				<li><router-link to="/">Home</router-link></li>
-				<li v-if="!isAuthenticated"><router-link to="/login">Login</router-link></li>
-				<li v-if="!isAuthenticated"><router-link to="/register">Register</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/profile">Profile</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/upload-orders">Upload Orders</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/orders">Orders List</router-link></li>
-				<li v-if="isAuthenticated"><router-link to="/reports">Reports</router-link></li>
-				<li v-if="isAuthenticated"><a @click="logout" style="cursor: pointer">Logout</a></li>
-			</ul>
-		</nav>
-		<div :class="{ collapsed: isCollapsed }" id="view">
+		<!-- Top Taskbar -->
+		<div id="taskbar">
+			<div class="taskbar-left">
+				<span class="app-name">Mom's Journal</span>
+				<router-link to="/login">Login</router-link>
+				<router-link to="/register">Register</router-link>
+			</div>
+			<div class="taskbar-right">
+				<!-- Date Range Picker -->
+				<div class="date-range-picker">
+					<div class="date-input">
+						<label>Start Date:</label>
+						<input type="date" :value="getStartDate" @input="updateStartDate" />
+					</div>
+					<div class="date-input">
+						<label>End Date:</label>
+						<input type="date" :value="getEndDate" @input="updateEndDate" />
+					</div>
+				</div>
+				<div v-if="isAuthenticated" class="dropdown" @click="toggleDropdown">
+					<span class="username">{{ getUser.name }}</span>
+					<div v-if="showDropdown" class="dropdown-content">
+						<router-link to="/profile">Profile</router-link>
+						<a @click="logout">Logout</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main content view -->
+		<div id="view">
 			<router-view></router-view>
+		</div>
+
+		<!-- Dock at the bottom -->
+		<div class="dock">
+			<router-link v-if="isAuthenticated" to="/upload-orders" class="dock-icon">
+				<img :src="uploadIcon" alt="Upload Orders" />
+			</router-link>
+			<router-link v-if="isAuthenticated" to="/reports" class="dock-icon">
+				<img :src="reportsIcon" alt="Reports" />
+			</router-link>
 		</div>
 	</div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import toggleIcon from "@/assets/images/drawer.png"; // Adjust path as needed
+import { mapGetters, mapActions } from "vuex";
+import uploadIcon from "@/assets/images/upload-icon.png";
+import reportsIcon from "@/assets/images/reports-icon.png";
 
 export default {
 	data() {
 		return {
-			isCollapsed: false, // Track sidebar collapsed state
-			toggleIcon, // Icon for the toggle button
+			uploadIcon,
+			reportsIcon,
+			showDropdown: false, // Controls the dropdown visibility
 		};
 	},
 	computed: {
-		...mapGetters(["isAuthenticated", "getUser"]), // Check if user is authenticated and get user details
-		isAdmin() {
-			// Only admins should see the create broker link
-			return this.getUser && this.getUser.role === "admin";
-		},
+		...mapGetters(["isAuthenticated", "getUser", "getStartDate", "getEndDate"]),
 	},
 	methods: {
-		toggleSidebar() {
-			this.isCollapsed = !this.isCollapsed; // Toggle sidebar state
+		...mapActions(["updateDateRange", "logout"]), // Map updateDateRange and logout actions
+		toggleDropdown() {
+			this.showDropdown = !this.showDropdown;
 		},
-		logout() {
-			// Dispatch the logout action and pass the router instance
-			this.$store.dispatch("logout", this.$router);
+		updateStartDate(event) {
+			const newStartDate = event.target.value;
+			this.updateDateRange({ start: newStartDate, end: this.getEndDate });
+		},
+		updateEndDate(event) {
+			const newEndDate = event.target.value;
+			this.updateDateRange({ start: this.getStartDate, end: newEndDate });
 		},
 	},
 };
 </script>
 
 <style>
-#sidebar {
+/* existing styles */
+</style>
+
+
+<style>
+.app-name {
+	color: #0b192c;
+}
+#view {
+	padding-top: 40px;
+}
+/* Taskbar styling */
+#taskbar {
 	position: fixed;
 	top: 0;
 	left: 0;
-	background-color: #1e3e62;
-	padding: 20px;
-	height: 100vh;
-	width: 20%; /* Sidebar width when expanded */
-	overflow-y: auto;
-	transition: width 0.3s ease; /* Smooth transition for collapse/expand */
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+	background-color: rgba(255, 255, 255, 0.9);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
 }
 
-#sidebar.collapsed {
-	width: 60px; /* Sidebar width when collapsed */
+.taskbar-left .app-name {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-right: 15px;
 }
 
-#view {
-	transition: margin-left 0.3s ease; /* Smooth transition for collapse/expand */
-	margin-left: 20%; /* Default margin to leave space for sidebar */
-	padding: 0 ;
-}
-
-#view.collapsed {
-	margin-left: 60px; /* Reduced margin when sidebar is collapsed */
-}
-
-.toggle-btn {
-	background: none;
-	border: none;
-	color: #ffffff;
-	font-size: 18px;
-	cursor: pointer;
-	margin-bottom: 20px;
-	padding: 5px;
-}
-
-.toggle-btn img {
-	width: 24px; /* Adjust the size of the icon */
-	height: 24px;
-	transition: transform 0.3s;
-}
-
-/* Optional: Rotate icon when sidebar is collapsed */
-#sidebar.collapsed .toggle-btn img {
-	transform: rotate(180deg);
-}
-
-#sidebar ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
-
-#sidebar ul li {
-	margin-bottom: 10px;
-}
-
-#sidebar ul li a {
-	color: #eaeaea;
-	text-decoration: none;
-	padding: 10px;
-	display: block;
-	border-radius: 4px;
-	transition: background-color 0.3s;
-}
-
-#sidebar ul li a:hover {
-	background-color: #ff6500;
+.taskbar-right {
+	display: flex;
+	align-items: center;
 	color: #0b192c;
 }
 
-#sidebar ul li a.router-link-exact-active {
-	background-color: #ff6500;
-	color: #fff;
+/* Dropdown styling */
+.dropdown {
+	position: relative;
+	cursor: pointer;
 }
 
-/* Media Queries for Responsive Design */
-@media (max-width: 768px) {
-	#sidebar {
-		width: 100%; /* Full width on smaller screens */
-		border-right: none;
-		border-bottom: 1px solid #ddd;
-	}
+.dropdown-content {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 5px;
+	padding: 10px;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	z-index: 1;
+}
 
-	#view {
-		width: 100%;
-	}
+.dropdown-content a,
+.dropdown-content .router-link {
+	padding: 8px 12px;
+	text-decoration: none;
+	color: black;
+	transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover,
+.dropdown-content .router-link:hover {
+	background-color: #f0f0f0;
+}
+
+.dock {
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	padding: 10px;
+	background-color: rgba(255, 255, 255, 0.01);
+	backdrop-filter: blur(10px);
+	border-radius: 15px;
+	/* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+	z-index: 1000;
+}
+
+.dock-icon {
+	margin: 0 10px;
+	transition: transform 0.3s;
+}
+
+.dock-icon:hover {
+	transform: scale(1.3);
+}
+.dock-icon img {
+	width: 80px; /* Adjust this value to make the icons smaller */
+	height: 80px; /* Keep the same height as width for a square ratio */
+	padding: 20px;
 }
 </style>

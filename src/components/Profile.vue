@@ -7,35 +7,41 @@
 
 		<!-- Show the profile content only when data is fully loaded -->
 		<div v-else>
-			<h1>{{ user.name }}</h1>
+			<h1>{{ user?.name || "User" }}</h1>
 
-			<!-- Date Picker for Filtering -->
-			<div class="date-filter">
-				<label for="filter-date">Filter by Date:</label>
-				<input type="date" id="filter-date" v-model="filterDate" />
-			</div>
+			<h2>Accounts</h2>
+			<!-- Display a list of accounts -->
+			<ul v-if="user?.accounts && user.accounts.length">
+				<li v-for="account in user.accounts" :key="account._id">
+					{{ account.type === "live" ? "Live Account" : "Paper Account" }}
+				</li>
+			</ul>
+			<p v-else>No accounts added yet.</p>
 
-			<!-- Trades Summary component, only filtered by date -->
-			<div v-if="filterDate" class="trades">
-				<TradesSummary :filterDate="filterDate" />
+			<!-- Form to add a new account -->
+			<div class="add-account">
+				<h3>Add New Account</h3>
+				<label for="accountType">Account Type:</label>
+				<select v-model="newAccountType" id="accountType">
+					<option disabled value="">Select account type</option>
+					<option value="live">Live</option>
+					<option value="paper">Paper</option>
+				</select>
+				<button @click="addAccount" :disabled="!newAccountType">Add Account</button>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script>
-import TradesSummary from "./partials/TradesSummary.vue";
 
+<script>
 export default {
 	data() {
 		return {
 			user: null,
-			filterDate: "",
 			isLoading: true,
+			newAccountType: "", // Holds the selected account type for the new account
 		};
-	},
-	components: {
-		TradesSummary,
 	},
 	mounted() {
 		this.fetchUserData();
@@ -52,10 +58,32 @@ export default {
 				console.error("Error fetching user data:", error);
 			}
 		},
+		async addAccount() {
+			try {
+				// Dispatch action to add new account to the user
+				await this.$store.dispatch("addAccount", { type: this.newAccountType });
+				this.newAccountType = ""; // Reset the dropdown
+				await this.fetchUserData(); // Refresh user data to show updated accounts
+			} catch (error) {
+				console.error("Error adding account:", error);
+			}
+		},
 	},
 };
 </script>
 
 <style scoped>
-/* Add your styles here */
+.loading-animation {
+	font-size: 1.2em;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.add-account {
+	margin-top: 20px;
+}
+
+.add-account label {
+	margin-right: 10px;
+}
 </style>

@@ -40,3 +40,7 @@ body {
 input{
 	font-family: "Montserrat", sans-serif !important;
 }
+a{
+	text-decoration: none;
+	color: #d15400;
+}

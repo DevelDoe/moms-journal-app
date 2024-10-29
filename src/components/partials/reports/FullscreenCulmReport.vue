@@ -112,29 +112,83 @@ export default {
 		},
 		chartOptions() {
 			return {
-				title: {
-					text: ``,
-				},
 				tooltip: {
 					trigger: "axis",
 					axisPointer: {
-						type: "line",
+						type: "none",
 					},
+				},
+				legend: {
+					orient: "horizontal",
+					left: "center",
+					top: "0%",
+					textStyle: { color: "#eaeaea" },
+					icon: "circle",
+				},
+				
+				grid: {
+					left: "6%",
+					right: "6%",
+					bottom: "6%",
+					top: "20%",
+					containLabel: false,
 				},
 				xAxis: {
 					type: "category",
 					data: this.cumulativeProfitData.labels,
+					axisLine: {
+						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
+					},
+					axisLabel: {
+						color: "#1E3E62", // Color of the x-axis labels
+						fontSize: 14, // Size of the font for the labels
+					},
+					splitLine: {
+						lineStyle: {
+							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
+							width: 1, // Thickness of the lines
+							type: "solid", // Options: 'solid', 'dashed', 'dotted'
+						},
+					},
 				},
 				yAxis: [
 					{
 						type: "value",
 						name: "Profits",
 						position: "left",
+						axisLine: {
+							lineStyle: { color: "#1E3E62" },
+						},
+						axisLabel: {
+							color: "#1E3E62",
+							fontSize: 16,
+						},
+						splitLine: {
+							lineStyle: {
+								color: "#1E3E62", // Ensure the same color for consistency
+								width: 1,
+								type: "solid",
+							},
+						},
 					},
 					{
 						type: "value",
-						name: "Trades",
+						name: "Number of Trades",
 						position: "right",
+						axisLine: {
+							lineStyle: { color: "#1E3E62" },
+						},
+						axisLabel: {
+							color: "#1E3E62",
+							fontSize: 16,
+						},
+						splitLine: {
+							lineStyle: {
+								color: "#1E3E62", // Ensure the same color for consistency
+								width: 1,
+								type: "solid",
+							},
+						},
 					},
 				],
 				series: [
@@ -142,19 +196,22 @@ export default {
 						name: "Profits",
 						type: "line",
 						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
-						itemStyle: { color: "#e57373" },
+						itemStyle: { color: "#72BF78" },
 						smooth: true,
+						lineStyle: { width: 3 },
 					},
 					{
 						name: "Trades",
 						type: "line",
 						data: this.cumulativeProfitData.tradeCountData,
 						yAxisIndex: 1,
-						itemStyle: { color: "#5470C6" },
+						itemStyle: { color: "#FEFF9F" },
 						smooth: true,
+						lineStyle: { width: 3 },
 					},
 				],
-				animationDuration: 5000, // Set animation duration in milliseconds
+				animationDuration: 6000,
+				animationEasing: "quarticInOut",
 			};
 		},
 	},
@@ -168,10 +225,11 @@ export default {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: white;
+	background: #0b192c;
 	z-index: 1000;
 	padding: 20px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	z-index: 999999;
 }
 .chart-header {
 	display: flex;

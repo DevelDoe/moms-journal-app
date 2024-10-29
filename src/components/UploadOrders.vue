@@ -1,8 +1,19 @@
 <template>
 	<div>
 		<h2>Import Orders</h2>
+
+		<!-- Account Selection Dropdown -->
+		<label for="accountSelect">Select Account:</label>
+		<select v-model="selectedAccountId" id="accountSelect" required>
+			<option disabled value="">Select an account</option>
+			<option v-for="account in userAccounts" :key="account._id" :value="account._id">
+				{{ account.type === "live" ? "Live Account" : "Paper Account" }}
+			</option>
+		</select>
+
+		<!-- File Input for Orders -->
 		<input type="file" @change="handleFileUpload" accept=".txt" />
-		<button @click="importOrders" :disabled="!orders.length">Import Orders</button>
+		<button @click="importOrders" :disabled="!orders.length || !selectedAccountId">Import Orders</button>
 
 		<!-- Display the cumulative profit report for the uploaded trades -->
 		<FullScreenCulmReport v-if="isChartVisible" :trades="trades" :granularity="granularity" @close="isChartVisible = false" />
@@ -44,7 +55,14 @@ export default {
 			trades: [],
 			isChartVisible: false,
 			granularity: "hourly",
+			selectedAccountId: "", // Holds the selected account ID
 		};
+	},
+	computed: {
+		// Fetch user accounts from Vuex store
+		userAccounts() {
+			return this.$store.getters.getUser?.accounts || [];
+		},
 	},
 	methods: {
 		// Handle file upload and parse the file
@@ -100,22 +118,30 @@ export default {
 		},
 		async importOrders() {
 			try {
-				// Dispatch the action and receive the new trades
-				const newTrades = await this.$store.dispatch("createMultipleOrders", { orders: this.orders });
+				// Include the accountId in each order object
+				const ordersWithAccountId = this.orders.map((order) => ({
+					...order,
+					accountId: this.selectedAccountId, // Attach selected accountId to each order
+				}));
 
-				// Check if trades were returned, indicating successful import
+				// Dispatch the action with the updated orders array
+				const newTrades = await this.$store.dispatch("createMultipleOrders", {
+					orders: ordersWithAccountId,
+					accountId: this.selectedAccountId, // Pass accountId for verification if needed
+				});
+
+				// Rest of the logic remains the same
 				if (newTrades) {
 					this.message = "Orders successfully imported!";
-					this.trades = newTrades; // Directly use new trades for the chart
-					this.isChartVisible = true; // Show the chart
+					this.trades = newTrades;
+					this.isChartVisible = true;
 				} else {
-					// If no trades were returned, it likely means there was a duplicate or no orders were processed
 					this.message = "Duplicate orders detected. No orders were saved.";
-					this.isChartVisible = false; // Hide the chart
+					this.isChartVisible = false;
 				}
 			} catch (error) {
 				this.message = "Failed to import orders.";
-				this.isChartVisible = false; // Hide the chart in case of any errors
+				this.isChartVisible = false;
 				console.error(error);
 			}
 		},

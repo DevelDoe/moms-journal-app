@@ -1,8 +1,7 @@
 <!-- src/views/Home.vue -->
 <template>
     <div>
-      <h1>Mom's Journal</h1>
-      <p>Sometimes, doing nothing is the best move</p>
+      <h1></h1>
     </div>
   </template>
   
