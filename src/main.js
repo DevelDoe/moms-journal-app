@@ -28,27 +28,58 @@ const toastOptions = {
 // Set global Axios configuration for base URL
 axios.defaults.baseURL = "http://localhost:5000/api";
 
+let isRefreshing = false; // To track ongoing token refresh
+let refreshSubscribers = []; // Queue to resolve pending requests after refresh
+
+// Notify all subscribers with the new token
+const notifySubscribers = (newToken) => {
+    refreshSubscribers.forEach((callback) => callback(newToken));
+    refreshSubscribers = [];
+};
+
 // Axios request interceptor to handle token refresh
 axios.interceptors.request.use(
     async (config) => {
         const token = localStorage.getItem("token");
-        
+
         if (token && isTokenExpired(token)) {
-            // If the token is expired or expiring soon, attempt to refresh
-            const refreshed = await store.dispatch("refreshToken");
-            if (refreshed) {
-                config.headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`; // Update token in headers
-            } else {
-                store.commit("clearState"); // Clear store if refresh fails
-                router.push("/login"); // Redirect to login
+            if (!isRefreshing) {
+                isRefreshing = true;
+
+                try {
+                    const refreshed = await store.dispatch("refreshToken");
+                    if (refreshed) {
+                        const newToken = localStorage.getItem("token");
+                        notifySubscribers(newToken);
+                    } else {
+                        store.commit("clearState");
+                        router.push("/login");
+                    }
+                } catch (error) {
+                    console.error("Error refreshing token:", error);
+                    store.commit("clearState");
+                    router.push("/login");
+                } finally {
+                    isRefreshing = false;
+                }
             }
+
+            // Queue pending requests while refreshing the token
+            return new Promise((resolve) => {
+                refreshSubscribers.push((newToken) => {
+                    config.headers["Authorization"] = `Bearer ${newToken}`;
+                    resolve(config);
+                });
+            });
         }
-        
+
+        // If no refresh needed, proceed with the request
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 // Load the auth token from localStorage before mounting the app

@@ -1,20 +1,15 @@
-// ./src/store/index.js
-
 import { createStore } from "vuex";
 import axios from "axios";
-import { useToast } from "vue-toastification";
 import debounce from "lodash/debounce";
 import moment from "moment";
 import { isTokenExpired } from "../utils/auth";
-
-const toast = useToast();
+import { showToast } from "../utils/toast";
 
 // Set global Axios configuration
-axios.defaults.baseURL = "http://localhost:5000/api"; // Global base URL
+axios.defaults.baseURL = "http://localhost:5000/api";
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token") || ""}`;
 
-const debouncedSuccessToast = debounce((message) => toast.success(message), 2000, { leading: true, trailing: false });
-const debouncedErrorToast = debounce((message) => toast.error(message), 2000, { leading: true, trailing: false });
+let isFetchingUser = false;
 
 export default createStore({
     state: {
@@ -28,34 +23,27 @@ export default createStore({
     },
     mutations: {
         setUser(state, userData) {
-            if (!state.user) {
-                state.user = {};
-            }
-            Object.assign(state.user, userData);
+            console.log(userData);
+            state.user = userData ? { ...userData } : null; // Ensures reactivity
         },
         setToken(state, token) {
             state.token = token;
             if (token) {
                 localStorage.setItem("token", token);
-                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token globally
+                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             } else {
                 localStorage.removeItem("token");
-                delete axios.defaults.headers.common["Authorization"]; // Remove token from global headers
+                delete axios.defaults.headers.common["Authorization"];
             }
         },
         clearState(state) {
+            console.log("Clearing state...");
             state.user = null;
-            state.token = "";
+            state.token = null; // Consistency
             state.orders = [];
             state.trades = [];
             localStorage.removeItem("token");
             delete axios.defaults.headers.common["Authorization"];
-        },
-        addOrder(state, order) {
-            if (!state.orders) {
-                state.orders = [];
-            }
-            state.orders.push(order);
         },
         setOrders(state, orders) {
             state.orders = orders;
@@ -74,9 +62,71 @@ export default createStore({
         },
     },
     actions: {
-        updateDateRange({ commit }, { start, end }) {
+        async loginAction({ commit, dispatch }, { email, password }) {
+            try {
+                const response = await axios.post("/auth/login", { email, password });
+                const { accessToken, user } = response.data;
+        
+                commit("setToken", accessToken);
+                commit("setUser", user); // Directly update the user
+                
+                await dispatch("setDefaultDates");
+                await dispatch("fetchTrades"); // Fetch trades once after login
+        
+                showToast.success("Logged in successfully!");
+                return true;
+            } catch (error) {
+                const message = error.response?.data?.msg || "Login failed. Please try again.";
+                showToast.error(message);
+                return false;
+            }
+        },
+        async fetchUser({ commit, dispatch, state }) {
+            if (isFetchingUser) return;
+            isFetchingUser = true;
+
+            try {
+                // Check token expiration
+                if (state.token && isTokenExpired(state.token)) {
+                    const refreshed = await dispatch("refreshToken");
+                    if (!refreshed) {
+                        throw new Error("Session expired. Please log in again.");
+                    }
+                }
+
+                const response = await axios.get("/user/profile");
+                commit("setUser", response.data.user); // Update the user data
+            } catch (error) {
+                console.error("Failed to fetch user data:", error);
+                showToast.error("Failed to fetch user data. Please log in again.");
+                commit("clearState"); // Clear state only after notifying the user
+            } finally {
+                isFetchingUser = false;
+            }
+        },
+        async refreshToken({ commit }) {
+            try {
+                const response = await axios.post("/auth/refresh-token");
+                const { accessToken } = response.data;
+        
+                commit("setToken", accessToken);
+                return true;
+            } catch (error) {
+                console.error("Failed to refresh token:", error);
+                commit("clearState"); // Clear state when refresh fails
+                return false;
+            }
+        },
+        logout({ commit }, router) {
+            axios.post("/auth/logout").catch((err) => console.error("Logout error:", err));
+            commit("clearState");
+            showToast.success("Logged out successfully!");
+            if (router) router.push("/");
+        },
+        updateDateRange({ commit, dispatch }, { start, end }) {
             commit("setStartDate", start);
             commit("setEndDate", end);
+            dispatch("fetchTrades"); // Fetch trades after date update
         },
         setDefaultDates({ commit }) {
             const currentMonthStart = moment().startOf("month").format("YYYY-MM-DD");
@@ -84,120 +134,32 @@ export default createStore({
             commit("setStartDate", currentMonthStart);
             commit("setEndDate", currentDate);
         },
-        async loginAction({ commit, dispatch }, { email, password }) {
-            try {
-                const response = await axios.post("/auth/login", { email, password });
-                const { accessToken, refreshToken, user } = response.data;
-
-                commit("setToken", accessToken);
-                commit("setUser", user);
-                localStorage.setItem("refreshToken", refreshToken);
-
-                await dispatch("setDefaultDates");
-                await dispatch("fetchTrades"); // Fetch trades once after login
-
-                debouncedSuccessToast("Logged in successfully!");
-
-                return true;
-            } catch (error) {
-                const message = error.response?.data?.msg || "Login failed. Please try again.";
-                debouncedErrorToast(message);
-                return false;
-            }
-        },
-        logout({ commit }, router) {
-            commit("clearState");
-            localStorage.removeItem("refreshToken"); // Clear the refresh token
-            debouncedSuccessToast("Logged out successfully!");
-            if (router) {
-                router.push("/");
-            }
-        },
-        async refreshToken({ commit }) {
-            try {
-                const refreshToken = localStorage.getItem("refreshToken"); // Ensure refreshToken from localStorage
-                if (!refreshToken) throw new Error("No refresh token available");
-
-                const response = await axios.post("/auth/refresh-token", { refreshToken });
-
-                const { accessToken } = response.data;
-                commit("setToken", accessToken); // Update with new access token
-                return true;
-            } catch (error) {
-                console.error("Failed to refresh token:", error);
-                commit("clearState"); // Clear state if refresh fails
-                return false;
-            }
-        },
-        async fetchUser({ commit, dispatch, state }) {
-            // Check if token is expired
-            if (state.token && isTokenExpired(state.token)) {
-                // Attempt to refresh the token
-                const refreshed = await dispatch("refreshToken");
-                if (!refreshed) {
-                    commit("clearState"); // Clear state if refresh fails
-                    return;
-                }
-            }
-
-            // Fetch user data if token is valid
-            try {
-                const response = await axios.get("/user/profile");
-                commit("setUser", response.data.user);
-            } catch (error) {
-                console.error("Failed to fetch user data:", error);
-                if (error.response && error.response.status === 401) {
-                    commit("clearState");
-                }
-            }
-        },
-        handleAuthError(commit, error) {
-            if (error.response?.status === 401) {
-                commit("clearState");
-                debouncedErrorToast("Session expired. Please log in again.");
-            } else {
-                const message = error.response?.data?.msg || "Error fetching user.";
-                debouncedErrorToast(message);
-            }
-        },
-        async updateUser({ commit }, updatedUserData) {
-            try {
-                const response = await axios.put("/auth/update-profile", updatedUserData);
-                commit("setUser", response.data);
-                debouncedSuccessToast("Profile updated successfully!");
-            } catch (error) {
-                const message = error.response?.data?.msg || "Error updating profile.";
-                debouncedErrorToast(message);
-            }
-        },
         async addAccount({ commit }, accountData) {
             try {
                 const response = await axios.post("/user/account", accountData);
-                commit("setUser", response.data);
-                debouncedSuccessToast("Account added successfully!");
+                const updatedUser = response.data.user || response.data; // Ensure proper user structure
+                commit("setUser", updatedUser);
+                showToast.success("Account added successfully!");
             } catch (error) {
                 const message = error.response?.data?.msg || "Failed to add account.";
-                debouncedErrorToast(message);
+                showToast.error(message);
             }
         },
         async createMultipleOrders({ commit, dispatch }, { orders }) {
             try {
                 const response = await axios.post("/orders", { orders });
-
                 if (response.status === 201) {
                     await dispatch("fetchOrders");
                     await dispatch("fetchTrades");
                     await dispatch("fetchAllSummaries");
                 }
-
-                debouncedSuccessToast("Orders, trades, and summaries updated successfully!");
+                showToast.success("Orders, trades, and summaries updated successfully!");
                 return response.data.trades;
             } catch (error) {
                 const message = error.response?.data?.error || "Error uploading orders.";
-                debouncedErrorToast(message);
+                showToast.error(message);
             }
         },
-
         async fetchOrders({ commit }) {
             try {
                 const response = await axios.get("/orders");
@@ -206,14 +168,6 @@ export default createStore({
                 console.error("Error fetching orders:", error);
             }
         },
-
-        updateDateRange({ commit, dispatch }, { start, end }) {
-            
-            commit("setStartDate", start);
-            commit("setEndDate", end);
-            dispatch("fetchTrades"); // Fetch trades after date update
-        },
-
         async fetchTrades({ commit, state }) {
             try {
                 const { startDate, endDate } = state;
@@ -223,25 +177,6 @@ export default createStore({
                 commit("setTrades", response.data);
             } catch (error) {
                 console.error("Error fetching trades:", error);
-            }
-        },
-
-        async fetchAllSummaries({ commit }) {
-            try {
-                const response = await axios.get("/trades/summaries");
-                commit("setSummaries", response.data);
-            } catch (error) {
-                console.error("Error fetching summaries:", error);
-            }
-        },
-        async fetchFilteredSummaries({ commit }, { minProfit, maxProfit, minTrades, maxTrades, date }) {
-            try {
-                const response = await axios.get("/trades/summaries/filter", {
-                    params: { minProfit, maxProfit, minTrades, maxTrades, date },
-                });
-                commit("setSummaries", response.data);
-            } catch (error) {
-                console.error("Error fetching filtered summaries:", error);
             }
         },
     },

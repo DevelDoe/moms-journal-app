@@ -38,38 +38,41 @@
 export default {
 	data() {
 		return {
-			user: null,
-			isLoading: true,
-			newAccountType: "", // Holds the selected account type for the new account
+			isLoading: true, // Start with loading true
+			newAccountType: "", // Holds the selected account type
 		};
 	},
-	mounted() {
-		this.fetchUserData();
+	computed: {
+		user() {
+			return this.$store.getters.getUser; // Bind directly to Vuex store
+		},
 	},
-	methods: {
-		async fetchUserData() {
-			this.isLoading = true;
-			try {
-				await this.$store.dispatch("fetchUser");
-				this.user = this.$store.getters.getUser;
-				this.isLoading = false;
-			} catch (error) {
-				this.isLoading = false;
-				console.error("Error fetching user data:", error);
+	watch: {
+		// Watch for changes to 'user' and stop loading when data is available
+		user(newUser) {
+			if (newUser) {
+				this.isLoading = false; // Stop loading when user data exists
 			}
 		},
+	},
+	created() {
+		// Set loading to false immediately if user is already in store
+		if (this.$store.getters.getUser) {
+			this.isLoading = false;
+		}
+	},
+	methods: {
 		async addAccount() {
 			try {
-				// Dispatch action to add new account to the user
 				await this.$store.dispatch("addAccount", { type: this.newAccountType });
 				this.newAccountType = ""; // Reset the dropdown
-				await this.fetchUserData(); // Refresh user data to show updated accounts
 			} catch (error) {
 				console.error("Error adding account:", error);
 			}
 		},
 	},
 };
+
 </script>
 
 <style scoped>

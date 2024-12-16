@@ -4,23 +4,28 @@
         <!-- Top Taskbar -->
         <div id="taskbar">
             <div class="taskbar-left">
-                <span class="app-name">Mom's Journal</span>
-                <router-link to="/login">Login</router-link>
-                <router-link to="/register">Register</router-link>
+                <span class="app-name" v-if="isAuthenticated">Trader Journal</span>
+                <router-link to="/login" v-if="!isAuthenticated">Login  </router-link>
+                <router-link to="/register" v-if="!isAuthenticated" style="font-size:10px; opacity: 0.6">Register</router-link>
             </div>
-            <div class="taskbar-right">
+
+            <!-- Centered Gauges -->
+            <div class="taskbar-center centered" v-if="isAuthenticated">
+                <ReportProfitLossAccuracy :trades="trades" />
+            </div>
+            <div class="taskbar-right" v-if="isAuthenticated">
                 <!-- Date Range Picker -->
                 <div class="date-range-picker">
                     <div class="date-input">
-                        <label>Start Date:</label>
+                        <label>Start: </label>
                         <input type="date" :value="getStartDate" @input="updateStartDate" />
                     </div>
                     <div class="date-input">
-                        <label>End Date:</label>
+                        <label>End: </label>
                         <input type="date" :value="getEndDate" @input="updateEndDate" />
                     </div>
                 </div>
-                <div v-if="isAuthenticated" class="dropdown" @click="toggleDropdown">
+                <div class="dropdown" @click="toggleDropdown">
                     <span class="username">{{ getUser?.name || "User" }}</span>
                     <div v-if="showDropdown" class="dropdown-content">
                         <router-link to="/profile">Profile</router-link>
@@ -51,8 +56,12 @@
 import { mapGetters, mapActions } from "vuex";
 import uploadIcon from "@/assets/images/upload-icon.png";
 import reportsIcon from "@/assets/images/reports-icon.png";
+import ReportProfitLossAccuracy from "/src/components/partials/reports/ReportProfitLossAccuracy.vue";
 
 export default {
+    components: {
+        ReportProfitLossAccuracy,
+    },
     data() {
         return {
             uploadIcon,
@@ -61,7 +70,12 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["isAuthenticated", "getUser", "getStartDate", "getEndDate"]),
+        ...mapGetters(["isAuthenticated", "getUser", "getStartDate", "getEndDate", "getTrades"]),
+        trades() {
+            const trades = this.getTrades || [];
+            this.hasCorruptData = trades.some((trade) => !trade || !trade.symbol || trade.buyPrice === undefined || isNaN(new Date(trade.date).getTime()));
+            return trades;
+        },
     },
     methods: {
         ...mapActions(["updateDateRange", "logout"]), // Map updateDateRange and logout actions
@@ -93,7 +107,7 @@ export default {
     color: #0b192c;
 }
 #view {
-    padding-top: 40px;
+    padding-top: 60px;
 }
 /* Taskbar styling */
 #taskbar {
@@ -104,17 +118,39 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    height: 50px;
 }
 
 .taskbar-left .app-name {
     font-size: 1.2em;
     font-weight: bold;
     margin-right: 15px;
+}
+
+.date-range-picker {
+    font-size: 13px;
+    margin-right: 10px;
+}
+
+.date-input{
+    float: left;
+    font-size: 13px;
+    margin-right: 10px !important;
+    font-size: 13px !important;
+}
+.date-input input{
+    font-size: 13px;
+    margin-right: 10px !important;
+    font-size: 13px !important;
+    width: 110px;
+    padding: 3px 6px !important;
+    border-radius: 1px !important;
+    border-style: none !important;
+    border: none !important;
 }
 
 .taskbar-right {
@@ -182,5 +218,11 @@ export default {
     width: 80px; /* Adjust this value to make the icons smaller */
     height: 80px; /* Keep the same height as width for a square ratio */
     padding: 20px;
+}
+.centered {
+    position: absolute; /* Position relative to the closest positioned ancestor */
+    top: 50%;           /* Move the element's top edge to the middle */
+    left: 50%;          /* Move the element's left edge to the middle */
+    transform: translate(-50%, -50%); /* Shift back by 50% of its width and height */
 }
 </style>

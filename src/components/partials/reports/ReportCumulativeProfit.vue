@@ -1,15 +1,17 @@
 <template>
-	<div id="cumulative-profit">
-		<div class="chart-header">
-			<span class="tooltip-icon" @mouseover="showTooltip" @mouseleave="hideTooltip">
-				?
-				<div v-if="isTooltipVisible" class="tooltip-text">
-					This chart visualizes cumulative profit or loss alongside the trade count over a selected time period. It provides insights into periods of sustained growth, significant drawdowns, and trading frequency, offering a clearer perspective on performance trends and trading activity.
-				</div>
-			</span>
-		</div>
-		<v-chart :option="chartOptions" autoresize style="width: 100%; height: 400px" id="cumulative-profit-chart"></v-chart>
-	</div>
+    <div id="cumulative-profit" class="chart-container">
+        <!-- Header with Tooltip -->
+        <div class="chart-header">
+            <span class="tooltip-icon" @mouseover="isTooltipVisible = true" @mouseleave="isTooltipVisible = false">
+                ?
+                <div v-if="isTooltipVisible" class="tooltip-text">This chart visualizes cumulative profit or loss alongside number of trades completed for the period.</div>
+            </span>
+            <h2>Cumulative Profit Chart</h2>
+        </div>
+
+        <!-- ECharts Visualization -->
+        <v-chart :option="chartOptions" autoresize style="width: 95vh; height: 70vh; position: absolute; left: 0px; top: 40px" class="chart"></v-chart>
+    </div>
 </template>
 
 <script>
@@ -22,261 +24,180 @@ import VChart from "vue-echarts";
 use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
 
 export default {
-	props: {
-		trades: {
-			type: Array,
-			required: true,
-		},
-		granularity: {
-			type: String,
-			default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
-		},
-	},
-	components: {
-		VChart,
-	},
-	data() {
-		return {
-			isTooltipVisible: false,
-		};
-	},
-	methods: {
-		showTooltip() {
-			this.isTooltipVisible = true;
-		},
-		hideTooltip() {
-			this.isTooltipVisible = false;
-		},
-		formatDate(date) {
-			const d = new Date(date);
-			switch (this.granularity) {
-				case "hourly":
-					return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`; // Show only time
-				case "daily":
-					return d.toLocaleDateString();
-				case "weekly":
-					const weekStart = new Date(d.setDate(d.getDate() - d.getDay()));
-					return `${weekStart.toLocaleDateString()} (Week)`;
-				case "monthly":
-					return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-				case "yearly":
-					return d.getFullYear().toString();
-				default:
-					return d.toLocaleDateString();
-			}
-		},
-	},
-	computed: {
-		cumulativeProfitData() {
-			if (!this.trades || this.trades.length === 0) {
-				return { labels: [], profitData: [], tradeCountData: [] };
-			}
+    props: {
+        trades: { type: Array, required: true },
+    },
+    components: { VChart },
+    data() {
+        return {
+            isTooltipVisible: false,
+        };
+    },
+    computed: {
+        cumulativeProfitData() {
+            if (!this.trades || this.trades.length === 0) return { labels: [], profits: [], tradeCounts: [] };
 
-			let cumulativeProfit = 0;
-			let cumulativeTradeCount = 0;
-			const labels = [];
-			const profitData = [];
-			const tradeCountData = [];
+            let cumulativeProfit = 0;
+            let cumulativeTrades = 0;
 
-			const sortedTrades = [...this.trades].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const labels = [];
+            const profits = [];
+            const tradeCounts = [];
 
-			// Group trades based on selected granularity
-			const groupedTrades = sortedTrades.reduce((acc, trade) => {
-				const key = this.formatDate(trade.date);
-				if (!acc[key]) {
-					acc[key] = [];
-				}
-				acc[key].push(trade);
-				return acc;
-			}, {});
+            // Sort trades by date and group by unique dates
+            const groupedTrades = this.trades.reduce((acc, trade) => {
+                const dateKey = new Date(trade.date).toLocaleDateString(); // Group by date string
+                if (!acc[dateKey]) acc[dateKey] = [];
+                acc[dateKey].push(trade);
+                return acc;
+            }, {});
 
-			// Calculate cumulative profit and trade count for each group
-			Object.keys(groupedTrades).forEach((group) => {
-				const trades = groupedTrades[group];
-				labels.push(group);
+            // Process grouped trades
+            Object.keys(groupedTrades)
+                .sort((a, b) => new Date(a) - new Date(b)) // Sort dates chronologically
+                .forEach((date) => {
+                    const tradesOnDate = groupedTrades[date];
+                    labels.push(date); // Add the current date to labels
 
-				trades.forEach((trade) => {
-					cumulativeProfit += trade.profitLoss;
-				});
-				profitData.push(cumulativeProfit);
+                    // Sum up profit for the day
+                    tradesOnDate.forEach((trade) => {
+                        cumulativeProfit += trade.profitLoss;
+                    });
 
-				cumulativeTradeCount += trades.length;
-				tradeCountData.push(cumulativeTradeCount);
-			});
+                    // Increment trade count based on the number of trades on this date
+                    cumulativeTrades += tradesOnDate.length;
 
-			return {
-				labels,
-				profitData,
-				tradeCountData,
-			};
-		},
-		chartOptions() {
-			return {
-				title: {
-					text: `History (${this.granularity})`,
-					left: "left", // Position the title in the center
-					textStyle: {
-						color: "#1E3E62", // Title text color
-						fontSize: 18, // Font size
-						fontWeight: "bold", // Font weight: 'normal', 'bold', 'bolder', 'lighter'
-					},
-					subtext: "", // Add a subtitle if needed
-					subtextStyle: {
-						color: "#aaa", // Subtitle color
-						fontSize: 14,
-					},
-				},
-				tooltip: {
-					trigger: "axis",
-					axisPointer: {
-						type: "line",
-					},
-				},
-				legend: {
-					orient: "horizontal",
-					left: "center",
-					top: "0%",
-					textStyle: { color: "#eaeaea" },
-					icon: "circle",
-				},
-				grid: {
-					left: "6%",
-					right: "6%",
-					bottom: "6%",
-					top: "20%",
-					containLabel: false,
-				},
-				xAxis: {
-					type: "category",
-					data: this.cumulativeProfitData.labels,
-					axisLine: {
-						lineStyle: { color: "#1E3E62" }, // Color of the x-axis line
-					},
-					axisLabel: {
-						color: "#1E3E62", // Color of the x-axis labels
-						fontSize: 14, // Size of the font for the labels
-					},
-					splitLine: {
-						lineStyle: {
-							color: "#1E3E62", // Change this to your preferred color for the horizontal lines
-							width: 1, // Thickness of the lines
-							type: "solid", // Options: 'solid', 'dashed', 'dotted'
-						},
-					},
-				},
-				yAxis: [
-					{
-						type: "value",
-						name: "Profits",
-						position: "left",
-						axisLine: {
-							lineStyle: { color: "#1E3E62" },
-						},
-						axisLabel: {
-							color: "#1E3E62",
-							fontSize: 16,
-						},
-						splitLine: {
-							lineStyle: {
-								color: "#1E3E62", // Ensure the same color for consistency
-								width: 1,
-								type: "solid",
-							},
-						},
-					},
-					{
-						type: "value",
-						name: "Number of Trades",
-						position: "right",
-						axisLine: {
-							lineStyle: { color: "#1E3E62" },
-						},
-						axisLabel: {
-							color: "#1E3E62",
-							fontSize: 16,
-						},
-						splitLine: {
-							lineStyle: {
-								color: "#1E3E62", // Ensure the same color for consistency
-								width: 1,
-								type: "solid",
-							},
-						},
-					},
-				],
-				series: [
-					{
-						name: "Profits",
-						type: "line",
-						data: this.cumulativeProfitData.profitData.map((value) => parseFloat(value.toFixed(2))),
-						itemStyle: { color: "#72BF78" },
-						smooth: true,
-						lineStyle: { width: 3 },
-					},
-					{
-						name: "Trades",
-						type: "line",
-						data: this.cumulativeProfitData.tradeCountData,
-						yAxisIndex: 1,
-						itemStyle: { color: "#FEFF9F" },
-						smooth: true,
-						lineStyle: { width: 3 },
-					},
-				],
-				animationDuration: 3000,
-				animationEasing: "quarticInOut",
-			};
-		},
-	},
+                    // Push cumulative values to the arrays
+                    profits.push(cumulativeProfit.toFixed(2));
+                    tradeCounts.push(cumulativeTrades);
+                });
+
+            return { labels, profits, tradeCounts };
+        },
+
+        chartOptions() {
+            return {
+                tooltip: { trigger: "axis" },
+                legend: {
+                    data: ["Profits", "Trade Count"],
+                    bottom: 0,
+                    selected: {
+                        Profits: true,
+                        "Trade Count": true, // Start with only profits active
+                    },
+                },
+                xAxis: {
+                    type: "category",
+                    data: this.cumulativeProfitData.labels,
+                    axisLabel: { rotate: 45 },
+                },
+                yAxis: [
+                    // Profits Axis (Left)
+                    {
+                        type: "value",
+                        name: "Cumulative Profit ($)",
+                        position: "right",
+                        axisLine: { lineStyle: { color: "#4CAF50" } }, // Green axis line
+                        axisLabel: { color: "#4CAF50" },
+                        splitLine: { show: false }, // Turn off grid lines
+                    },
+                    // Trade Count Axis (Right)
+                    {
+                        type: "value",
+                        name: "Trade Count",
+                        position: "left",
+                        axisLine: { lineStyle: { color: "#FFC107" } }, // Yellow axis line
+                        axisLabel: { color: "#FFC107" },
+                        splitLine: { show: false }, // Turn off grid lines
+                    },
+                ],
+                grid: {
+                    left: "10%", // Adjust spacing for alignment
+                    right: "10%",
+                    top: "15%",
+                    bottom: "10%",
+                    containLabel: true,
+                },
+                series: [
+                    {
+                        name: "Profits",
+                        type: "line",
+                        smooth: true,
+                        data: this.cumulativeProfitData.profits,
+                        yAxisIndex: 0, // Use left axis
+                        itemStyle: { color: "#4CAF50" }, // Green line
+                    },
+                    {
+                        name: "Trade Count",
+                        type: "line",
+                        smooth: true,
+                        data: this.cumulativeProfitData.tradeCounts,
+                        yAxisIndex: 1, // Use right axis
+                        itemStyle: { color: "#FFC107" }, // Yellow line
+                    },
+                ],
+            };
+        },
+    },
 };
 </script>
 
 <style scoped>
-#cumulative-profit {
-	
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    width: 50% !important; /* 50% of the parent container */
+    height: 100% !important; /* Use full height relative to the parent container */
+    padding: 0;
+    margin: auto 0;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
 }
-#cumulative-profit-chart {
-	height: 100vh !important;
-}
+
 .chart-header {
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-	position: relative;
-	padding-left: 20px;
+    position: absolute;
+    top: 38px;
+    left: 59px;
+    opacity: 0.5;
+    font-size: 12px;
 }
 
 .tooltip-icon {
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	display: inline-block;
-	background: #007bff;
-	color: #fff;
-	width: 18px;
-	height: 18px;
-	border-radius: 50%;
-	text-align: center;
-	cursor: pointer;
-	font-size: 14px;
-	line-height: 18px;
-	z-index: 999;
+    background: #007bff;
+    color: white;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 17px;
+    margin-right: 10px;
+    position: absolute;
+    top: 8px;
+    right: -36px;
 }
 
 .tooltip-text {
-	position: absolute;
-	top: 25px;
-	right: 0;
-	background-color: #333;
-	color: #fff;
-	padding: 5px;
-	border-radius: 4px;
-	width: 200px;
-	font-size: 12px;
-	z-index: 10;
-	opacity: 0.9;
-	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-	white-space: normal;
-	transition: opacity 0.3s ease-in-out;
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    top: 25px;
+    left: 0;
+    width: 200px;
+    font-size: 12px;
+    white-space: normal;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.chart {
+    width: 100%;
+    height: 100%;
 }
 </style>

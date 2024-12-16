@@ -1,16 +1,24 @@
 // utils/auth.js
 
-// Check if the token is expired
+// utils/auth.js
+
+let lastChecked = null;
+let lastResult = null;
+
 export function isTokenExpired(token) {
+    const now = Date.now();
+    if (lastChecked && now - lastChecked < 5000) { // Cache result for 5 seconds
+        return lastResult;
+    }
+    lastChecked = now;
+
     try {
-        console.log("Checking token expiration");
-        const payload = JSON.parse(atob(token.split(".")[1])); // Decode the JWT payload
-        const expiration = payload.exp * 1000; // Convert to milliseconds
-        const now = Date.now();
-        return expiration - now < 5 * 60 * 1000; // Check if expiring within the next 5 minutes
-    } catch (error) {
-        console.error("Error checking token expiration:", error);
-        return true; // Consider it expired if there's any issue decoding it
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        lastResult = Date.now() >= payload.exp * 1000;
+        return lastResult;
+    } catch (err) {
+        console.error("Error decoding token:", err);
+        return true; // Consider token expired if it can't be parsed
     }
 }
 
