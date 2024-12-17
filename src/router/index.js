@@ -47,7 +47,7 @@ router.beforeEach((to, from, next) => {
             console.log("Redirecting unauthenticated user to login page.");
         }
         next({
-            path: "/login", // Redirect to login page
+            path: "/home", // Redirect to login page
             query: { redirect: to.fullPath }, // Include intended route as query parameter
         });
     } else {

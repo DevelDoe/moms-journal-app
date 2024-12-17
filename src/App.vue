@@ -5,8 +5,8 @@
         <div id="taskbar">
             <div class="taskbar-left">
                 <span class="app-name" v-if="isAuthenticated">Trader Journal</span>
-                <router-link to="/login" v-if="!isAuthenticated">Login  </router-link>
-                <router-link to="/register" v-if="!isAuthenticated" style="font-size:10px; opacity: 0.6">Register</router-link>
+                <router-link to="/login" v-if="!isAuthenticated">Login </router-link>
+                <router-link to="/register" v-if="!isAuthenticated" style="font-size: 10px; opacity: 0.6">Register</router-link>
             </div>
 
             <!-- Centered Gauges -->
@@ -42,13 +42,10 @@
 
         <!-- Dock at the bottom -->
         <div class="dock">
-            <router-link v-if="isAuthenticated" to="/upload-orders" class="dock-icon">
-                <img :src="uploadIcon" alt="Upload Orders" />
-            </router-link>
-            <router-link v-if="isAuthenticated" to="/reports" class="dock-icon">
-                <img :src="reportsIcon" alt="Reports" />
-            </router-link>
-        </div>
+    <router-link v-for="item in dockItems" :key="item.route" :to="item.route" class="dock-icon">
+        <img :src="item.icon" :alt="item.label" />
+    </router-link>
+</div>
     </div>
 </template>
 
@@ -67,6 +64,10 @@ export default {
             uploadIcon,
             reportsIcon,
             showDropdown: false, // Controls the dropdown visibility
+            dockItems: [
+                { route: "/upload-orders", icon: uploadIcon, label: "Upload Orders" },
+                { route: "/reports", icon: reportsIcon, label: "Reports" },
+            ],
         };
     },
     computed: {
@@ -94,6 +95,26 @@ export default {
             const newEndDate = event.target.value;
             this.updateDateRange({ start: this.getStartDate, end: newEndDate });
         },
+        handleClickOutside(event) {
+            if (!this.$el.contains(event.target)) {
+                this.showDropdown = false;
+            }
+        },
+    },
+    async created() {
+        if (this.$store.state.token) {
+            try {
+                await this.$store.dispatch("fetchUser");
+            } catch {
+                this.$router.push("/login");
+            }
+        }
+    },
+    mounted() {
+        document.addEventListener("click", this.handleClickOutside);
+    },
+    beforeUnmount() {
+        document.removeEventListener("click", this.handleClickOutside);
     },
 };
 </script>
@@ -136,13 +157,13 @@ export default {
     margin-right: 10px;
 }
 
-.date-input{
+.date-input {
     float: left;
     font-size: 13px;
     margin-right: 10px !important;
     font-size: 13px !important;
 }
-.date-input input{
+.date-input input {
     font-size: 13px;
     margin-right: 10px !important;
     font-size: 13px !important;
@@ -199,10 +220,10 @@ export default {
     transform: translateX(-50%);
     display: flex;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+    border-radius: 5px;
     z-index: 1000;
 }
 
@@ -215,14 +236,14 @@ export default {
     transform: scale(1.3);
 }
 .dock-icon img {
-    width: 80px; /* Adjust this value to make the icons smaller */
-    height: 80px; /* Keep the same height as width for a square ratio */
-    padding: 20px;
+    width: 25px;
+    height: 25px;
+    padding: 3px;
 }
 .centered {
     position: absolute; /* Position relative to the closest positioned ancestor */
-    top: 50%;           /* Move the element's top edge to the middle */
-    left: 50%;          /* Move the element's left edge to the middle */
+    top: 50%; /* Move the element's top edge to the middle */
+    left: 50%; /* Move the element's left edge to the middle */
     transform: translate(-50%, -50%); /* Shift back by 50% of its width and height */
 }
 </style>

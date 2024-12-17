@@ -25,7 +25,14 @@ use([CanvasRenderer, LineChart, TitleComponent, TooltipComponent, GridComponent,
 
 export default {
     props: {
-        trades: { type: Array, required: true },
+        trades: {
+            type: Array,
+            required: true,
+        },
+        granularity: {
+            type: String,
+            default: "daily", // Options: 'hourly', 'daily', 'weekly', 'monthly', 'yearly'
+        },
     },
     components: { VChart },
     data() {
@@ -44,30 +51,49 @@ export default {
             const profits = [];
             const tradeCounts = [];
 
-            // Sort trades by date and group by unique dates
+            // Helper function to format dates based on granularity
+            const formatDateByGranularity = (date) => {
+                const d = new Date(date);
+                switch (this.granularity) {
+                    case "hourly":
+                        return `${d.getHours().toString().padStart(2, "0")}:00`; // Show only the hour
+                    case "daily":
+                        return d.toLocaleDateString();
+                    case "weekly":
+                        const weekStart = new Date(d.setDate(d.getDate() - d.getDay()));
+                        return `${weekStart.toLocaleDateString()} (Week)`;
+                    case "monthly":
+                        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+                    case "yearly":
+                        return d.getFullYear().toString();
+                    default:
+                        return d.toLocaleDateString();
+                }
+            };
+
+            // Group trades based on formatted date keys
             const groupedTrades = this.trades.reduce((acc, trade) => {
-                const dateKey = new Date(trade.date).toLocaleDateString(); // Group by date string
-                if (!acc[dateKey]) acc[dateKey] = [];
-                acc[dateKey].push(trade);
+                const key = formatDateByGranularity(trade.date);
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(trade);
                 return acc;
             }, {});
 
             // Process grouped trades
             Object.keys(groupedTrades)
-                .sort((a, b) => new Date(a) - new Date(b)) // Sort dates chronologically
-                .forEach((date) => {
-                    const tradesOnDate = groupedTrades[date];
-                    labels.push(date); // Add the current date to labels
+                .sort((a, b) => new Date(a) - new Date(b)) // Sort keys chronologically
+                .forEach((key) => {
+                    const tradesInGroup = groupedTrades[key];
+                    labels.push(key);
 
-                    // Sum up profit for the day
-                    tradesOnDate.forEach((trade) => {
+                    // Sum up profit for the group
+                    tradesInGroup.forEach((trade) => {
                         cumulativeProfit += trade.profitLoss;
                     });
 
-                    // Increment trade count based on the number of trades on this date
-                    cumulativeTrades += tradesOnDate.length;
+                    // Increment trade count for the group
+                    cumulativeTrades += tradesInGroup.length;
 
-                    // Push cumulative values to the arrays
                     profits.push(cumulativeProfit.toFixed(2));
                     tradeCounts.push(cumulativeTrades);
                 });
