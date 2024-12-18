@@ -128,7 +128,8 @@ export default {
     color: #0b192c;
 }
 #view {
-    padding-top: 60px;
+    padding-top: 50px; /* Match the taskbar height */
+    box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
 }
 /* Taskbar styling */
 #taskbar {

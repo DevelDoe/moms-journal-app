@@ -11,7 +11,9 @@
             <h2>Price Range</h2>
         </div>
 
-        <v-chart :option="chartOptions" autoresize style="width: 100vh; height: 100vh; position: absolute; left:-80px; top:-80px"></v-chart>
+        <div class="report-item">
+            <v-chart :option="chartOptions" autoresize class="v-chart"></v-chart>
+        </div>
     </div>
 </template>
 
@@ -78,86 +80,31 @@ export default {
             return { profitData, lossData };
         },
         chartOptions() {
+            const combinedData = [
+                ...this.profitAndLossByPriceRange.profitData.map((item) => ({ ...item, itemStyle: { color: "#FEFF9F" } })),
+                ...this.profitAndLossByPriceRange.lossData.map((item) => ({ ...item, itemStyle: { color: "#740938" } })),
+            ];
+
             return {
-                title: {
-                    // text: "Profit and Loss by Price Range",
-                    left: "left",
-                    textStyle: {
-                        color: "#1E3E62",
-                        fontSize: 18,
-                        fontWeight: "bold",
-                    },
-                },
                 tooltip: {
                     trigger: "item",
-                    formatter: "{d}%",
+                    formatter: "{b}: {c} ({d}%)",
                 },
-                // legend: {
-                //     orient: "horizontal",
-                //     left: "center",
-                //     top: 20,
-                //     textStyle: { color: "#eaeaea" },
-                //     data: [...this.profitAndLossByPriceRange.profitData.map((item) => item.name), ...this.profitAndLossByPriceRange.lossData.map((item) => item.name)],
-                // },
                 series: [
-                    // Profit Series (right half with "roseType" effect)
                     {
-                        name: "Profit",
+                        name: "Price Range Distribution",
                         type: "pie",
                         radius: ["20%", "55%"],
                         center: ["50%", "50%"],
-                        roseType: "radius", // Adds size variation based on value
-                        startAngle: 90,
-                        endAngle: 270,
-                        data: this.profitAndLossByPriceRange.profitData,
+                        roseType: "radius",
+                        data: combinedData,
                         label: {
-                            color: "#32cd32",
-                            fontSize: 14,
+                            color: "#fff",
                             formatter: "{b}",
                         },
                         itemStyle: {
-                            color: (params) => {
-                                const colors = ["#FEFF9F", "#D3EE98", "#A0D683", "#72BF78"];
-                                return colors[params.dataIndex % colors.length];
-                            },
-                            shadowBlur: 100,
+                            shadowBlur: 10,
                             shadowColor: "rgba(0, 0, 0, 0.5)",
-                        },
-                        labelLine: {
-                            show: true,
-                            smooth: 0.2,
-                            length: 20,
-                            length2: 20,
-                        },
-                    },
-                    // Loss Series (left half with "roseType" effect)
-                    {
-                        name: "Loss",
-                        type: "pie",
-                        radius: ["20%", "55%"],
-                        center: ["50%", "50%"],
-                        roseType: "radius", // Adds size variation based on value
-                        startAngle: 270,
-                        endAngle: 450,
-                        data: this.profitAndLossByPriceRange.lossData,
-                        label: {
-                            color: "#ff6347",
-                            fontSize: 14,
-                            formatter: "{b}",
-                        },
-                        itemStyle: {
-                            color: (params) => {
-                                const colors = ["#740938", "#AF1740", "#CC2B52", "#DE7C7D"];
-                                return colors[params.dataIndex % colors.length];
-                            },
-                            shadowBlur: 100,
-                            shadowColor: "rgba(0, 0, 0, 0.5)",
-                        },
-                        labelLine: {
-                            show: true,
-                            smooth: 0.2,
-                            length: 20,
-                            length2: 20,
                         },
                     },
                 ],
@@ -167,58 +114,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.chart-container {
-    width: 50% !important; /* 50% of the parent container */
-    height: 100% !important; /* Use full height relative to the parent container */
-    padding: 0;
-    margin: auto 0;
-    float: right; /* Align to the right */
-    display: flex; /* Use flex to center content */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    box-sizing: border-box; /* Include padding */
-    padding: 0; /* Remove unnecessary padding */
-    margin: 0; /* Remove any unwanted margin */
-    position: relative;
-}
-
-.chart-header {
-    position: absolute;
-    top: 38px;
-    left: 59px;
-    opacity: 0.5;
-    font-size: 12px;
-}
-
-.tooltip-icon {
-        background: #007bff;
-    color: white;
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    text-align: center;
-    cursor: pointer;
-    font-size: 12px;
-    line-height: 17px;
-    margin-right: 10px;
-    position: absolute;
-    top: 8px;
-    right: -36px;
-}
-
-.tooltip-text {
-    position: absolute;
-    background: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    top: 25px;
-    left: 0;
-    width: 200px;
-    font-size: 12px;
-    white-space: normal;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-</style>
+<style scoped></style>

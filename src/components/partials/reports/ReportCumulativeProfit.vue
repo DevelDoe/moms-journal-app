@@ -10,7 +10,9 @@
         </div>
 
         <!-- ECharts Visualization -->
-        <v-chart :option="chartOptions" autoresize style="width: 95vh; height: 70vh; position: absolute; left: 0px; top: 40px" class="chart"></v-chart>
+        <div class="report-item">
+            <v-chart :option="chartOptions" autoresize class="v-chart"></v-chart>
+        </div>
     </div>
 </template>
 
@@ -42,21 +44,20 @@ export default {
     },
     computed: {
         cumulativeProfitData() {
-            if (!this.trades || this.trades.length === 0) return { labels: [], profits: [], tradeCounts: [] };
+            if (!this.trades || this.trades.length === 0) return { labels: [], profits: [], avgProfits: [] };
 
             let cumulativeProfit = 0;
-            let cumulativeTrades = 0;
+            let tradeCount = 0;
 
             const labels = [];
             const profits = [];
-            const tradeCounts = [];
+            const avgProfits = [];
 
-            // Helper function to format dates based on granularity
             const formatDateByGranularity = (date) => {
                 const d = new Date(date);
                 switch (this.granularity) {
                     case "hourly":
-                        return `${d.getHours().toString().padStart(2, "0")}:00`; // Show only the hour
+                        return `${d.getHours().toString().padStart(2, "0")}:00`;
                     case "daily":
                         return d.toLocaleDateString();
                     case "weekly":
@@ -71,7 +72,6 @@ export default {
                 }
             };
 
-            // Group trades based on formatted date keys
             const groupedTrades = this.trades.reduce((acc, trade) => {
                 const key = formatDateByGranularity(trade.date);
                 if (!acc[key]) acc[key] = [];
@@ -79,66 +79,70 @@ export default {
                 return acc;
             }, {});
 
-            // Process grouped trades
             Object.keys(groupedTrades)
-                .sort((a, b) => new Date(a) - new Date(b)) // Sort keys chronologically
+                .sort((a, b) => new Date(a) - new Date(b))
                 .forEach((key) => {
                     const tradesInGroup = groupedTrades[key];
                     labels.push(key);
 
-                    // Sum up profit for the group
                     tradesInGroup.forEach((trade) => {
                         cumulativeProfit += trade.profitLoss;
+                        tradeCount++;
                     });
 
-                    // Increment trade count for the group
-                    cumulativeTrades += tradesInGroup.length;
-
                     profits.push(cumulativeProfit.toFixed(2));
-                    tradeCounts.push(cumulativeTrades);
+                    avgProfits.push((cumulativeProfit / tradeCount).toFixed(2));
                 });
 
-            return { labels, profits, tradeCounts };
+            return { labels, profits, avgProfits };
         },
 
         chartOptions() {
             return {
                 tooltip: { trigger: "axis" },
                 legend: {
-                    data: ["Profits", "Trade Count"],
+                    data: ["Profits", "Avg Profit per Trade"],
                     bottom: 0,
-                    selected: {
-                        Profits: true,
-                        "Trade Count": true, // Start with only profits active
-                    },
                 },
                 xAxis: {
                     type: "category",
                     data: this.cumulativeProfitData.labels,
                     axisLabel: { rotate: 45 },
+                    axisLine: { show: false }, // Hide x-axis line
+                    axisTick: { show: false }, // Hide ticks on x-axis
                 },
                 yAxis: [
-                    // Profits Axis (Left)
                     {
                         type: "value",
                         name: "Cumulative Profit ($)",
                         position: "right",
-                        axisLine: { lineStyle: { color: "#4CAF50" } }, // Green axis line
+                        axisLine: { lineStyle: { color: "#4CAF50" }, show: false }, // Hide axis line
                         axisLabel: { color: "#4CAF50" },
-                        splitLine: { show: false }, // Turn off grid lines
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: "rgba(0, 0, 0, 0)", // Optional: light grid lines
+                            },
+                        },
+                        axisTick: { show: false }, // Hide ticks
                     },
-                    // Trade Count Axis (Right)
                     {
                         type: "value",
-                        name: "Trade Count",
+                        name: "Avg Profit per Trade ($)",
                         position: "left",
-                        axisLine: { lineStyle: { color: "#FFC107" } }, // Yellow axis line
+                        axisLine: { lineStyle: { color: "#FFC107" }, show: false }, // Hide axis line
                         axisLabel: { color: "#FFC107" },
-                        splitLine: { show: false }, // Turn off grid lines
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: "rgba(0, 0, 0, 0)", // Optional: light grid lines
+                            },
+                        },
+                        axisTick: { show: false }, // Hide ticks
                     },
                 ],
                 grid: {
-                    left: "10%", // Adjust spacing for alignment
+                    left: "10%",
                     right: "10%",
                     top: "15%",
                     bottom: "10%",
@@ -150,16 +154,16 @@ export default {
                         type: "line",
                         smooth: true,
                         data: this.cumulativeProfitData.profits,
-                        yAxisIndex: 0, // Use left axis
-                        itemStyle: { color: "#4CAF50" }, // Green line
+                        yAxisIndex: 0,
+                        itemStyle: { color: "#4CAF50" },
                     },
                     {
-                        name: "Trade Count",
+                        name: "Avg Profit per Trade",
                         type: "line",
                         smooth: true,
-                        data: this.cumulativeProfitData.tradeCounts,
-                        yAxisIndex: 1, // Use right axis
-                        itemStyle: { color: "#FFC107" }, // Yellow line
+                        data: this.cumulativeProfitData.avgProfits,
+                        yAxisIndex: 1,
+                        itemStyle: { color: "#FFC107" },
                     },
                 ],
             };
@@ -168,62 +172,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.chart-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
-    width: 50% !important; /* 50% of the parent container */
-    height: 100% !important; /* Use full height relative to the parent container */
-    padding: 0;
-    margin: auto 0;
-    box-sizing: border-box;
-    position: relative;
-    float: left;
-}
-
-.chart-header {
-    position: absolute;
-    top: 38px;
-    left: 59px;
-    opacity: 0.5;
-    font-size: 12px;
-}
-
-.tooltip-icon {
-    background: #007bff;
-    color: white;
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    text-align: center;
-    cursor: pointer;
-    font-size: 12px;
-    line-height: 17px;
-    margin-right: 10px;
-    position: absolute;
-    top: 8px;
-    right: -36px;
-}
-
-.tooltip-text {
-    position: absolute;
-    background: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    top: 25px;
-    left: 0;
-    width: 200px;
-    font-size: 12px;
-    white-space: normal;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.chart {
-    width: 100%;
-    height: 100%;
-}
-</style>
+<style scoped></style>
