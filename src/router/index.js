@@ -1,8 +1,6 @@
-// define the routes and configure Vue Router.
-
-// Importing the necessary functions createRouter and createWebHistory from Vue Router,
+// Importing necessary functions from Vue Router and Vuex store
 import { createRouter, createWebHistory } from "vue-router";
-import { isAuthenticated } from "../utils/auth";
+import store from "../store"; // Ensure correct path to your store
 
 // Importing the components
 // Lazy loading in Vue Router can be achieved by dynamically importing components.
@@ -38,16 +36,21 @@ router.beforeEach((to, from, next) => {
     if (process.env.NODE_ENV === "development") {
         console.log("Navigating to:", to.fullPath);
         console.log("Requires Auth?", to.meta.requiresAuth);
-        console.log("Is user authenticated?", isAuthenticated());
+        console.log("Is user authenticated?", store.getters.isAuthenticated);
     }
 
-    if (to.meta.requiresAuth && !isAuthenticated()) {
-        // Redirect unauthenticated users to login with the original route as a redirect query
+    if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+        // Log out and clear the state if not authenticated
         if (process.env.NODE_ENV === "development") {
-            console.log("Redirecting unauthenticated user to login page.");
+            console.log("Redirecting unauthenticated user to login page and logging out.");
         }
+
+        // Trigger logout action
+        store.dispatch("logout", router);
+
+        // Redirect to login page with the original route as a query parameter
         next({
-            path: "/home", // Redirect to login page
+            path: "/", // Redirect to login page
             query: { redirect: to.fullPath }, // Include intended route as query parameter
         });
     } else {
