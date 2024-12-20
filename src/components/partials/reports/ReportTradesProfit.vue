@@ -7,7 +7,6 @@ script
                 >?
                 <div v-if="isTooltipVisible" class="tooltip-text">This chart allows you to compare the number of trades you made with the profit or loss.</div>
             </span>
-            <h2>Trades vs Profit & Loss</h2>
         </div>
         <div class="report-item">
             <v-chart :option="chartOptions" autoresize class="v-chart"></v-chart>

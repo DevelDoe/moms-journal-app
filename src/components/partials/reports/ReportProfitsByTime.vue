@@ -8,7 +8,6 @@
                     day.
                 </div>
             </span>
-            <h2>Time of Day</h2>
             <div class="granularity-picker">
                 <div class="granularity-input">
                     <select id="granularity" v-model="selectedGranularity">

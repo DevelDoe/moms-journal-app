@@ -42,10 +42,10 @@
 
         <!-- Dock at the bottom -->
         <div class="dock">
-    <router-link v-for="item in dockItems" :key="item.route" :to="item.route" class="dock-icon">
-        <img :src="item.icon" :alt="item.label" />
-    </router-link>
-</div>
+            <router-link v-for="item in dockItems" :key="item.route" :to="item.route" class="dock-icon">
+                <img :src="item.icon" :alt="item.label" />
+            </router-link>
+        </div>
     </div>
 </template>
 
@@ -101,13 +101,27 @@ export default {
             }
         },
     },
-    async created() {
-        if (this.$store.state.token) {
-            try {
-                await this.$store.dispatch("fetchUser");
-            } catch {
-                this.$router.push("/login");
-            }
+    created() {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            // Set the token in the store to ensure Axios requests include it
+            this.$store.commit("setToken", token);
+
+            // Fetch user data
+            this.$store
+                .dispatch("fetchUser")
+                .then(() => {
+                    console.log("User fetched successfully:", this.$store.getters.getUser);
+                })
+                .catch((error) => {
+                    console.error("Error fetching user:", error);
+                    this.$store.commit("clearState"); // Clear state if user fetch fails
+                    this.$router.push("/login");
+                });
+        } else {
+            console.log("No token found. Redirecting to login.");
+            this.$router.push("/login"); // Redirect to login if no token is found
         }
     },
     mounted() {

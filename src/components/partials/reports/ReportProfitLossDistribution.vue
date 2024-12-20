@@ -8,7 +8,6 @@
                     risk and reward at various price points. Red is losses and green is profits.
                 </div>
             </span>
-            <h2>Price Range</h2>
         </div>
 
         <div class="report-item">

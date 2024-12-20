@@ -8,8 +8,7 @@ import { showToast } from "../utils/toast";
 // Set global Axios configuration
 axios.defaults.baseURL = "http://localhost:5000/api";
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token") || ""}`;
-
-let isFetchingUser = false;
+axios.defaults.withCredentials = true;
 
 export default createStore({
     state: {
@@ -23,15 +22,17 @@ export default createStore({
     },
     mutations: {
         setUser(state, userData) {
-            console.log(userData);
+            console.log("Committing user data to state:", userData);
             state.user = userData ? { ...userData } : null; // Ensures reactivity
         },
         setToken(state, token) {
+            console.log("Setting token in state:", token);
             state.token = token;
             if (token) {
                 localStorage.setItem("token", token);
                 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             } else {
+                console.log("Clearing token from state and localStorage.");
                 localStorage.removeItem("token");
                 delete axios.defaults.headers.common["Authorization"];
             }
@@ -44,6 +45,11 @@ export default createStore({
             state.trades = [];
             localStorage.removeItem("token");
             delete axios.defaults.headers.common["Authorization"];
+        },
+        clearDataState(state) {
+            state.orders = [];
+            state.trades = [];
+            state.summaries = [];
         },
         setOrders(state, orders) {
             state.orders = orders;
@@ -66,13 +72,13 @@ export default createStore({
             try {
                 const response = await axios.post("/auth/login", { email, password });
                 const { accessToken, user } = response.data;
-        
+
                 commit("setToken", accessToken);
                 commit("setUser", user); // Directly update the user
-                
+
                 await dispatch("setDefaultDates");
                 await dispatch("fetchTrades"); // Fetch trades once after login
-        
+
                 showToast.success("Logged in successfully!");
                 return true;
             } catch (error) {
@@ -81,13 +87,10 @@ export default createStore({
                 return false;
             }
         },
-        async fetchUser({ commit, dispatch, state }) {
-            if (isFetchingUser) return;
-            isFetchingUser = true;
-
+        async fetchUser({ commit, state, dispatch }) {
             try {
-                // Check token expiration
-                if (state.token && isTokenExpired(state.token)) {
+                if (!state.token || isTokenExpired(state.token)) {
+                    console.log("Token expired or missing. Attempting to refresh...");
                     const refreshed = await dispatch("refreshToken");
                     if (!refreshed) {
                         throw new Error("Session expired. Please log in again.");
@@ -95,25 +98,28 @@ export default createStore({
                 }
 
                 const response = await axios.get("/user/profile");
-                commit("setUser", response.data.user); // Update the user data
+                console.log("User data received from API:", response.data);
+
+                commit("setUser", response.data.user);
             } catch (error) {
-                console.error("Failed to fetch user data:", error);
-                showToast.error("Failed to fetch user data. Please log in again.");
-                commit("clearState"); // Clear state only after notifying the user
-            } finally {
-                isFetchingUser = false;
+                console.error("Failed to fetch user data:", error.response || error.message);
+                commit("clearState");
             }
         },
         async refreshToken({ commit }) {
             try {
-                const response = await axios.post("/auth/refresh-token");
-                const { accessToken } = response.data;
+                console.log("refreshToken action started...");
+                console.log("Preparing to call /auth/refresh-token...");
+                const response = await axios.post("/auth/refresh-token", {}, { withCredentials: true });
+                console.log("Refresh token response received:", response.data);
         
-                commit("setToken", accessToken);
+                const { accessToken } = response.data;
+                console.log("New token received:", accessToken);
+                commit("setToken", accessToken); // Save the new token in Vuex
                 return true;
             } catch (error) {
-                console.error("Failed to refresh token:", error);
-                commit("clearState"); // Clear state when refresh fails
+                console.error("Failed to refresh token:", error.response || error.message);
+                commit("clearState");
                 return false;
             }
         },
@@ -153,7 +159,7 @@ export default createStore({
                     await dispatch("fetchTrades");
                     await dispatch("fetchAllSummaries");
                 }
-                showToast.success("Orders, trades, and summaries updated successfully!");
+                showToast.success("Orders uploaded successfully!");
                 return response.data.trades;
             } catch (error) {
                 const message = error.response?.data?.error || "Error uploading orders.";
@@ -177,6 +183,33 @@ export default createStore({
                 commit("setTrades", response.data);
             } catch (error) {
                 console.error("Error fetching trades:", error);
+            }
+        },
+        async deleteUserData({ commit, dispatch }, { userId, start, end }) {
+            try {
+                const queryParams = {
+                    ...(start ? { start } : {}),
+                    ...(end ? { end } : {}),
+                };
+
+                const response = await axios.delete(`/trades/user/${userId}`, {
+                    params: queryParams,
+                });
+
+                console.log("Deleted Data:", response.data);
+
+                // Clear the state
+                commit("clearDataState");
+
+                // Refetch updated data
+                await dispatch("fetchOrders");
+                await dispatch("fetchTrades");
+                await dispatch("fetchAllSummaries");
+
+                showToast.success("Data deleted successfully!");
+            } catch (error) {
+                console.error("Error deleting user data:", error.response || error.message);
+                showToast.error(error.response?.data?.message || "Failed to delete user data.");
             }
         },
     },

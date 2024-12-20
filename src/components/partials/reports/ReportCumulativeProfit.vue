@@ -6,7 +6,6 @@
                 ?
                 <div v-if="isTooltipVisible" class="tooltip-text">This chart visualizes cumulative profit or loss alongside number of trades completed for the period.</div>
             </span>
-            <h2>Cumulative Profit Chart</h2>
         </div>
 
         <!-- ECharts Visualization -->
