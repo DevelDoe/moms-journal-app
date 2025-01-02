@@ -7,7 +7,11 @@
 
         <!-- Show the profile content only when data is fully loaded -->
         <div v-else>
-            <h1>{{ user?.name || "User" }}</h1>
+            
+            <!-- Details  -->
+            <div>
+                <Details  />
+            </div>
 
             <h2>Accounts</h2>
             <!-- Display a list of accounts -->
@@ -18,7 +22,6 @@
             </ul>
             <p v-else>No accounts added yet.</p>
 
-            <!-- Form to add a new account -->
             <div class="add-account">
                 <h3>Add New Account</h3>
                 <label for="accountType">Account Type:</label>
@@ -47,7 +50,10 @@
 </template>
 
 <script>
+import Details from "./partials/Details.vue"; // Import the partial view component
+
 export default {
+    components: {Details},
     data() {
         return {
             isLoading: true, // Start with loading true
